@@ -1,0 +1,11 @@
+# Lokale Entwicklungsumgebung und generierte Dateien
+.idea/
+.vscode/
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Lokale Zugangsdaten gehören nicht ins Repository
+.env
+.env.*
