@@ -14,8 +14,6 @@ Entwurfsregeln und Begründungen stehen in den ADRs: [Verfahren](adr/ADR-000-ent
 
 Die [API-Dokumentation](https://meine-krankenkasse.github.io/domaenenmodell-krankenkasse/) stellt die Spezifikation mit Swagger UI dar. Sie bietet keine ausführbaren API-Aufrufe.
 
-Zur erstmaligen Einrichtung im Repository unter **Settings → Pages → Build and deployment → Source** die Option **GitHub Actions** auswählen. Danach veröffentlicht der Workflow bei jedem Push auf `main` die aktuelle Spezifikation. Er kann auch unter **Actions** manuell gestartet werden. Die Seite lädt Swagger UI von einem externen CDN.
-
 ## Spezifikation prüfen
 
 Mit Python und `uv` im Verzeichnis dieser README ausführen:
