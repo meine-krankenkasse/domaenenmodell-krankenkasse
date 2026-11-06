@@ -10,6 +10,12 @@ Der vollständige Vertrag mit fachlichen Regeln, Schemas, Beispielen und offenen
 
 Entwurfsregeln und Begründungen stehen in den ADRs: [Verfahren](adr/ADR-000-entscheidungen-dokumentieren.md), [REST und HTTP](adr/ADR-001-rest-und-http.md), [Idempotenz](adr/ADR-002-idempotenz.md), [YAGNI](adr/ADR-003-yagni.md) und [Benennung](adr/ADR-004-benennung.md).
 
+## API-Dokumentation im Browser
+
+Die [API-Dokumentation](https://meine-krankenkasse.github.io/domaenenmodell-krankenkasse/) stellt die Spezifikation mit Swagger UI dar. Sie bietet keine ausführbaren API-Aufrufe.
+
+Zur erstmaligen Einrichtung im Repository unter **Settings → Pages → Build and deployment → Source** die Option **GitHub Actions** auswählen. Danach veröffentlicht der Workflow bei jedem Push auf `main` die aktuelle Spezifikation. Er kann auch unter **Actions** manuell gestartet werden. Die Seite lädt Swagger UI von einem externen CDN.
+
 ## Spezifikation prüfen
 
 Mit Python und `uv` im Verzeichnis dieser README ausführen:
