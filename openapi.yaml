@@ -4,8 +4,8 @@ info:
   license:
     name: Zero-Clause BSD
     identifier: 0BSD
-  version: "0.9.0-entwurf"
-  summary: Personen identifizieren, Stammdaten lesen sowie Kontakte und Aufgaben nutzen
+  version: "0.11.0-entwurf"
+  summary: Personen identifizieren, Stammdaten und Kontoinformationen lesen sowie Kontakte und Aufgaben nutzen
   description: |
     # Domänenmodell Krankenkasse
     Ein gemeinsames fachliches Modell mit REST-API-Vertrag für Krankenkassen.
@@ -22,7 +22,8 @@ info:
 
     ## Was der Entwurf umfasst
     Personen finden und Stammdaten, Betreuungshinweise, Adressen und Kontaktdaten lesen;
-    Kontakte und Aufgaben lesen und anlegen. Nur kontakt_anlegen und aufgabe_anlegen schreiben Daten.
+    Zahlungskonten mit Salden und Kontobewegungen lesen sowie Kontakte und Aufgaben lesen und anlegen.
+    Nur kontakt_anlegen und aufgabe_anlegen schreiben Daten.
     Der Entwurf ist ein Vorschlag zur Abstimmung, kein verabschiedeter Standard oder Nachweis
     bereits verfügbarer Fähigkeiten. Diese Datei ist mit Beschreibungen, Schemas, Beispielen
     und offenen Entscheidungen eigenständig nutzbar.
@@ -85,10 +86,18 @@ tags:
   description: Dokumentierte Kommunikationsereignisse zu einer Person.
 - name: aufgaben
   description: Arbeitsaufträge zu einer Person.
+- name: zahlungskonten
+  description: Bei der Krankenkasse geführte fachliche Zahlungskonten einer Person mit Salden und Kontobewegungen.
 security:
 - zugriffsnachweis: []
 x-status: Vorschlag zur gemeinsamen Abstimmung
 x-offene_entscheidungen:
+- Betrags- und Vorzeichenabbildung der Kontobewegungen und Positionen einschließlich Korrekturen fachlich bestätigen.
+- Vollständigkeit der Bewegungs- und Positionsbestände, verfügbare Zeiträume sowie Feldberechtigungen klären.
+- Seitengrenzen und Laufzeit des Bewegungsabrufs sowie Bedeutung des Kontoauszugsdatums bestätigen.
+- Umfang der eigenen Zahlungskonten einschließlich besonderer Kontoarten und beendeter Konten fachlich bestätigen.
+- Tagesbezogene Saldoberechnung, Vorzeichenabbildung und Behandlung von Umbuchungen sowie statistischen Buchungen bestätigen.
+- Verlässlicher Datenstand und zulässige Verzögerung der Salden sowie kontenbezogene Leserechte klären.
 - Betreuungstypen, Zuordnung betreuender Personen oder Stellen und freigegebener Umfang.
 - Adresszuordnung, Gültigkeitsgrenzen und Verwendungszwecke der Kontaktdaten fachlich bestätigen.
 - Aufgabendefinitionen, automatische Zuweisung und Mitarbeiterkennungen.
@@ -864,6 +873,311 @@ paths:
         readOnlyHint: true
         destructiveHint: false
         idempotentHint: true
+  /personen/{person_id}/zahlungskonten:
+    parameters:
+    - name: person_id
+      in: path
+      required: true
+      description: Ressourcen-ID der Person.
+      schema:
+        $ref: '#/components/schemas/person_id'
+    get:
+      tags:
+      - zahlungskonten
+      operationId: zahlungskonten_lesen
+      summary: Zahlungskonten einer Person mit aktuellem Saldo lesen
+      description: |
+        Liefert die bei der Krankenkasse geführten eigenen Zahlungskonten der Person,
+        für die im Zugriffskontext eine Leseberechtigung besteht. Zahlungskonten erfassen
+        Forderungen, Verbindlichkeiten und Zahlungen; sie sind keine Bankverbindungen.
+        Maßgeblich ist die Kontoinhaberschaft am Abrufdatum in Europe/Berlin. Ein bloßer
+        Versichertenbezug einer Buchung auf einem fremden Konto genügt nicht.
+        Beendete oder geschlossene eigene Konten werden nicht allein wegen ihres Status ausgeschlossen.
+
+        Jedes Konto wird einmal mit eigener id, kontonummer und Saldo geliefert. Verschiedene
+        Konten bleiben getrennt; es gibt keinen kontenübergreifenden Gesamtsaldo.
+        Der Saldo gilt für den ausgewiesenen stichtag, das Abrufdatum in Europe/Berlin,
+        und berücksichtigt die bis dahin saldowirksamen Buchungen nach dem verfügbaren Datenstand.
+        Ein positiver Betrag bezeichnet einen Guthabenüberhang der Person gegenüber der
+        Krankenkasse, ein negativer Betrag einen Forderungsüberhang der Krankenkasse gegenüber
+        der Person. 0.00 bezeichnet ein ausgeglichenes Konto in diesem Umfang.
+        Der Saldo ist weder auf bereits fällige offene Posten beschränkt noch eine Aussage
+        über einen sofort zahlbaren oder auszahlbaren Betrag. Künftige Saldoeinflüsse werden
+        nicht vorweggenommen. Buchungsdetails werden gesondert über kontobewegungen_lesen abgerufen.
+        Historische Stichtagsabfragen und fertige Kontoauszüge sind nicht Teil dieses Abrufs.
+
+        stichtag bezeichnet den fachlichen Berechnungstag, keinen Nachweis sekundengenauer
+        Aktualität. Eine verbindliche Aktualitätsgrenze ist noch abzustimmen.
+        Fehlt für ein zugängliches Konto ein verlässlich bestimmbarer Saldo, gilt 503;
+        weder ein Ersatzbetrag von 0.00 noch das Weglassen dieses Kontos ist zulässig.
+        Ein fehlender gespeicherter Saldo allein belegt kein ausgeglichenes Konto.
+
+        Die Liste ist nach id aufsteigend sortiert und enthält alle im beschriebenen Umfang
+        zugänglichen Konten, ohne stilles Abschneiden. Bei unvollständigem Abruf gilt 503.
+        Eine leere Liste bedeutet keine zugänglichen eigenen Zahlungskonten in diesem Umfang,
+        nicht Saldo null oder das Fehlen zurückgehaltener Konten. Fehlt die Berechtigung für
+        diesen Abruf insgesamt, gilt 403. Die allgemeinen Zugriffskontexte gelten auch hier;
+        aus dem Zugriff auf Stammdaten folgt keine Berechtigung für Finanzdaten.
+      responses:
+        '200':
+          description: Vollständige Liste zugänglicher eigener Zahlungskonten mit Salden.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/keine_speicherung'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zahlungskontenliste'
+              examples:
+                forderungsueberhang:
+                  summary: Die Krankenkasse hat insgesamt eine Forderung auf diesem Konto
+                  value:
+                    data:
+                    - id: zahlungskonto-beispiel-001
+                      kontonummer: '000123456789'
+                      saldo:
+                        betrag: '-125.50'
+                        waehrung: EUR
+                        stichtag: '2026-11-07'
+                guthaben:
+                  summary: Die Person hat ein Guthaben auf diesem Konto
+                  value:
+                    data:
+                    - id: zahlungskonto-beispiel-002
+                      kontonummer: '000123456790'
+                      saldo:
+                        betrag: '42.00'
+                        waehrung: EUR
+                        stichtag: '2026-11-07'
+                ausgeglichen:
+                  summary: Ein vorhandenes Konto mit Saldo null
+                  value:
+                    data:
+                    - id: zahlungskonto-beispiel-001
+                      kontonummer: '000123456789'
+                      saldo:
+                        betrag: '0.00'
+                        waehrung: EUR
+                        stichtag: '2026-11-07'
+                keine_konten:
+                  summary: Keine zugänglichen eigenen Zahlungskonten
+                  value:
+                    data: []
+        '400':
+          $ref: '#/components/responses/ungueltige_anfrage'
+        '401':
+          $ref: '#/components/responses/nicht_authentifiziert'
+        '403':
+          $ref: '#/components/responses/zugriff_abgelehnt'
+        '404':
+          $ref: '#/components/responses/person_nicht_gefunden'
+        '500':
+          $ref: '#/components/responses/interner_fehler'
+        '503':
+          $ref: '#/components/responses/dienst_nicht_verfuegbar'
+      x-mcp_annotations:
+        readOnlyHint: true
+        destructiveHint: false
+        idempotentHint: true
+  /personen/{person_id}/zahlungskonten/{zahlungskonto_id}/kontobewegungen:
+    parameters:
+    - name: person_id
+      in: path
+      required: true
+      description: Ressourcen-ID der Person.
+      schema:
+        $ref: '#/components/schemas/person_id'
+    - name: zahlungskonto_id
+      in: path
+      required: true
+      description: Ressourcen-ID eines eigenen Zahlungskontos der Person, keine Kontonummer.
+      schema:
+        $ref: '#/components/schemas/ressourcen_id'
+    get:
+      tags:
+      - zahlungskonten
+      operationId: kontobewegungen_lesen
+      summary: Kontobewegungen eines Zahlungskontos im Zeitraum lesen
+      description: |
+        Liefert die zugänglichen Kontobewegungen des angegebenen eigenen Zahlungskontos
+        mit ihren fachlichen Positionen. Die Person und das Konto müssen im Mandantenkontext
+        zusammengehören; für die Kontoinhaberschaft gilt derselbe Umfang wie beim Kontenabruf.
+        Die Kenntnis einer Konto-ID erteilt keine Zugriffsberechtigung.
+
+        von und bis begrenzen das Belegdatum: von einschließlich, bis ausschließlich.
+        bis muss nach von liegen, sonst gilt 400. Es wird nach Kalendertagen verglichen,
+        nicht nach Erstellungszeitpunkt, Fälligkeit, Wertstellung oder Bezugszeitraum.
+        Enthalten sind alle zugänglichen Bewegungen im Zeitraum, einschließlich bereits
+        ausgeglichener, statistischer und stornierter Bewegungen sowie vorhandener
+        Korrektur- und Umbuchungsbewegungen. Es gibt keine Beschränkung auf offene Posten
+        oder bereits fällige Beträge. Die Antwort zeigt den jeweils verfügbaren aktuellen
+        Bearbeitungsstand dieser Bewegungen, nicht deren früheren Zustand am Belegdatum.
+
+        betrag und buchungsseite gehören zusammen: Ein positiver Sollbetrag belastet die
+        Person, ein positiver Habenbetrag entlastet sie. Ein negativer Betrag korrigiert
+        die jeweilige Buchungsseite in Gegenrichtung. Die Buchungsseite darf nicht allein
+        aus dem Vorzeichen abgeleitet werden. offener_betrag ist der nicht ausgeglichene
+        absolute Restbetrag nach dem aktuellen Stand, keine historische Restschuld und
+        keine Zahlungsaufforderung. Ausgleichsstatus, Stornierung und gegebenenfalls eine
+        noch schwebende Zahlung sind getrennte Angaben. Ein fehlendes schwebend ist kein false.
+
+        Jede Bewegung erscheint einmal. positionen gliedern ihren Inhalt, etwa nach
+        Beitrags- oder Leistungszeiträumen; sie sind keine zusätzlichen Buchungen.
+        Bewegungs- und Positionsbeträge dürfen nicht zusammengezählt werden. Unterschiedliche
+        Bezugszeiträume und Fälligkeiten bleiben auf Positionsebene erhalten. Fehlende Daten
+        werden nicht aus anderen Datumsfeldern ersetzt. kontoauszugsdatum bezeichnet ein
+        vorhandenes zugehöriges Bankauszugsdatum, nicht das Erstellungsdatum eines Auszugs
+        für die Person. Ein solches Datum ist nicht für jede Bewegung vorhanden.
+
+        Der Abruf liefert Buchungsinformationen, keinen fertigen Kontoauszug und keinen
+        laufenden Saldo nach jeder Bewegung. Aus den gelieferten Beträgen allein darf kein
+        verbindlicher Kontosaldo berechnet werden: Zeitraumgrenzen, statistische Einträge,
+        Stornos und zeitlicher Saldoeinfluss sind zusätzlich zu berücksichtigen.
+        Ausgleichsbeziehungen zwischen Bewegungen werden hier nicht aufgeschlüsselt.
+
+        Die Sortierung erfolgt nach belegdatum aufsteigend und bei gleichem Datum nach id
+        aufsteigend. seitengroesse begrenzt Bewegungen, nicht Positionen, auf höchstens 100;
+        Standard ist 50. versatz überspringt zugängliche Bewegungen, Standard ist 0.
+        Jede gelieferte Bewegung enthält ihre vollständige zugängliche Positionsliste,
+        nach Positions-ID aufsteigend sortiert. Positionen werden nicht über Seiten aufgeteilt.
+        naechster_versatz wird nur geliefert, wenn weitere zugängliche Bewegungen folgen,
+        und ist mit unveränderten Filtern zu verwenden. Ohne weitere Treffer fehlt er.
+        Eine unvollständige Datenabfrage darf nicht als letzte Seite erscheinen.
+
+        Jede Seite liest den verfügbaren aktuellen Stand und prüft die Berechtigungen neu.
+        Zwischenzeitliche Änderungen können beim Weiterblättern zu ausgelassenen oder mehrfach
+        gelieferten Bewegungen führen; für einen neuen Überblick bei versatz=0 beginnen.
+        Ein unveränderlicher Auszugsstand oder eine lückenlose Änderungshistorie wird nicht zugesagt.
+        Zugriff auf Stammdaten oder Kontosaldo allein berechtigt nicht zu sämtlichen Bewegungen
+        oder Positionsdetails. Unbekannte oder nicht freigegebene optionale Felder fehlen;
+        zurückgehaltene Inhalte werden nicht durch Ersatztexte oder null Euro dargestellt.
+        Eine zugängliche Bewegung mit ausschließlich zurückgehaltenen Positionen kann eine
+        leere Positionsliste haben; daraus folgt nicht, dass sie fachlich keine Positionen hat.
+
+        Eine unbekannte oder nicht zugängliche Person, ein solches Konto oder eine nicht passende
+        Person-Konto-Zuordnung ergibt 404 ohne weitere Unterscheidung. Fehlt die grundsätzliche
+        Berechtigung für diesen Abruf, gilt 403. Keine zugänglichen Treffer ergibt 200 mit
+        leerem data. Können erforderliche Daten oder Berechtigungen nicht zuverlässig ermittelt
+        werden, gilt 503 statt einer unvollständigen Seite. Für angefragte Zeiträume muss die
+        Vollständigkeit im beschriebenen Umfang sichergestellt sein; ein begrenzter Datenbestand
+        darf nicht unbemerkt als vollständige Bewegungsliste ausgegeben werden.
+      parameters:
+      - name: von
+        in: query
+        required: true
+        description: Einschließlich dieses Belegdatums.
+        schema:
+          type: string
+          format: date
+        example: '2026-10-01'
+      - name: bis
+        in: query
+        required: true
+        description: Ausschließlich dieses Belegdatums; muss nach von liegen, sonst 400.
+        schema:
+          type: string
+          format: date
+        example: '2026-11-01'
+      - name: seitengroesse
+        in: query
+        required: false
+        description: Maximale Anzahl zugänglicher Bewegungen pro Seite, jeweils mit ihren zugänglichen Positionen.
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 50
+      - name: versatz
+        in: query
+        required: false
+        description: Anzahl der zu überspringenden zugänglichen Bewegungen nach Anwendung des Zeitfilters.
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      responses:
+        '200':
+          description: Seite zugänglicher Bewegungen mit vollständigen zugänglichen Positionslisten.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/keine_speicherung'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/kontobewegungsliste'
+              examples:
+                beitrag_mit_zwei_positionen:
+                  summary: Eine Beitragsbuchung für zwei Monate, teilweise ausgeglichen
+                  value:
+                    data:
+                    - id: kontobewegung-beispiel-001
+                      belegnummer: '000001234567'
+                      belegdatum: '2026-10-01'
+                      bezeichnung: Beiträge
+                      betrag: '250.00'
+                      buchungsseite: soll
+                      waehrung: EUR
+                      offener_betrag: '125.00'
+                      ausgleichsstatus: teilweise_ausgeglichen
+                      storniert: false
+                      faellig_am: '2026-10-15'
+                      positionen:
+                      - id: position-beispiel-001
+                        betrag: '125.00'
+                        buchungsseite: soll
+                        bezeichnung: Krankenversicherungsbeitrag
+                        bezugszeitraum_von: '2026-09-01'
+                        bezugszeitraum_bis: '2026-09-30'
+                        faellig_am: '2026-10-15'
+                      - id: position-beispiel-002
+                        betrag: '125.00'
+                        buchungsseite: soll
+                        bezeichnung: Krankenversicherungsbeitrag
+                        bezugszeitraum_von: '2026-10-01'
+                        bezugszeitraum_bis: '2026-10-31'
+                        faellig_am: '2026-10-15'
+                    naechster_versatz: 1
+                zahlung:
+                  summary: Ein ausgeglichener Zahlungseingang
+                  value:
+                    data:
+                    - id: kontobewegung-beispiel-002
+                      belegnummer: '000001234568'
+                      belegdatum: '2026-10-10'
+                      bezeichnung: Überweisungsgutschrift
+                      betrag: '125.00'
+                      buchungsseite: haben
+                      waehrung: EUR
+                      offener_betrag: '0.00'
+                      ausgleichsstatus: ausgeglichen
+                      storniert: false
+                      schwebend: false
+                      wertstellung_am: '2026-10-10'
+                      kontoauszugsdatum: '2026-10-12'
+                      positionen:
+                      - id: position-beispiel-003
+                        betrag: '125.00'
+                        buchungsseite: haben
+                keine_bewegungen:
+                  summary: Keine zugänglichen Bewegungen im angefragten Zeitraum
+                  value:
+                    data: []
+        '400':
+          $ref: '#/components/responses/ungueltige_anfrage'
+        '401':
+          $ref: '#/components/responses/nicht_authentifiziert'
+        '403':
+          $ref: '#/components/responses/zugriff_abgelehnt'
+        '404':
+          $ref: '#/components/responses/zahlungskonto_nicht_gefunden'
+        '500':
+          $ref: '#/components/responses/interner_fehler'
+        '503':
+          $ref: '#/components/responses/dienst_nicht_verfuegbar'
+      x-mcp_annotations:
+        readOnlyHint: true
+        destructiveHint: false
+        idempotentHint: true
   /personen/{person_id}/aufgaben:
     parameters:
     - name: person_id
@@ -1057,6 +1371,228 @@ components:
       maxLength: 128
       pattern: ^[A-Za-z0-9_-]+$
       description: Undurchsichtige ID im API-Mandantenkontext; keine fachliche Kennung und kein Berechtigungsnachweis.
+    dezimalbetrag:
+      type: string
+      description: |
+        Exakter Dezimalbetrag mit Punkt und genau zwei Nachkommastellen, ohne
+        Tausendertrennzeichen, führendes Plus oder führende Nullen. Null wird als 0.00
+        geliefert; -0.00 ist nicht zulässig. Als Dezimalzahl verarbeiten, nicht als binäre Gleitkommazahl.
+      pattern: '^-?(0|[1-9][0-9]*)\.[0-9]{2}(?![\s\S])'
+      not:
+        const: '-0.00'
+      examples:
+      - '-125.50'
+      - '42.00'
+      - '0.00'
+    buchungsseite:
+      type: string
+      description: |
+        Soll belastet die Person, Haben entlastet sie, jeweils bei positivem Betrag.
+        Ein negativer Betrag korrigiert die genannte Seite in Gegenrichtung.
+        Dies beschreibt die Buchung, keine unmittelbare Zahlungs- oder Auszahlungszusage.
+      enum:
+      - soll
+      - haben
+    ausgleichsstatus:
+      type: string
+      description: Aktueller Ausgleichsstand; statistisch kennzeichnet einen statistischen Eintrag. Stornierung ist separat angegeben.
+      enum:
+      - offen
+      - teilweise_ausgeglichen
+      - ausgeglichen
+      - statistisch
+    kontobewegungsposition:
+      type: object
+      description: |
+        Fachlicher Teil einer Kontobewegung, keine zusätzliche Buchung. Die Währung
+        entspricht der übergeordneten Bewegung. Eigene Bezugszeiträume bleiben erhalten.
+        Die Sortierung nach id ist keine Reihenfolge für eine Saldoberechnung.
+      required:
+      - id
+      - betrag
+      - buchungsseite
+      properties:
+        id:
+          $ref: '#/components/schemas/ressourcen_id'
+        betrag:
+          $ref: '#/components/schemas/dezimalbetrag'
+        buchungsseite:
+          $ref: '#/components/schemas/buchungsseite'
+        bezeichnung:
+          type: string
+          minLength: 1
+          description: Fachliche Bezeichnung des Positionsinhalts, beispielsweise die Beitrags- oder Leistungsart; kein stabiler Filtercode.
+        bezugszeitraum_von:
+          type: string
+          format: date
+          description: Erster Tag des fachlichen Beitrags- oder Leistungszeitraums, einschließlich. Fehlende Grenzen werden nicht ergänzt.
+        bezugszeitraum_bis:
+          type: string
+          format: date
+          description: Letzter Tag des fachlichen Zeitraums, einschließlich; bei zwei bekannten Grenzen nicht vor bezugszeitraum_von.
+        faellig_am:
+          type: string
+          format: date
+          description: Fachliche Fälligkeit dieser Position, soweit bekannt und anwendbar; keine Ableitung aus dem Belegdatum.
+      additionalProperties: true
+    kontobewegung:
+      type: object
+      description: |
+        Eine Buchung auf dem angefragten Zahlungskonto mit ihrem aktuellen Bearbeitungsstand.
+        Beträge beziehen sich auf die angegebene Buchungsseite; sie sind keine vorzeichenkodierten
+        Kontosalden. Der offene Restbetrag ist absolut. Stornierung setzt weder diesen Betrag
+        noch den Ausgleichsstatus im Vertrag automatisch auf einen Ersatzwert.
+      required:
+      - id
+      - belegnummer
+      - belegdatum
+      - bezeichnung
+      - betrag
+      - buchungsseite
+      - waehrung
+      - ausgleichsstatus
+      - storniert
+      - positionen
+      properties:
+        id:
+          $ref: '#/components/schemas/ressourcen_id'
+        belegnummer:
+          type: string
+          minLength: 1
+          description: Fachliche Belegnummer mit erhaltenen führenden Nullen; kein Ersatz für die Ressourcen-ID.
+        belegdatum:
+          type: string
+          format: date
+          description: Fachliches Datum des Belegs und Grundlage des Zeitfilters; kein technischer Erstellungszeitpunkt.
+        bezeichnung:
+          type: string
+          minLength: 1
+          description: Fachliche Art der Buchung als lesbare Bezeichnung, etwa Beiträge oder Überweisungsgutschrift; kein stabiler Filtercode.
+        betrag:
+          $ref: '#/components/schemas/dezimalbetrag'
+        buchungsseite:
+          $ref: '#/components/schemas/buchungsseite'
+        waehrung:
+          type: string
+          const: EUR
+          description: Währung der Bewegung und sämtlicher Positionen; im aktuellen Umfang ausschließlich Euro.
+        offener_betrag:
+          description: Nicht ausgeglichener absoluter Restbetrag nach aktuellem Stand, ohne Soll-/Haben-Vorzeichen. Fehlt bei unbekanntem oder nicht freigegebenem Wert.
+          allOf:
+          - $ref: '#/components/schemas/dezimalbetrag'
+          - pattern: '^[0-9]'
+        ausgleichsstatus:
+          $ref: '#/components/schemas/ausgleichsstatus'
+        storniert:
+          type: boolean
+          description: Ob diese Bewegung storniert ist; unabhängig vom Ausgleichsstatus und von einer gesonderten Korrekturbuchung.
+        storniert_am:
+          type: string
+          format: date
+          description: Bekanntes Stornierungsdatum; nur bei storniert=true.
+        buchungstext:
+          type: string
+          minLength: 1
+          description: Hinterlegte Erläuterung des Buchungsgrunds; kein durch die API erfundener Erklärungstext.
+        bemerkung:
+          type: string
+          minLength: 1
+          description: Zusätzliche hinterlegte fachliche Bemerkung zur Bewegung, soweit freigegeben.
+        faellig_am:
+          type: string
+          format: date
+          description: Fälligkeit der Forderung oder Verbindlichkeit, soweit bekannt und anwendbar; Positionsfälligkeiten bleiben separat erhalten.
+        wertstellung_am:
+          type: string
+          format: date
+          description: Tatsächliches bekanntes Wertstellungsdatum einer Zahlung; kein prognostiziertes Datum.
+        kontoauszugsdatum:
+          type: string
+          format: date
+          description: Zugehöriges bekanntes Bankauszugsdatum einer Zahlung; kein Erstellungsdatum eines Versichertenkontoauszugs.
+        schwebend:
+          type: boolean
+          description: Ob eine Zahlung noch in Transfer ist; nur bei Zahlungen und bekanntem Zustand. Fehlend bedeutet nicht geliefert.
+        positionen:
+          type: array
+          description: Alle zugänglichen fachlichen Positionen dieser Bewegung, nach id aufsteigend. Leere Liste erlaubt keinen Rückschluss auf zurückgehaltene Positionen.
+          items:
+            $ref: '#/components/schemas/kontobewegungsposition'
+      allOf:
+      - if:
+          required:
+          - storniert_am
+        then:
+          properties:
+            storniert:
+              const: true
+      additionalProperties: true
+    kontobewegungsliste:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/kontobewegung'
+        naechster_versatz:
+          type: integer
+          minimum: 1
+          description: Versatz der nächsten Seite bei unveränderten Filtern; fehlt ohne weitere zugängliche Treffer.
+      additionalProperties: true
+    kontosaldo:
+      type: object
+      description: |
+        Tagesbezogener Saldo eines Zahlungskontos in Euro. Positiv bedeutet Guthabenüberhang
+        der Person, negativ Forderungsüberhang der Krankenkasse gegenüber der Person.
+        Der Betrag bestimmt weder Fälligkeit noch Auszahlbarkeit. Alle Pflichtangaben müssen
+        verlässlich ermittelt sein; unbekannte Salden werden nicht durch null oder 0.00 ersetzt.
+      required:
+      - betrag
+      - waehrung
+      - stichtag
+      properties:
+        betrag:
+          $ref: '#/components/schemas/dezimalbetrag'
+        waehrung:
+          type: string
+          description: Währung des Saldos; dieser Abruf unterstützt ausschließlich Euro.
+          const: EUR
+        stichtag:
+          type: string
+          format: date
+          description: Fachlicher Berechnungstag; das Abrufdatum in Europe/Berlin, kein Aktualisierungszeitstempel.
+      additionalProperties: true
+    zahlungskonto:
+      type: object
+      description: Eigenes fachliches Zahlungskonto der Person bei der Krankenkasse, keine Bankverbindung.
+      required:
+      - id
+      - kontonummer
+      - saldo
+      properties:
+        id:
+          $ref: '#/components/schemas/ressourcen_id'
+        kontonummer:
+          type: string
+          minLength: 1
+          description: Fachliche Nummer des Zahlungskontos. Führende Nullen bleiben erhalten; keine IBAN.
+        saldo:
+          $ref: '#/components/schemas/kontosaldo'
+      additionalProperties: true
+    zahlungskontenliste:
+      type: object
+      description: Vollständige zugängliche eigene Zahlungskonten mit jeweils eigenem Saldo, ohne Gesamtsaldo.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/zahlungskonto'
+      additionalProperties: true
     adresse:
       type: object
       properties:
@@ -2040,6 +2576,18 @@ components:
           example:
             code: person_nicht_gefunden
             meldung: Die Person wurde nicht gefunden.
+    zahlungskonto_nicht_gefunden:
+      description: Person oder Zahlungskonto unbekannt, nicht zugänglich oder nicht im angegebenen Zusammenhang vorhanden; keine weitere Unterscheidung.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/keine_speicherung'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/fehler'
+          example:
+            code: zahlungskonto_nicht_gefunden
+            meldung: Das Zahlungskonto wurde nicht gefunden.
     interner_fehler:
       description: Die Anfrage konnte wegen eines internen Fehlers nicht verarbeitet werden.
       headers:
