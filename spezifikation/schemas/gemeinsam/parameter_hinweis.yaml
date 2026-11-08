@@ -9,6 +9,7 @@ properties:
     description: Betroffener Parameter beziehungsweise Punktpfad im Suchobjekt, beispielsweise adresse.land.
   grund:
     type: string
+    pattern: ^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
     description: Maschinenlesbarer deutscher Hinweiscode.
     examples:
       - pflichtangabe_fehlt

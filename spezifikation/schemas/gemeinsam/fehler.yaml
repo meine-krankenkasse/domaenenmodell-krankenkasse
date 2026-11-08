@@ -6,7 +6,7 @@ description: Einheitliche Fehlerantwort ohne personenbezogene Suchwerte oder int
 properties:
   code:
     type: string
-    pattern: ^[a-z][a-z0-9_]*$
+    pattern: ^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
     description: Stabiler deutscher Fehlercode. Erweiterungen sind möglich.
     examples:
       - ungueltige_anfrage

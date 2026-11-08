@@ -6,7 +6,7 @@ description: Fachliche Einordnung, etwa versicherter, interessent oder pflegeper
 properties:
   code:
     type: string
-    pattern: ^[a-z][a-z0-9_]*$
+    pattern: ^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
     description: Deutscher fachlicher Code. Offener Katalog; unbekannte Codes müssen toleriert werden.
     examples:
       - versicherter

@@ -1,7 +1,7 @@
 type: string
 minLength: 1
 maxLength: 100
-pattern: ^[a-z][a-z0-9_]*$
+pattern: ^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
 description: |-
   Fachlicher Kontaktweg als erweiterbarer Code. anruf und telefon sind unterschiedliche Wege. Schreibzugriffe und Filter verwenden vereinbarte Codes; unbekannte Angaben werden nicht als sonstiger behandelt.
 examples:

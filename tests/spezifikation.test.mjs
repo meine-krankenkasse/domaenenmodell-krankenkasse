@@ -355,6 +355,23 @@ test('eigene_bezeichner_in_snake_case', () => {
   }
 });
 
+test('fachliche_codes_erlauben_nur_snake_case', () => {
+  const faelle = [
+    ['kontaktkanal', (code) => code],
+    ['kontakt', (code) => ({ id: 'kontakt-001', status: code })],
+    ['personenrolle', (code) => ({ code })],
+    ['fehler', (code) => ({ code, meldung: 'Beispiel' })],
+    ['parameter_hinweis', (code) => ({ parameter: 'adresse.land', grund: code })],
+  ];
+  for (const [name, objekt] of faelle) {
+    const pruefen = validator(name);
+    for (const code of ['beispiel', 'weiterer_code']) gueltig(pruefen, objekt(code), name);
+    for (const code of ['Code', '_code', 'code_', 'code__wert', 'code-wert']) {
+      ungueltig(pruefen, objekt(code), name);
+    }
+  }
+});
+
 function* quelldateien(ort) {
   for (const eintrag of readdirSync(ort, { withFileTypes: true })) {
     const datei = join(ort, eintrag.name);

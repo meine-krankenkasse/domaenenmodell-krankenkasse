@@ -32,6 +32,7 @@ get:
   parameters:
     - name: seitengroesse
       in: query
+      description: Maximale Anzahl zugänglicher Aufgaben pro Seite.
       schema:
         type: integer
         minimum: 1
@@ -39,6 +40,7 @@ get:
         default: 50
     - name: versatz
       in: query
+      description: Anzahl zu überspringender zugänglicher Aufgaben nach Sortierung.
       schema:
         type: integer
         minimum: 0
@@ -64,7 +66,7 @@ post:
           $ref: '../../schemas/aufgaben/aufgabe_anlage.yaml'
   responses:
     '201':
-      description: Aufgabe dauerhaft angelegt und der Person zugeordnet; derselbe Schlüssel wiederholt diesen Status.
+      description: Aufgabe dauerhaft angelegt und der Person zugeordnet.
       content:
         application/json:
           schema:

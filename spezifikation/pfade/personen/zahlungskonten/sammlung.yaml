@@ -15,7 +15,7 @@ get:
 
     Jedes Konto erscheint einmal mit eigenem tagesbezogenem Saldo. Verschiedene Konten bleiben getrennt; es gibt keinen Gesamtsaldo. Die Bedeutung des Saldos steht im Schema kontosaldo. Historische Stichtagsabfragen sind nicht vorgesehen.
 
-    Die Liste ist vollständig und nach id aufsteigend sortiert. Fehlt ein Konto oder ein verlässlich bestimmbarer Saldo, gilt 503 statt einer Teilantwort oder eines Ersatzbetrags.
+    Die Liste ist vollständig und nach id aufsteigend sortiert. Kann ein zugängliches Konto oder sein Saldo nicht verlässlich ermittelt werden, gilt 503 statt einer Teilantwort oder eines Ersatzbetrags.
   responses:
     '200':
       description: Vollständige Liste zugänglicher eigener Zahlungskonten mit Salden.

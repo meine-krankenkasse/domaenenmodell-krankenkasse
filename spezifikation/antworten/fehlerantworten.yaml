@@ -26,14 +26,14 @@ zahlungskonto_nicht_gefunden:
         code: zahlungskonto_nicht_gefunden
         meldung: Das Zahlungskonto wurde nicht gefunden.
 interner_fehler:
-  description: Die Anfrage konnte wegen eines internen Fehlers nicht verarbeitet werden.
+  description: Die Anfrage konnte wegen eines internen Fehlers nicht sicher abgeschlossen werden. Bei Schreiboperationen ist damit keine Wirkungslosigkeit bestätigt.
   content:
     application/json:
       schema:
         $ref: '../schemas/gemeinsam/fehler.yaml'
       example:
         code: interner_fehler
-        meldung: Die Anfrage konnte nicht verarbeitet werden.
+        meldung: Die Anfrage konnte nicht sicher abgeschlossen werden.
 dienst_nicht_verfuegbar:
   description: Der angefragte Umfang kann vorübergehend nicht vollständig geliefert werden.
   content:

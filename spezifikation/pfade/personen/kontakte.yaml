@@ -144,7 +144,7 @@ post:
               maschinell_erzeugt: false
   responses:
     '201':
-      description: Kontakt dauerhaft angelegt. Eine Wiederholung desselben Schlüssels liefert diesen Status erneut.
+      description: Kontakt dauerhaft angelegt und der Person zugeordnet.
       content:
         application/json:
           schema:

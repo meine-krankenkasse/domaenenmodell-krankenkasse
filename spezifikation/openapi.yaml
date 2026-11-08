@@ -4,7 +4,7 @@ info:
   license:
     name: Zero-Clause BSD
     identifier: 0BSD
-  version: "0.12.0-entwurf"
+  version: "0.12.1-entwurf"
   summary: Personen identifizieren, Stammdaten und Kontoinformationen lesen sowie Kontakte und Aufgaben nutzen
   description: |
     Ein gemeinsames fachliches Modell mit REST-Vertrag für Krankenkassen, unabhängig von den angebundenen Systemen. Dieser Entwurf dient der fachlichen Abstimmung.

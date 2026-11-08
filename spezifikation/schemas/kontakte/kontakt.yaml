@@ -20,7 +20,7 @@ properties:
     $ref: 'kontaktrichtung.yaml'
   status:
     type: string
-    pattern: ^[a-z][a-z0-9_]*$
+    pattern: ^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
     description: Bearbeitungsstatus, beispielsweise erledigt, storniert oder in_bearbeitung. Weitere Antwortcodes
       müssen toleriert werden; unbekannte Angaben fehlen.
   betreff:

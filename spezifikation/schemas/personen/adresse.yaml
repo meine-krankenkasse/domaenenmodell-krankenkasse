@@ -33,7 +33,7 @@ properties:
 required:
   - id
   - art
-description: Eigene postalische Adresse. land ist die Länderbezeichnung. Unbekannte Bestandteile entfallen;
+description: Eigene postalische Adresse. land ist die Länderbezeichnung, kein ISO-Code wie bei der Adresssuche. Unbekannte Bestandteile entfallen;
   Postfachadressen benötigen keine Straße. Getrennte Adresszuordnungen werden nicht anhand gleicher Anschrift
   zusammengeführt.
 examples:

@@ -12,7 +12,7 @@ Die gepflegten Quellen liegen unter `spezifikation/` und sind die einzige maßge
 
 Die Quellen folgen dieser Struktur:
 
-- `openapi.yaml`: Einstieg mit Metadaten, Einleitung, Tags, globaler Sicherheit sowie dem Verzeichnis der Pfade und benannten Komponenten. Die aktuelle API-Version wird nur hier gepflegt und in die Gesamtdatei übernommen.
+- `openapi.yaml`: Einstieg mit Metadaten, Einleitung, Tags sowie dem Verzeichnis der Pfade und benannten Komponenten. Die aktuelle API-Version wird nur hier gepflegt und in die Gesamtdatei übernommen.
 - `pfade/`: Eine Datei je Ressourcenpfad, nach Ressourcenhierarchie gegliedert. Alle HTTP-Methoden desselben Pfads und gemeinsame Pfadparameter stehen zusammen. `sammlung.yaml`, `einzelperson.yaml` und `suche.yaml` unterscheiden die entsprechenden Personenpfade; Unterressourcen erhalten sprechende Namen.
 - `schemas/`: Ein benanntes Schema je Datei, fachlich untergliedert in `personen/`, `kontakte/`, `aufgaben/` und `zahlungskonten/`. Bereichsübergreifende Bausteine stehen unter `gemeinsam/`. Weitere Bereiche entstehen bei konkretem Bedarf.
 - `parameter/`: Mehrfach verwendete Parameter mit übereinstimmender Bedeutung und vollständiger Definition.

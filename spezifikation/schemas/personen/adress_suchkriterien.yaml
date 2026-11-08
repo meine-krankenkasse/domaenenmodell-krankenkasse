@@ -42,7 +42,7 @@ properties:
   land:
     type: string
     pattern: ^[A-Z]{2}$
-    description: Land als gültiger ISO-3166-1-Alpha-2-Code, beispielsweise DE. Kein stillschweigender
+    description: Land als gültiger ISO-3166-1-Alpha-2-Code, beispielsweise DE; keine Länderbezeichnung wie beim Adressabruf. Kein stillschweigender
       Standardwert. Der Zeichenaufbau allein bestätigt noch keinen vergebenen Ländercode.
     examples:
       - DE
