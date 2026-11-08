@@ -1,0 +1,7 @@
+type: string
+minLength: 10
+maxLength: 10
+pattern: ^[A-Z][0-9]{9}$
+description: 'Lebenslange, kassenübergreifende Krankenversichertennummer: zehnstellige Versicherten-ID, bestehend
+  aus einem Großbuchstaben und neun Ziffern. Die letzte Ziffer ist die Prüfziffer. Frühere kassenindividuelle Nummern
+  sind ausgeschlossen. Dieses Schema prüft ausschließlich Länge und Zeichenaufbau, nicht die Berechnung der Prüfziffer.'

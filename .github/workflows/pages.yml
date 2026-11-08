@@ -3,6 +3,7 @@ name: API-Dokumentation veröffentlichen
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -17,16 +18,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Werkzeuge installieren
+        run: npm ci --ignore-scripts
+      - name: Gesamtdatei erzeugen
+        run: npm run bundle
+      - name: Quellen und Gesamtvertrag prüfen
+        run: npm test
       - uses: actions/configure-pages@v5
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
       - name: Dokumentation zusammenstellen
         run: |
           mkdir -p _site
-          cp docs/index.html openapi.yaml _site/
+          cp docs/index.html build/openapi.yaml _site/
       - uses: actions/upload-pages-artifact@v4
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         with:
           path: _site
 
   deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     permissions:

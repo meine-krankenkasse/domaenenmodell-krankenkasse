@@ -1,0 +1,12 @@
+type: object
+properties:
+  id:
+    $ref: '../gemeinsam/ressourcen_id.yaml'
+  person_id:
+    $ref: '../personen/person_id.yaml'
+required:
+- id
+- person_id
+examples:
+- id: aufgabe-001
+  person_id: person-001

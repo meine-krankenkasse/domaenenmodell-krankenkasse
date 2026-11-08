@@ -1,0 +1,37 @@
+type: object
+description: |
+  Fachlicher Teil einer Kontobewegung, keine zusätzliche Buchung. Die Währung
+  entspricht der übergeordneten Bewegung. Eigene Bezugszeiträume bleiben erhalten.
+  Die Sortierung nach id ist keine Reihenfolge für eine Saldoberechnung.
+required:
+- id
+- betrag
+- buchungsseite
+properties:
+  id:
+    $ref: '../gemeinsam/ressourcen_id.yaml'
+  betrag:
+    $ref: 'dezimalbetrag.yaml'
+  buchungsseite:
+    $ref: 'buchungsseite.yaml'
+  bezeichnung:
+    type: string
+    minLength: 1
+    description: Fachliche Bezeichnung des Positionsinhalts, beispielsweise die Beitrags- oder Leistungsart;
+      kein stabiler Filtercode.
+  bezugszeitraum_von:
+    type: string
+    format: date
+    description: Erster Tag des fachlichen Beitrags- oder Leistungszeitraums, einschließlich. Fehlende Grenzen
+      werden nicht ergänzt.
+  bezugszeitraum_bis:
+    type: string
+    format: date
+    description: Letzter Tag des fachlichen Zeitraums, einschließlich; bei zwei bekannten Grenzen nicht vor
+      bezugszeitraum_von.
+  faellig_am:
+    type: string
+    format: date
+    description: Fachliche Fälligkeit dieser Position, soweit bekannt und anwendbar; keine Ableitung aus dem
+      Belegdatum.
+additionalProperties: true

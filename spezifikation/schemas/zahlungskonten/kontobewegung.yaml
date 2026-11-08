@@ -1,0 +1,99 @@
+type: object
+description: |
+  Eine Buchung auf dem angefragten Zahlungskonto mit ihrem aktuellen Bearbeitungsstand.
+  Beträge beziehen sich auf die angegebene Buchungsseite; sie sind keine vorzeichenkodierten
+  Kontosalden. Der offene Restbetrag ist absolut. Stornierung setzt weder diesen Betrag
+  noch den Ausgleichsstatus im Vertrag automatisch auf einen Ersatzwert.
+required:
+- id
+- belegnummer
+- belegdatum
+- bezeichnung
+- betrag
+- buchungsseite
+- waehrung
+- ausgleichsstatus
+- storniert
+- positionen
+properties:
+  id:
+    $ref: '../gemeinsam/ressourcen_id.yaml'
+  belegnummer:
+    type: string
+    minLength: 1
+    description: Fachliche Belegnummer mit erhaltenen führenden Nullen; kein Ersatz für die Ressourcen-ID.
+  belegdatum:
+    type: string
+    format: date
+    description: Fachliches Datum des Belegs und Grundlage des Zeitfilters; kein technischer
+      Erstellungszeitpunkt.
+  bezeichnung:
+    type: string
+    minLength: 1
+    description: Fachliche Art der Buchung als lesbare Bezeichnung, etwa Beiträge oder Überweisungsgutschrift;
+      kein stabiler Filtercode.
+  betrag:
+    $ref: 'dezimalbetrag.yaml'
+  buchungsseite:
+    $ref: 'buchungsseite.yaml'
+  waehrung:
+    type: string
+    const: EUR
+    description: Währung der Bewegung und sämtlicher Positionen; im aktuellen Umfang ausschließlich Euro.
+  offener_betrag:
+    description: Nicht ausgeglichener absoluter Restbetrag nach aktuellem Stand, ohne Soll-/Haben-Vorzeichen.
+      Fehlt bei unbekanntem oder nicht freigegebenem Wert.
+    allOf:
+    - $ref: 'dezimalbetrag.yaml'
+    - pattern: '^[0-9]'
+  ausgleichsstatus:
+    $ref: 'ausgleichsstatus.yaml'
+  storniert:
+    type: boolean
+    description: Ob diese Bewegung storniert ist; unabhängig vom Ausgleichsstatus und von einer gesonderten
+      Korrekturbuchung.
+  storniert_am:
+    type: string
+    format: date
+    description: Bekanntes Stornierungsdatum; nur bei storniert=true.
+  buchungstext:
+    type: string
+    minLength: 1
+    description: Hinterlegte Erläuterung des Buchungsgrunds; kein durch die API erfundener Erklärungstext.
+  bemerkung:
+    type: string
+    minLength: 1
+    description: Zusätzliche hinterlegte fachliche Bemerkung zur Bewegung, soweit freigegeben.
+  faellig_am:
+    type: string
+    format: date
+    description: Fälligkeit der Forderung oder Verbindlichkeit, soweit bekannt und anwendbar;
+      Positionsfälligkeiten bleiben separat erhalten.
+  wertstellung_am:
+    type: string
+    format: date
+    description: Tatsächliches bekanntes Wertstellungsdatum einer Zahlung; kein prognostiziertes Datum.
+  kontoauszugsdatum:
+    type: string
+    format: date
+    description: Zugehöriges bekanntes Bankauszugsdatum einer Zahlung; kein Erstellungsdatum eines
+      Versichertenkontoauszugs.
+  schwebend:
+    type: boolean
+    description: Ob eine Zahlung noch in Transfer ist; nur bei Zahlungen und bekanntem Zustand. Fehlend
+      bedeutet nicht geliefert.
+  positionen:
+    type: array
+    description: Alle zugänglichen fachlichen Positionen dieser Bewegung, nach id aufsteigend. Leere Liste
+      erlaubt keinen Rückschluss auf zurückgehaltene Positionen.
+    items:
+      $ref: 'kontobewegungsposition.yaml'
+allOf:
+- if:
+    required:
+    - storniert_am
+  then:
+    properties:
+      storniert:
+        const: true
+additionalProperties: true

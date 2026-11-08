@@ -1,10 +1,13 @@
 # Lokale Entwicklungsumgebung und generierte Dateien
 .idea/
 .vscode/
-.venv/
-__pycache__/
-*.py[cod]
 .DS_Store
+node_modules/
+_site/
+/build/
+npm-debug.log*
+
+# package-lock.json wird für reproduzierbare Installationen versioniert.
 
 # Lokale Zugangsdaten gehören nicht ins Repository
 .env

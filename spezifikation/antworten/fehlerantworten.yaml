@@ -1,0 +1,91 @@
+ungueltige_anfrage:
+  description: Pflichtparameter fehlt, unbekannte Identifikatorart oder ungültiger Parameterwert.
+  headers:
+    Cache-Control:
+      $ref: '../header/keine_speicherung.yaml'
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/gemeinsam/fehler.yaml'
+      example:
+        code: ungueltige_anfrage
+        meldung: Bitte die angegebenen Parameter prüfen.
+nicht_authentifiziert:
+  description: Zugriffsnachweis fehlt oder ist ungültig.
+  headers:
+    WWW-Authenticate:
+      description: Erforderliches Authentisierungsschema des Entwurfs.
+      schema:
+        type: string
+        const: Bearer
+    Cache-Control:
+      $ref: '../header/keine_speicherung.yaml'
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/gemeinsam/fehler.yaml'
+      example:
+        code: nicht_authentifiziert
+        meldung: Ein gültiger Zugriffsnachweis ist erforderlich.
+zugriff_abgelehnt:
+  description: Grundsätzliche Aufruffreigabe oder erforderlicher Benutzer-/Versichertenkontext fehlt.
+  headers:
+    Cache-Control:
+      $ref: '../header/keine_speicherung.yaml'
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/gemeinsam/fehler.yaml'
+      example:
+        code: zugriff_abgelehnt
+        meldung: Der Aufruf ist im vorliegenden Zugriffskontext nicht zulässig.
+person_nicht_gefunden:
+  description: Die Person ist unbekannt oder im vorliegenden Zugriffskontext nicht zugänglich.
+  headers:
+    Cache-Control:
+      $ref: '../header/keine_speicherung.yaml'
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/gemeinsam/fehler.yaml'
+      example:
+        code: person_nicht_gefunden
+        meldung: Die Person wurde nicht gefunden.
+zahlungskonto_nicht_gefunden:
+  description: Person oder Zahlungskonto unbekannt, nicht zugänglich oder nicht im angegebenen Zusammenhang
+    vorhanden; keine weitere Unterscheidung.
+  headers:
+    Cache-Control:
+      $ref: '../header/keine_speicherung.yaml'
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/gemeinsam/fehler.yaml'
+      example:
+        code: zahlungskonto_nicht_gefunden
+        meldung: Das Zahlungskonto wurde nicht gefunden.
+interner_fehler:
+  description: Die Anfrage konnte wegen eines internen Fehlers nicht verarbeitet werden.
+  headers:
+    Cache-Control:
+      $ref: '../header/keine_speicherung.yaml'
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/gemeinsam/fehler.yaml'
+      example:
+        code: interner_fehler
+        meldung: Die Anfrage konnte nicht verarbeitet werden.
+dienst_nicht_verfuegbar:
+  description: Die Anfrage kann vorübergehend nicht vollständig und unter Durchsetzung der erforderlichen
+    Berechtigungen beantwortet werden; keine Teilantwort.
+  headers:
+    Cache-Control:
+      $ref: '../header/keine_speicherung.yaml'
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/gemeinsam/fehler.yaml'
+      example:
+        code: dienst_nicht_verfuegbar
+        meldung: Die Anfrage kann derzeit nicht vollständig beantwortet werden.

@@ -1,0 +1,22 @@
+type: object
+required:
+- id
+description: Person, die sämtliche Suchkriterien erfüllt. Angaben zur Unterscheidung werden nur im zulässigen
+  Feldumfang geliefert; eine fehlende Angabe hebt die geprüfte Übereinstimmung nicht auf. Eine Ressourcen-ID
+  ist kein Nachweis der Anruferidentität.
+properties:
+  id:
+    $ref: 'person_id.yaml'
+  name:
+    $ref: 'personenname.yaml'
+  geburtsdatum:
+    type: string
+    format: date
+    description: Geburtsdatum zur Unterscheidung, soweit bekannt und zur Ausgabe freigegeben.
+  passende_adressen:
+    type: array
+    minItems: 1
+    items:
+      $ref: 'suchtreffer_adresse.yaml'
+    description: Zugängliche Ausschnitte der zu den Adresskriterien passenden eigenen Adressen. Bei Suche ohne
+      Adresskriterien weggelassen; keine Aussage über den vollständigen Adressbestand.

@@ -1,0 +1,14 @@
+type: object
+properties:
+  data:
+    type: array
+    items:
+      $ref: 'aufgabe.yaml'
+    maxItems: 100
+  naechster_versatz:
+    type: integer
+    minimum: 1
+required:
+- data
+examples:
+- data: []

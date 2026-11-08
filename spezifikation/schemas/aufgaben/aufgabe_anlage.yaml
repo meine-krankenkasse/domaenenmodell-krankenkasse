@@ -1,0 +1,32 @@
+type: object
+properties:
+  aufgabendefinitionsname:
+    type: string
+    minLength: 1
+    maxLength: 120
+    description: Name einer freigegebenen, aktiven Aufgabendefinition; steuert Standardwerte und automatische
+      Zuweisung.
+  info:
+    type: string
+    minLength: 1
+    maxLength: 50
+  bemerkung:
+    type: string
+    minLength: 1
+    maxLength: 2000
+  vorgangsnotiz:
+    type: string
+    minLength: 1
+    maxLength: 1200
+  wiedervorlagedatum:
+    type: string
+    format: date
+    description: Fachliches Datum ohne Uhrzeit.
+required:
+- aufgabendefinitionsname
+additionalProperties: false
+examples:
+- aufgabendefinitionsname: Allgemeine Bearbeitung
+  info: Rückfrage prüfen
+  bemerkung: Die vorliegenden Angaben prüfen.
+  wiedervorlagedatum: '2026-11-10'

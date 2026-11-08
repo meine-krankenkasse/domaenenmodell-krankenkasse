@@ -1,0 +1,46 @@
+type: object
+required:
+- art
+- wert
+description: |
+  Fachliche Personenkennung. Diese Version liefert nur aktive, aktuell gültige
+  Kennungen der drei unterstützten Arten. Historie und Dublettenkennungen sind nicht Bestandteil dieses Umfangs.
+  Der Gültigkeitszeitraum beschreibt die Kennung, nicht ein Versicherungsverhältnis.
+properties:
+  art:
+    $ref: 'identifikator_art.yaml'
+  wert:
+    type: string
+    minLength: 1
+    maxLength: 128
+    description: Wert als Zeichenfolge einschließlich führender Nullen.
+  namensraum:
+    type: string
+    format: uri
+    description: |
+      Optionaler ausdrücklich bekannter Geltungsbereich der Kennung.
+      Für lokale Partnernummern gilt ohne Angabe der API-Mandantenkontext.
+      Vor mandantenübergreifendem Austausch muss ein Namensraum festgelegt werden.
+  gueltig_ab:
+    type: string
+    format: date
+    description: Erster Gültigkeitstag, soweit fachlich bekannt; keine technischen Ersatzdaten.
+  gueltig_bis:
+    type: string
+    format: date
+    description: Letzter Gültigkeitstag einschließlich; bei offenem Ende weggelassen.
+  bestaetigt:
+    type: boolean
+    description: Kennzeichnet, ob die fachliche Bestätigung der Kennung vorliegt, soweit diese Information
+      geliefert wird; kein Identitätsnachweis des Aufrufers.
+allOf:
+- if:
+    properties:
+      art:
+        const: kvnr
+    required:
+    - art
+  then:
+    properties:
+      wert:
+        $ref: 'kvnr.yaml'

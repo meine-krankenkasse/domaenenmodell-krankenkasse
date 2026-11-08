@@ -1,0 +1,17 @@
+type: string
+minLength: 1
+maxLength: 100
+pattern: ^[a-z][a-z0-9_]*$
+description: |
+  Fachlicher Kontaktweg als stabiler Code. Der Katalog ist erweiterbar; Clients müssen
+  zusätzliche Antwortcodes tolerieren. anruf und telefon sind unterschiedliche Wege.
+  persoenlicher_kontakt bezeichnet persönlichen Kontakt, sonstiger einen bekannten anderen
+  Weg und keine unbekannte Angabe. Für Schreibzugriffe und Filter müssen die unterstützten
+  Codes vorab vereinbart sein. Unbekannte Werte werden nicht auf sonstiger umgedeutet.
+examples:
+- anruf
+- telefon
+- chat
+- e_mail
+- brief
+- persoenlicher_kontakt

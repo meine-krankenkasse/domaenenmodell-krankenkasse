@@ -1,0 +1,4 @@
+type: http
+scheme: bearer
+description: Vorschlag für einen überprüfbaren Zugriffsnachweis; Tokenformat, Aussteller und Kontextbindung
+  sind offen.

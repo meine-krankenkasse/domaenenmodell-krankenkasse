@@ -1,0 +1,20 @@
+{
+  "name": "domaenenmodell-krankenkasse",
+  "private": true,
+  "license": "0BSD",
+  "scripts": {
+    "test": "node --test",
+    "lint": "redocly lint spezifikation/openapi.yaml",
+    "bundle": "redocly bundle spezifikation/openapi.yaml --output build/openapi.yaml --component-renaming-conflicts-severity error"
+  },
+  "devDependencies": {
+    "@redocly/cli": "2.76.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "yaml": "2.9.1"
+  },
+  "engines": {
+    "node": ">=22.12.0",
+    "npm": ">=10"
+  }
+}

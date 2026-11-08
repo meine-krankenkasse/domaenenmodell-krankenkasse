@@ -1,0 +1,95 @@
+get:
+  tags:
+  - personen
+  operationId: person_lesen
+  summary: Stammdaten einer natürlichen Person lesen
+  description: |
+    Liefert die Person zur kanonischen Ressourcen-ID. An dieser Stelle werden keine
+    KVNR, RVNR oder anderen alternativen Kennungen automatisch interpretiert.
+    Die ID kann aus einer vorherigen Suche oder einer bestehenden Referenz stammen.
+
+    Nur im jeweiligen Kontext zugängliche Felder werden geliefert. Nicht vorhandene
+    oder nicht freigegebene optionale Felder werden weggelassen. Eine nicht zugängliche
+    Person ist wie eine unbekannte ID mit 404 zu behandeln. 403 bezeichnet eine fehlende
+    grundsätzliche Aufruffreigabe oder einen fehlenden erforderlichen Benutzerkontext.
+
+    Identifikatoren und Rollen sind keine vollständige Akte. Ein fehlendes Rollenfeld
+    oder Versicherungskennzeichen erlaubt keine Aussage zum Versicherungsstatus.
+    Über den beschriebenen Feldumfang hinausgehende Angaben sind nicht Bestandteil dieser Operation.
+  parameters:
+  - name: person_id
+    in: path
+    required: true
+    description: Kanonische Ressourcen-ID einer natürlichen Person im API-Mandantenkontext.
+    schema:
+      $ref: '../../schemas/personen/person_id.yaml'
+  responses:
+    "200":
+      description: Zugängliche Personenstammdaten.
+      headers:
+        Cache-Control:
+          $ref: '../../header/keine_speicherung.yaml'
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/personen/person.yaml'
+          examples:
+            stammdaten:
+              summary: Synthetische Personenstammdaten mit Partnernummer
+              value:
+                id: person-beispiel-001
+                geburtsdatum: "1980-05-12"
+                geschlecht: weiblich
+                identifikatoren:
+                - art: partnernummer
+                  wert: "000123456789"
+                rollen:
+                - code: versicherter
+                  bezeichnung: Versicherte Person
+                name:
+                  vorname: Erika
+                  nachname: Musterfrau
+            minimale_person:
+              summary: Nur die zugängliche Ressourcen-ID ist verfügbar
+              value:
+                id: person-beispiel-002
+            interessent_ohne_kvnr:
+              summary: Interessent ohne KVNR und ohne bekanntes Geburtsdatum
+              value:
+                id: person-beispiel-003
+                name:
+                  vorname: Alex
+                  nachname: Beispiel
+                rollen:
+                - code: interessent
+                  bezeichnung: Interessent
+            mehrere_rollen:
+              summary: Person mit Namensbestandteilen und mehreren fachlichen Rollen
+              value:
+                id: person-beispiel-004
+                name:
+                  vorname: Anna Maria
+                  nachname: Beispiel
+                  vorsatzwort: von
+                  titel: Dr.
+                rollen:
+                - code: versicherter
+                  bezeichnung: Versicherte Person
+                - code: pflegeperson
+                  bezeichnung: Pflegeperson
+    "400":
+      $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
+    "401":
+      $ref: '../../antworten/fehlerantworten.yaml#/nicht_authentifiziert'
+    "403":
+      $ref: '../../antworten/fehlerantworten.yaml#/zugriff_abgelehnt'
+    "404":
+      $ref: '../../antworten/fehlerantworten.yaml#/person_nicht_gefunden'
+    "500":
+      $ref: '../../antworten/fehlerantworten.yaml#/interner_fehler'
+    "503":
+      $ref: '../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
+  x-mcp_annotations:
+    readOnlyHint: true
+    destructiveHint: false
+    idempotentHint: true

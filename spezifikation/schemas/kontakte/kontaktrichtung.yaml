@@ -1,0 +1,5 @@
+type: string
+enum:
+- eingehend
+- ausgehend
+description: Richtung aus Sicht der Krankenkasse; weglassen, wenn nicht eindeutig bekannt.

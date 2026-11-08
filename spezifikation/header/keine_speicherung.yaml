@@ -1,0 +1,4 @@
+description: Personenbezogene Antworten dürfen nicht zwischengespeichert werden.
+schema:
+  type: string
+  const: no-store

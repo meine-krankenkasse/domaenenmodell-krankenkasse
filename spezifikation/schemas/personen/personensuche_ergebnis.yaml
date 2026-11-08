@@ -1,0 +1,36 @@
+type: object
+required:
+- auswertung
+- data
+properties:
+  auswertung:
+    type: string
+    enum:
+    - kein_treffer
+    - eindeutig
+    - mehrdeutig
+    description: Bewertung ausschließlich der vollständig ermittelten zugänglichen Personen, nicht der
+      Identität des Anrufers.
+  data:
+    type: array
+    maxItems: 20
+    description: Nach Ressourcen-ID deduplizierte Treffer; keine Rangfolge nach vermuteter Wahrscheinlichkeit.
+    items:
+      $ref: 'personentreffer.yaml'
+oneOf:
+- properties:
+    auswertung:
+      const: kein_treffer
+    data:
+      maxItems: 0
+- properties:
+    auswertung:
+      const: eindeutig
+    data:
+      minItems: 1
+      maxItems: 1
+- properties:
+    auswertung:
+      const: mehrdeutig
+    data:
+      minItems: 2

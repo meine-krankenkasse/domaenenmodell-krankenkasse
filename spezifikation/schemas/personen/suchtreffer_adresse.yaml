@@ -1,0 +1,15 @@
+type: object
+minProperties: 1
+description: Zugänglicher Ausschnitt einer Adresse, die die angegebenen Adresskriterien erfüllt. Keine
+  vollständige Adressauskunft. Nur bei einer Suche mit Adresskriterien geliefert.
+properties:
+  postleitzahl:
+    type: string
+    description: Postleitzahl der passenden Adresse einschließlich führender Nullen.
+  ort:
+    type: string
+    description: Ort der passenden Adresse.
+  land:
+    type: string
+    pattern: ^[A-Z]{2}$
+    description: Land als ISO-3166-1-Alpha-2-Code.

@@ -1,0 +1,229 @@
+openapi: "3.1.0"
+info:
+  title: Domänenmodell Krankenkasse
+  license:
+    name: Zero-Clause BSD
+    identifier: 0BSD
+  version: "0.11.0-entwurf"
+  summary: Personen identifizieren, Stammdaten und Kontoinformationen lesen sowie Kontakte und Aufgaben nutzen
+  description: |
+    # Domänenmodell Krankenkasse
+    Ein gemeinsames fachliches Modell mit REST-API-Vertrag für Krankenkassen.
+
+    Das Domänenmodell Krankenkasse beschreibt die fachliche Welt einer Krankenkasse in einem offenen,
+    erweiterbaren Domänenmodell mit deutschsprachigem REST-API-Vertrag. Anwendungen und
+    KI-Agenten erhalten einen gemeinsamen Zugang, ohne die dahinterliegenden Systeme kennen zu müssen.
+
+    Das Modell dient als Vorlage für APIs und Fassaden. Der erste Umfang orientiert sich eng
+    an belegten Fähigkeiten bestehender Krankenkassen-Kernsysteme: ihren Begriffen, Daten und Abläufen.
+    Kassen und Dienstleister können weitere fachliche Bereiche ergänzen, auch außerhalb des Kernsystems.
+    Zusätzlicher Bedarf wird gezielt auf Umsetzbarkeit geprüft. Angebundene Systeme sollen sich
+    weiterentwickeln, ergänzen oder austauschen lassen, ohne den fachlichen Vertrag zu verändern.
+
+    ## Was der Entwurf umfasst
+    Personen finden und Stammdaten, Betreuungshinweise, Adressen und Kontaktdaten lesen;
+    Zahlungskonten mit Salden und Kontobewegungen lesen sowie Kontakte und Aufgaben lesen und anlegen.
+    Nur kontakt_anlegen und aufgabe_anlegen schreiben Daten.
+    Der Entwurf ist ein Vorschlag zur Abstimmung, kein verabschiedeter Standard oder Nachweis
+    bereits verfügbarer Fähigkeiten. Diese Datei ist mit Beschreibungen, Schemas, Beispielen
+    und offenen Entscheidungen eigenständig nutzbar.
+
+    ## Drei Zugriffskontexte
+    Maßgeblich ist, in wessen Auftrag eine Anwendung handelt:
+
+    - **Eigenständige Anwendung:** Ein Prozess oder Dienst handelt mit eigener Anwendungsberechtigung.
+      Eine individuelle Mitarbeiteridentität ist dafür nicht erforderlich.
+    - **Mitarbeiter:** Eine Anwendung unterstützt einen bestimmten Mitarbeiter und führt dessen Kontext mit.
+    - **Versicherter:** Eine App oder ein Chat handelt für einen angemeldeten Versicherten.
+      Vertretungen benötigen eine gesondert nachgewiesene Befugnis; die Ausgestaltung ist noch offen.
+
+    KI-Agenten können in allen drei Kontexten arbeiten. Ob ein Prozess KI nutzt oder im Hintergrund
+    läuft, ändert seinen Auftraggeber nicht. Anmeldung und Berechtigungsprüfung gehören zu jedem
+    Zugriff; die technischen Nachweise werden noch vereinbart.
+
+    ## Personen finden und verstehen
+    Eine Person ist ein natürlicher Mensch, unabhängig von Versicherung und fachlichen Rollen.
+    Ihre id bezeichnet den Datensatz im jeweiligen Mandanten, also dem abgegrenzten Datenbestand.
+    Sie ist eine undurchsichtige Kennung und nicht mit einer Versicherungsnummer gleichzusetzen.
+    Ihre Beständigkeit, auch beim Zusammenführen von Datensätzen, ist noch festzulegen.
+
+    Die Suche funktioniert in jedem Zugriffskontext: mit bekannter ID, einer Kennung bekannter
+    oder unbekannter Art oder mit ausreichenden Stammdaten. Bei Kennungen aus Dokumenten verarbeitet
+    die API den extrahierten Wert, nicht das Dokument. Unterstützte Arten sind kvnr, partnernummer
+    und rvnr. Mehrdeutige Treffer erfordern weitere Angaben oder eine bestätigte Auswahl;
+    bei zu vielen Treffern müssen die Suchkriterien eingegrenzt werden. Fehlende Angaben werden nicht erfunden.
+
+    KVNR meint ausschließlich die lebenslange, kassenübergreifende zehnstellige Versicherten-ID:
+    ein Großbuchstabe und neun Ziffern, davon die letzte als Prüfziffer. Ein Kassenwechsel ändert sie
+    grundsätzlich nicht. Frühere kassenindividuelle Nummern und um Kassenangaben ergänzte Kennungen
+    sind damit nicht gemeint. Das Schema prüft den Aufbau; die Prüfziffernvalidierung ist noch festzulegen.
+    Die KVNR belegt weder eine aktuelle Versicherung noch eine Zugriffsberechtigung.
+
+    Eine Suche findet Datensätze, bestätigt aber keine Identität eines Aufrufers oder Anrufers
+    und erteilt keinen Auftrag für weitere Aktionen. Auch die Stammdatensuche mit POST liest nur:
+    Sie erzeugt weder Personen noch Suchressourcen. Fachliche Rollen und Betreuungshinweise
+    beschreiben die Person; sie sind keine Zugriffsrechte oder Nachweise konkreter Vertretungsbefugnisse.
+
+    ## Gemeinsam erweitern
+    Gleiche fachliche Begriffe, Kennungen und Beziehungen sollen systemübergreifend dieselbe Bedeutung
+    haben. Ergänzungen beschreiben ihre Eingaben, Ergebnisse und Berechtigungsanforderungen im Vertrag
+    und folgen denselben Regeln für Zugriffskontext und Datenumfang. Interne Systemnamen und Strukturen
+    werden nicht zu fachlichen Ressourcen oder Auswahlparametern. Bestehende Bedeutungen bleiben erhalten.
+    Regeln für Namensräume, Versionierung, Kompatibilität und die Übernahme von Erweiterungen sind noch offen.
+    Zusätzliche Antwortfelder erlauben weder beliebige Anfragefelder noch ersetzen sie diese Vereinbarungen.
+
+    # Daten- und Antwortkonventionen
+    Listen stehen unter data; IDs und fachliche Kennungen sind Zeichenfolgen. Fehlende optionale
+    Felder bedeuten „nicht geliefert“, keinen Negativbefund und keine vollständige Datenabdeckung.
+    null ist nicht vorgesehen. Clients müssen zusätzliche Antwortfelder tolerieren.
+    Beispiele sind erfunden und belegen keine real vergebenen Kennungen.
+    Personenbezogene Antworten verwenden Cache-Control: no-store; Fehler enthalten weder
+    Suchwerte noch Angaben über nicht zugängliche Personen.
+tags:
+- name: personen
+  description: Natürliche Personen unabhängig von ihren fachlichen Rollen.
+security:
+- zugriffsnachweis: []
+paths:
+  /personen:
+    $ref: pfade/personen/sammlung.yaml
+  /personen/{person_id}:
+    $ref: pfade/personen/einzelperson.yaml
+  /personen/suche:
+    $ref: pfade/personen/suche.yaml
+  /personen/{person_id}/kontakte:
+    $ref: pfade/personen/kontakte.yaml
+  /personen/{person_id}/adressen:
+    $ref: pfade/personen/adressen.yaml
+  /personen/{person_id}/kontaktdaten:
+    $ref: pfade/personen/kontaktdaten.yaml
+  /personen/{person_id}/zahlungskonten:
+    $ref: pfade/personen/zahlungskonten/sammlung.yaml
+  /personen/{person_id}/zahlungskonten/{zahlungskonto_id}/kontobewegungen:
+    $ref: pfade/personen/zahlungskonten/kontobewegungen.yaml
+  /personen/{person_id}/aufgaben:
+    $ref: pfade/personen/aufgaben.yaml
+components:
+  securitySchemes:
+    zugriffsnachweis:
+      $ref: sicherheit/zugriffsnachweis.yaml
+  headers:
+    keine_speicherung:
+      $ref: header/keine_speicherung.yaml
+  schemas:
+    ressourcen_id:
+      $ref: schemas/gemeinsam/ressourcen_id.yaml
+    dezimalbetrag:
+      $ref: schemas/zahlungskonten/dezimalbetrag.yaml
+    buchungsseite:
+      $ref: schemas/zahlungskonten/buchungsseite.yaml
+    ausgleichsstatus:
+      $ref: schemas/zahlungskonten/ausgleichsstatus.yaml
+    kontobewegungsposition:
+      $ref: schemas/zahlungskonten/kontobewegungsposition.yaml
+    kontobewegung:
+      $ref: schemas/zahlungskonten/kontobewegung.yaml
+    kontobewegungsliste:
+      $ref: schemas/zahlungskonten/kontobewegungsliste.yaml
+    kontosaldo:
+      $ref: schemas/zahlungskonten/kontosaldo.yaml
+    zahlungskonto:
+      $ref: schemas/zahlungskonten/zahlungskonto.yaml
+    zahlungskontenliste:
+      $ref: schemas/zahlungskonten/zahlungskontenliste.yaml
+    adresse:
+      $ref: schemas/personen/adresse.yaml
+    adressliste:
+      $ref: schemas/personen/adressliste.yaml
+    kontaktdatum:
+      $ref: schemas/personen/kontaktdatum.yaml
+    kontaktdatenliste:
+      $ref: schemas/personen/kontaktdatenliste.yaml
+    betreuungshinweis:
+      $ref: schemas/personen/betreuungshinweis.yaml
+    aufgabenstatus:
+      $ref: schemas/aufgaben/aufgabenstatus.yaml
+    aufgabe_anlage:
+      $ref: schemas/aufgaben/aufgabe_anlage.yaml
+    aufgabe:
+      $ref: schemas/aufgaben/aufgabe.yaml
+    aufgabenliste:
+      $ref: schemas/aufgaben/aufgabenliste.yaml
+    aufgabe_annahme:
+      $ref: schemas/aufgaben/aufgabe_annahme.yaml
+    kontakt_id:
+      $ref: schemas/kontakte/kontakt_id.yaml
+    kontaktkanal:
+      $ref: schemas/kontakte/kontaktkanal.yaml
+    kontaktstatus:
+      $ref: schemas/kontakte/kontaktstatus.yaml
+    kontaktrichtung:
+      $ref: schemas/kontakte/kontaktrichtung.yaml
+    kontakt_betreff:
+      $ref: schemas/kontakte/kontakt_betreff.yaml
+    kontakt_bemerkung:
+      $ref: schemas/kontakte/kontakt_bemerkung.yaml
+    externe_kontakt_id:
+      $ref: schemas/kontakte/externe_kontakt_id.yaml
+    idempotenzschluessel:
+      $ref: schemas/gemeinsam/idempotenzschluessel.yaml
+    kontakt_anlage:
+      $ref: schemas/kontakte/kontakt_anlage.yaml
+    kontakt:
+      $ref: schemas/kontakte/kontakt.yaml
+    kontakt_stichwort:
+      $ref: schemas/kontakte/kontakt_stichwort.yaml
+    kontaktliste:
+      $ref: schemas/kontakte/kontaktliste.yaml
+    kontakt_annahme:
+      $ref: schemas/kontakte/kontakt_annahme.yaml
+    person_id:
+      $ref: schemas/personen/person_id.yaml
+    identifikator_art:
+      $ref: schemas/personen/identifikator_art.yaml
+    identifikator:
+      $ref: schemas/personen/identifikator.yaml
+    personenrolle:
+      $ref: schemas/personen/personenrolle.yaml
+    person:
+      $ref: schemas/personen/person.yaml
+    personentreffer:
+      $ref: schemas/personen/personentreffer.yaml
+    personensuche_ergebnis:
+      $ref: schemas/personen/personensuche_ergebnis.yaml
+    fehler:
+      $ref: schemas/gemeinsam/fehler.yaml
+    personenname:
+      $ref: schemas/personen/personenname.yaml
+    kvnr:
+      $ref: schemas/personen/kvnr.yaml
+    adress_suchkriterien:
+      $ref: schemas/personen/adress_suchkriterien.yaml
+    stammdaten_suchkriterien:
+      $ref: schemas/personen/stammdaten_suchkriterien.yaml
+    suchtreffer_adresse:
+      $ref: schemas/personen/suchtreffer_adresse.yaml
+    stammdaten_personentreffer:
+      $ref: schemas/personen/stammdaten_personentreffer.yaml
+    stammdatensuche_ergebnis:
+      $ref: schemas/personen/stammdatensuche_ergebnis.yaml
+    parameter_hinweis:
+      $ref: schemas/gemeinsam/parameter_hinweis.yaml
+  responses:
+    ungueltige_anfrage:
+      $ref: antworten/fehlerantworten.yaml#/ungueltige_anfrage
+    nicht_authentifiziert:
+      $ref: antworten/fehlerantworten.yaml#/nicht_authentifiziert
+    zugriff_abgelehnt:
+      $ref: antworten/fehlerantworten.yaml#/zugriff_abgelehnt
+    person_nicht_gefunden:
+      $ref: antworten/fehlerantworten.yaml#/person_nicht_gefunden
+    zahlungskonto_nicht_gefunden:
+      $ref: antworten/fehlerantworten.yaml#/zahlungskonto_nicht_gefunden
+    interner_fehler:
+      $ref: antworten/fehlerantworten.yaml#/interner_fehler
+    dienst_nicht_verfuegbar:
+      $ref: antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar
+  parameters:
+    idempotenzschluessel:
+      $ref: parameter/idempotenzschluessel.yaml

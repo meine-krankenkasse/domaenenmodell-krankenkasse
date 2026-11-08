@@ -1,0 +1,60 @@
+type: object
+required:
+- id
+description: Natürliche Person unabhängig von ihren Rollen. Nur id ist universell verpflichtend. name wird
+  geliefert, wenn mindestens ein zugänglicher Vor- oder Nachname vorliegt. Weitere Daten können unbekannt,
+  nicht verfügbar oder nicht freigegeben sein. Der für eine konkrete Nutzung erforderliche Datenumfang muss
+  gesondert vereinbart werden.
+properties:
+  betreuungshinweise:
+    type: array
+    items:
+      $ref: 'betreuungshinweis.yaml'
+    description: Zum Abrufdatum in Europe/Berlin gültige zugängliche Betreuungshinweise, mit einschließlich
+      geprüften Gültigkeitsgrenzen. Eine leere Liste wird nur bei geprüftem Nichtvorliegen im freigegebenen
+      Umfang geliefert. Fehlendes Feld bedeutet unbekannt, nicht verfügbar oder nicht freigegeben. Keine
+      Zusage vollständiger Vollmachtsdaten; keine automatische Entscheidung über Auskunft, Vertretung oder
+      Versand.
+  id:
+    $ref: 'person_id.yaml'
+  name:
+    $ref: 'personenname.yaml'
+  geburtsdatum:
+    type: string
+    format: date
+    description: Vollständig bekanntes Geburtsdatum im Format JJJJ-MM-TT. Bei unbekanntem oder unvollständigem
+      Geburtsdatum weggelassen. Keine Ergänzung fehlender Tage oder Monate durch Ersatzwerte. Eine spätere
+      Unterstützung von Teilangaben ist offen.
+  geschlecht:
+    type: string
+    enum:
+    - maennlich
+    - weiblich
+    - unbestimmt
+    - divers
+    description: Fachliche Geschlechtsangabe. Eine unbekannte oder nicht verfügbare Angabe wird weggelassen
+      und nicht automatisch als unbestimmt ausgegeben.
+  identifikatoren:
+    type: array
+    description: Zugängliche aktive Identifikatoren der unterstützten Arten; keine Zusage eines vollständigen
+      Kennungsbestands.
+    items:
+      $ref: 'identifikator.yaml'
+  rollen:
+    type: array
+    description: Fachliche Rollen, je code höchstens ein Eintrag. Keine alleinige Aussage zu einem aktuellen
+      Versicherungsverhältnis oder einer konkreten Vertretungsbefugnis. Eine leere Liste wird nur geliefert,
+      wenn im freigegebenen Umfang tatsächlich keine Rolle besteht; eine fehlende Angabe bedeutet nicht
+      geliefert.
+    items:
+      $ref: 'personenrolle.yaml'
+  schutzstufe:
+    type: string
+    enum:
+    - ungeschuetzt
+    - geschuetzt
+    - besonders_geschuetzt
+    - vip
+    description: Fachliche Schutzkennzeichnung, soweit im Zugriffskontext freigegeben. Die API prüft die
+      Zugriffsberechtigung vor der Ausgabe. Die Kennzeichnung ist weder eine Zugriffsentscheidung noch eine
+      Auskunftssperre. Die konkreten Zugriffsregeln je Schutzstufe sind noch abzustimmen.

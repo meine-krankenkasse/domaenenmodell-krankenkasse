@@ -1,0 +1,8 @@
+type: string
+minLength: 1
+maxLength: 128
+pattern: ^[A-Za-z0-9_-]+$
+description: Undurchsichtige Ressourcen-ID einer Person im API-Mandantenkontext. Keine zugesicherte Gleichheit
+  mit einer fachlichen Kennung. Zeichenumfang und Länge sind Entwurfsvorschläge.
+examples:
+- person-beispiel-001

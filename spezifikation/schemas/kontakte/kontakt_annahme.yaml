@@ -1,0 +1,11 @@
+type: object
+required:
+- id
+- person_id
+properties:
+  id:
+    $ref: 'kontakt_id.yaml'
+  person_id:
+    $ref: '../personen/person_id.yaml'
+description: Minimale Bestätigung der abgeschlossenen oder bereits vorhandenen Dokumentation ohne
+  Gesprächsinhalte.

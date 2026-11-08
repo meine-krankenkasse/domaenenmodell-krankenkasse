@@ -1,0 +1,39 @@
+type: object
+properties:
+  id:
+    $ref: '../gemeinsam/ressourcen_id.yaml'
+  status:
+    $ref: 'aufgabenstatus.yaml'
+  info:
+    type: string
+    minLength: 1
+    maxLength: 50
+  bemerkung:
+    type: string
+    minLength: 1
+    maxLength: 2000
+  vorgangsnotiz:
+    type: string
+    minLength: 1
+    maxLength: 1200
+  wiedervorlagedatum:
+    type: string
+    format: date
+    description: Fachliches Datum ohne Uhrzeit.
+  erstellt_am:
+    type: string
+    format: date-time
+  geschlossen_am:
+    type: string
+    format: date
+  bearbeiter_id:
+    $ref: '../gemeinsam/ressourcen_id.yaml'
+required:
+- id
+description: Zugängliche Aufgabenangaben. Fehlende Felder bedeuten nicht geliefert. bemerkung und
+  vorgangsnotiz geben den aktuellen Inhalt wieder, keine Änderungshistorie.
+examples:
+- id: aufgabe-001
+  status: unbearbeitet
+  info: Rückfrage prüfen
+  bearbeiter_id: mitarbeiter-001

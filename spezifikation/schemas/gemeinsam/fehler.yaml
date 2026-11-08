@@ -1,0 +1,27 @@
+type: object
+required:
+- code
+- meldung
+description: Einheitliche Fehlerantwort ohne personenbezogene Suchwerte oder interne Implementierungsdetails.
+properties:
+  code:
+    type: string
+    pattern: ^[a-z][a-z0-9_]*$
+    description: Stabiler deutscher Fehlercode. Erweiterungen sind möglich.
+    examples:
+    - ungueltige_anfrage
+    - nicht_authentifiziert
+    - zugriff_abgelehnt
+    - person_nicht_gefunden
+    - treffermenge_zu_gross
+    - dienst_nicht_verfuegbar
+    - interner_fehler
+  meldung:
+    type: string
+    description: Deutsche Erläuterung, nicht zur maschinellen Fallunterscheidung.
+  parameter_hinweise:
+    type: array
+    minItems: 1
+    items:
+      $ref: 'parameter_hinweis.yaml'
+    description: Optionale Hinweise zur gezielten Korrektur einer Anfrage; keine Wiedergabe der Eingabewerte.

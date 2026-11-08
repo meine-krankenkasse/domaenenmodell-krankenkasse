@@ -1,0 +1,17 @@
+type: object
+required:
+- id
+- passende_identifikator_arten
+description: Sparsamer Suchtreffer. Weitere Stammdaten sind über die Ressourcen-ID abrufbar.
+properties:
+  id:
+    $ref: 'person_id.yaml'
+  name:
+    $ref: 'personenname.yaml'
+  passende_identifikator_arten:
+    type: array
+    minItems: 1
+    uniqueItems: true
+    description: Arten, für die der Suchwert bei dieser Person tatsächlich übereinstimmt.
+    items:
+      $ref: 'identifikator_art.yaml'

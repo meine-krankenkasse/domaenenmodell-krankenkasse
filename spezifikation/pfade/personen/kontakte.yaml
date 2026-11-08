@@ -1,0 +1,318 @@
+parameters:
+- name: person_id
+  in: path
+  required: true
+  description: Ressourcen-ID der Person, deren Kontakte gelesen oder ergänzt werden.
+  schema:
+    $ref: '../../schemas/personen/person_id.yaml'
+get:
+  tags:
+  - personen
+  operationId: kontakte_lesen
+  summary: Kontakte einer Person im Zeitraum abrufen
+  description: |
+    Liefert die eigenen zugänglichen Kontakte der Person einschließlich archivierter Einträge.
+    Kontakte anderer Personen, auch aus einem Familienverbund, sind nicht enthalten.
+    Kontakte sind Kommunikationsereignisse, keine Telefonnummern oder E-Mail-Adressen.
+    Für alle Filter gilt UND. von ist einschließlich, bis ausschließlich; bis muss nach von
+    liegen. RFC-3339-Zeitpunkte mit Zeitzone werden als absolute Zeitpunkte verglichen.
+    kanal filtert exakt auf einen freigegebenen fachlichen Code; unterschiedliche Wege wie
+    anruf und telefon werden nicht stillschweigend zusammengefasst. Unbekannte Filtercodes
+    ergeben 400, keine ungefilterte Antwort. Ohne Kanalfilter werden alle zugänglichen Wege
+    geliefert. Kontakte ohne bekannten Kontaktzeitpunkt erfüllen keinen Zeitraumfilter.
+    Aus unbekannten Zeiten werden keine Ersatzzeitpunkte erzeugt.
+
+    Die Liste ist nach kontakt_am absteigend und bei gleichem Zeitpunkt nach id aufsteigend
+    sortiert. seitengroesse ist höchstens 100, standardmäßig 50. versatz ist die Anzahl der
+    zu überspringenden zugänglichen Treffer, standardmäßig 0. Filterung und Berechtigungsprüfung
+    erfolgen vor dem Zählen. naechster_versatz wird nur geliefert, wenn weitere zugängliche
+    Kontakte folgen; er ist beim Folgeaufruf mit unveränderten Filtern zu verwenden.
+    Eine unvollständige Quellantwort darf nicht als letzte Seite ausgegeben werden.
+
+    Jede Anfrage liest den jeweils verfügbaren Stand. Zwischenzeitliche Änderungen können
+    beim Weiterblättern zu ausgelassenen oder mehrfach gelieferten Einträgen führen. Für einen
+    aktuellen Überblick ist die Abfrage bei versatz=0 neu zu starten. Es gibt keine Zusage
+    einer vollständigen historischen Akte; insbesondere fehlen undatierte Kontakte im Zeitfilter.
+    Die Seitengrenze begrenzt die API-Antwort, nicht den Aufwand in angebundenen Diensten.
+
+    Eine unbekannte oder nicht zugängliche Person ergibt 404. Fehlende grundsätzliche
+    Leseberechtigung oder eine insgesamt nicht erlaubte Filternutzung ergibt 403.
+    Personen-, Kontakt- und Feldberechtigungen werden vor jeder Seite neu geprüft.
+    Eine Freigabe der Person allein berechtigt nicht zum Zugriff auf jeden Kontakt oder jedes
+    Dokument. Kontaktbezogene Schutzstufen und fachliche Einschränkungen einzelner Felder
+    müssen berücksichtigt werden. Optionale unbekannte oder nicht freigegebene Felder fehlen.
+    Ohne zugängliche Treffer gilt 200 mit leerem data und ohne naechster_versatz.
+    Bei einer ausgefallenen erforderlichen Daten- oder Berechtigungsprüfung gilt 503.
+  parameters:
+  - name: von
+    in: query
+    required: true
+    description: Einschließlicher Beginn des Kontaktzeitraums mit Zeitzone.
+    schema:
+      type: string
+      format: date-time
+    example: '2026-10-01T00:00:00+02:00'
+  - name: bis
+    in: query
+    required: true
+    description: Ausschließlicher Endzeitpunkt; muss nach von liegen.
+    schema:
+      type: string
+      format: date-time
+    example: '2026-11-01T00:00:00+01:00'
+  - name: kanal
+    in: query
+    required: false
+    description: Exakter Kommunikationskanal; keine Filterung bei fehlendem Parameter.
+    schema:
+      $ref: '../../schemas/kontakte/kontaktkanal.yaml'
+  - name: seitengroesse
+    in: query
+    required: false
+    description: Maximale Anzahl zugänglicher Kontakte pro Seite.
+    schema:
+      type: integer
+      minimum: 1
+      maximum: 100
+      default: 50
+  - name: versatz
+    in: query
+    required: false
+    description: Anzahl zu überspringender zugänglicher Kontakte nach Filterung und Sortierung.
+    schema:
+      type: integer
+      minimum: 0
+      default: 0
+  responses:
+    '200':
+      description: Eine Seite zugänglicher Kontakte im angefragten Zeitraum.
+      headers:
+        Cache-Control:
+          $ref: '../../header/keine_speicherung.yaml'
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/kontakte/kontaktliste.yaml'
+          examples:
+            letzte_seite:
+              value:
+                data:
+                - id: kontakt-beispiel-001
+                  kontakt_am: '2026-10-20T10:15:00+02:00'
+                  kanal: chat
+                  richtung: eingehend
+                  status: erledigt
+                  betreff: Rückfrage zum Bearbeitungsstand
+                  bemerkung: Der aktuelle Bearbeitungsstand wurde erläutert.
+                  maschinell_erzeugt: true
+                  externe_id: kundenportal:gespraech-beispiel-001
+            weitere_seite:
+              value:
+                data:
+                - id: kontakt-beispiel-002
+                  kontakt_am: '2026-10-21T08:00:00Z'
+                  kanal: telefon
+                naechster_versatz: 1
+            keine_kontakte:
+              value:
+                data: []
+    '400':
+      description: Ungültiger Zeitraum, Parameter oder Filtercode; keine ungefilterte Ersatzabfrage.
+      headers:
+        Cache-Control:
+          $ref: '../../header/keine_speicherung.yaml'
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/gemeinsam/fehler.yaml'
+          examples:
+            zeitraum_ungueltig:
+              value:
+                code: ungueltige_anfrage
+                meldung: Das Ende des Zeitraums muss nach dem Beginn liegen.
+    '401':
+      $ref: '../../antworten/fehlerantworten.yaml#/nicht_authentifiziert'
+    '403':
+      $ref: '../../antworten/fehlerantworten.yaml#/zugriff_abgelehnt'
+    '404':
+      $ref: '../../antworten/fehlerantworten.yaml#/person_nicht_gefunden'
+    '500':
+      $ref: '../../antworten/fehlerantworten.yaml#/interner_fehler'
+    '503':
+      $ref: '../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
+  x-mcp_annotations:
+    readOnlyHint: true
+    destructiveHint: false
+    idempotentHint: true
+post:
+  tags:
+  - personen
+  operationId: kontakt_anlegen
+  summary: Ein Kommunikationsereignis zur Person dokumentieren
+  description: |
+    Dokumentiert genau ein Kommunikationsereignis für die Person. Versendet keine Nachricht
+    und ändert keine Personenstammdaten. Eine erfolgreiche Personensuche ist kein Auftrag zur
+    Dokumentation. Vor dem Aufruf muss ein ausdrücklicher fachlicher Auftrag vorliegen.
+    Unbekannte Inhalte dürfen nicht erfunden werden. Unbekannte Felder, fehlende Pflichtangaben,
+    ungültige Werte und überschrittene Textlängen ergeben 400; Texte werden nicht abgeschnitten.
+    status ist ausdrücklich mit erledigt, in_bearbeitung oder storniert anzugeben.
+    Der Status beschreibt die Kontaktdokumentation, nicht den Abschluss eines Leistungsanliegens.
+    id und person_id sind keine Eingabefelder. Fehlende fachliche Codes werden nicht erraten.
+    Ein syntaktisch gültiger, aber nicht unterstützter Kanal ergibt 422 kontakt_nicht_abbildbar.
+    Eine abgeschlossene Zusammenfassung kann als erledigt dokumentiert werden.
+    maschinell_erzeugt beschreibt die Entstehung des Textes, nicht den Kanal oder Bearbeitungsstatus.
+    Dieser Wert muss verlässlich erhalten bleiben; ist das nicht möglich, wird die Anlage abgelehnt.
+    Vorhandene Textgrenzen dürfen durch Zeichensatzkonvertierung nicht zu stillem Datenverlust führen.
+
+    Die Operation erfordert die Berechtigung zum Anlegen für Person, Kanal und Inhalte.
+    Eine unbekannte oder nicht zugängliche Person ergibt 404; fehlende grundsätzliche
+    Schreibberechtigung ergibt 403. Die Anlagebestätigung ist Teil der Schreibberechtigung,
+    berechtigt aber nicht zum Listenabruf. Sie enthält keine Gesprächsinhalte.
+    Vor dem Schreiben müssen Existenz, eindeutige Zuordnung und Berechtigung der Person
+    feststehen. 201 bestätigt nur einen dauerhaft angelegten, genau dieser Person zugeordneten
+    Kontakt. Eine Anlage ohne bestätigte Personenzuordnung erfüllt den Vertrag nicht und darf
+    nicht als Erfolg ausgegeben werden. Ist der Ausgang nach einem Schreibversuch unklar,
+    gilt 503 mit weiterhin gesperrtem Auftrag; es darf nicht blind erneut angelegt werden.
+    200 bedeutet, dass eine identische
+    externe Referenz bereits dokumentiert war. Bei 400, 403, 404 und 422 wird kein neuer
+    Schreibauftrag begonnen. 500 oder 503 sind kein Beleg dafür, dass nichts angelegt wurde.
+
+    externe_id identifiziert zusätzlich das fachliche Ereignis und ist für maschinell erzeugte
+    Inhalte verpflichtend. Sie ist höchstens 64 Zeichen lang und wird unverändert gespeichert.
+    Vor Freigabe einer Anwendung wird ihr zulässiger Wertebereich vereinbart; beispielsweise
+    kann ein Herkunftspräfix enthalten sein. Die Anwendung darf keine fremden Referenzen verwenden.
+    Innerhalb eines Mandanten bezeichnet die externe_id ein Ereignis, unabhängig von Auftrag
+    und person_id. Die API muss die Eindeutigkeit selbst sicherstellen; ein vorhandenes Feld
+    für externe Kennungen allein ist kein Nachweis einer Dublettenprüfung.
+    Ein bereits zugeordnetes Ereignis mit identischer Person und identischen Eingaben ergibt
+    200 mit der bestehenden Kontakt-ID, auch bei einem neuen Idempotency-Key. Abweichende
+    Person oder Eingaben ergeben 409 externe_referenz_konflikt, ohne fremde Daten offenzulegen.
+    Bei bereits mehrdeutig belegter Referenz darf keine weitere Anlage oder automatische Auswahl
+    erfolgen. Die fachliche Ereigniszuordnung bleibt unabhängig vom technischen Wiederholungsauftrag verbindlich.
+    Kann sie nicht mehr sicher aufgelöst werden, wird die Anlage mit 409 abgelehnt.
+    Ohne externe_id verhindert nur derselbe Idempotency-Key doppelte Aufträge.
+  parameters:
+  - $ref: ../../parameter/idempotenzschluessel.yaml
+  requestBody:
+    required: true
+    description: Fachliche Angaben zum dokumentierten Kommunikationsereignis.
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/kontakte/kontakt_anlage.yaml'
+        examples:
+          maschinelle_zusammenfassung:
+            value:
+              kontakt_am: '2026-10-20T10:15:00+02:00'
+              kanal: chat
+              status: erledigt
+              richtung: eingehend
+              betreff: Rückfrage zum Bearbeitungsstand
+              bemerkung: Der aktuelle Bearbeitungsstand wurde erläutert.
+              maschinell_erzeugt: true
+              externe_id: kundenportal:gespraech-beispiel-001
+          manuelle_dokumentation:
+            value:
+              kontakt_am: '2026-10-20T09:00:00Z'
+              kanal: telefon
+              status: erledigt
+              betreff: Rückruf
+              bemerkung: Das Anliegen wurde telefonisch besprochen.
+              maschinell_erzeugt: false
+  responses:
+    '201':
+      description: Kontakt dauerhaft angelegt. Eine Wiederholung desselben Schlüssels liefert diesen Status
+        erneut.
+      headers:
+        Cache-Control:
+          $ref: '../../header/keine_speicherung.yaml'
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/kontakte/kontakt_annahme.yaml'
+          example:
+            id: kontakt-beispiel-001
+            person_id: person-beispiel-001
+    '200':
+      description: Identisches Ereignis unter der externen Referenz bereits vorhanden; kein neuer Kontakt
+        angelegt.
+      headers:
+        Cache-Control:
+          $ref: '../../header/keine_speicherung.yaml'
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/kontakte/kontakt_annahme.yaml'
+          example:
+            id: kontakt-beispiel-001
+            person_id: person-beispiel-001
+    '400':
+      $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
+    '401':
+      $ref: '../../antworten/fehlerantworten.yaml#/nicht_authentifiziert'
+    '403':
+      $ref: '../../antworten/fehlerantworten.yaml#/zugriff_abgelehnt'
+    '404':
+      $ref: '../../antworten/fehlerantworten.yaml#/person_nicht_gefunden'
+    '409':
+      description: Auftrag läuft oder Eingaben stehen im Konflikt.
+      headers:
+        Cache-Control:
+          $ref: '../../header/keine_speicherung.yaml'
+        Retry-After:
+          description: Bei auftrag_in_bearbeitung vorhanden; frühester erneuter Versuch in Sekunden mit
+            demselben Schlüssel.
+          schema:
+            type: integer
+            minimum: 1
+          example: 5
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/gemeinsam/fehler.yaml'
+          examples:
+            abweichender_auftrag:
+              value:
+                code: idempotenzkonflikt
+                meldung: Der Schlüssel gehört zu einem anderen Auftrag.
+            laufender_auftrag:
+              value:
+                code: auftrag_in_bearbeitung
+                meldung: Bitte denselben Auftrag nach der angegebenen Wartezeit wiederholen.
+            externe_referenz_belegt:
+              value:
+                code: externe_referenz_konflikt
+                meldung: Die externe Referenz kann diesem Auftrag nicht zugeordnet werden.
+    '422':
+      description: Fachlich zulässige Eingaben können vom Dienst nicht verlustfrei dokumentiert werden; keine
+        Anlage.
+      headers:
+        Cache-Control:
+          $ref: '../../header/keine_speicherung.yaml'
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/gemeinsam/fehler.yaml'
+          example:
+            code: kontakt_nicht_abbildbar
+            meldung: Die übergebenen Kontaktangaben können nicht vollständig dokumentiert werden.
+    '500':
+      $ref: '../../antworten/fehlerantworten.yaml#/interner_fehler'
+    '503':
+      description: Verarbeitung oder sichere Ergebnisermittlung vorübergehend nicht möglich. Nur mit demselben
+        Schlüssel wiederholen.
+      headers:
+        Cache-Control:
+          $ref: '../../header/keine_speicherung.yaml'
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/gemeinsam/fehler.yaml'
+          example:
+            code: dienst_nicht_verfuegbar
+            meldung: Der Auftrag kann derzeit nicht sicher abgeschlossen werden. Bitte denselben Schlüssel
+              beibehalten.
+  x-mcp_annotations:
+    readOnlyHint: false
+    destructiveHint: false
+    idempotentHint: true
