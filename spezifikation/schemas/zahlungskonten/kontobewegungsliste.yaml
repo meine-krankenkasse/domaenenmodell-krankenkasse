@@ -11,3 +11,4 @@ properties:
     type: integer
     minimum: 1
     description: Versatz der nächsten Seite bei unveränderten Filtern; fehlt ohne weitere zugängliche Treffer.
+description: "Aktueller Stand, kein historischer Zustand am Belegdatum. Sortierung nach belegdatum, danach id, jeweils aufsteigend. Jede Bewegung enthält alle zugänglichen Positionen; diese werden nicht über Seiten aufgeteilt. Folgeaufrufe verwenden unveränderte Filter; Änderungen zwischen Seiten sind möglich. Bewegungs- und Positionsbeträge nicht zusammenzählen. Kein laufender Saldo oder fertiger Kontoauszug; aus Bewegungen allein lässt sich kein verbindlicher Kontosaldo ableiten."

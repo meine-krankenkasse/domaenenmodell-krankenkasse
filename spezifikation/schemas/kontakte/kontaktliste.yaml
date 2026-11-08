@@ -12,3 +12,4 @@ properties:
     type: integer
     minimum: 1
     description: Anzahl bereits gelieferter und übersprungener zugänglicher Treffer; fehlt auf der letzten Seite.
+description: "Sortierung nach kontakt_am absteigend, danach id aufsteigend. Folgeaufrufe verwenden unveränderte Filter. Änderungen zwischen Seiten können Überschneidungen oder Auslassungen verursachen."

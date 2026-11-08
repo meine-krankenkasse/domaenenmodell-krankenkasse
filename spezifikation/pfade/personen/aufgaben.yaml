@@ -10,10 +10,7 @@ get:
     - personen
   operationId: aufgaben_lesen
   summary: Aufgaben einer Person unabhängig vom Bearbeiter lesen
-  description: |
-    Liefert den aktuellen Aufgabenbestand der Person über alle Bearbeiter und Statuswerte, einschließlich unzugewiesener Aufgaben. Eine Bearbeiterauswahl ist nicht vorgesehen.
-
-    Die Liste ist nach id aufsteigend sortiert. naechster_versatz wird nur bei weiteren Treffern geliefert; Folgeaufrufe behalten Person und Seitengröße bei. Zwischen Aufrufen sind Änderungen möglich. Ein unvollständiger Abruf ergibt 503 statt einer scheinbar vollständigen Seite.
+  description: "Liefert Aufgaben der Person über alle Bearbeiter und Statuswerte, einschließlich unzugewiesener Aufgaben. Unvollständige Abrufe ergeben 503."
   responses:
     '200':
       description: Zugängliche Daten im beschriebenen Umfang.
@@ -50,12 +47,7 @@ post:
     - personen
   operationId: aufgabe_anlegen
   summary: Eine Aufgabe zur Person anlegen
-  description: |
-    Legt eine Aufgabe anhand einer freigegebenen Aufgabendefinition an. Status ist zunächst unbearbeitet; Zuweisung und weitere Standardwerte bestimmt die Definition. Ohne wiedervorlagedatum gilt deren Standard.
-
-    Ungültige Eingaben ergeben 400. Eine unbekannte, inaktive oder nicht abbildbare Definition ergibt 422 aufgabe_nicht_abbildbar. 201 bestätigt die dauerhafte Anlage und die Zuordnung zur angegebenen Person. Bei unklarem Ausgang gilt 503; der Auftrag bleibt bis zur Klärung gesperrt. Fehler 500 und 503 beweisen keine Wirkungslosigkeit.
-
-    Idempotency-Key ist Pflicht. Ein neuer Schlüssel kann eine weitere Aufgabe erzeugen; eine inhaltsbasierte Dublettenprüfung ist nicht vorgesehen.
+  description: "Legt eine Aufgabe mit bestätigter Personenzuordnung anhand einer freigegebenen Aufgabendefinition an. Idempotency-Key ist Pflicht; ein neuer Schlüssel kann eine weitere Aufgabe erzeugen, ohne inhaltsbasierte Dublettenprüfung. Bei unklarem Ausgang gilt 503 und der Auftrag bleibt bis zur Klärung gesperrt; 500 und 503 belegen keine Wirkungslosigkeit."
   parameters:
     - $ref: ../../parameter/idempotenzschluessel.yaml
   requestBody:

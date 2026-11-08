@@ -10,10 +10,7 @@ get:
     - personen
   operationId: kontakte_lesen
   summary: Kontakte einer Person im Zeitraum abrufen
-  description: |
-    Liefert Kommunikationsereignisse der Person einschließlich archivierter Einträge. von ist einschließlich, bis ausschließlich und muss nach von liegen. Alle Filter gelten gemeinsam. kanal wird exakt verglichen; unbekannte Filtercodes ergeben 400. Kontakte ohne bekannten Zeitpunkt erfüllen keinen Zeitfilter.
-
-    Sortierung: kontakt_am absteigend, danach id aufsteigend. naechster_versatz erscheint nur bei weiteren Treffern; Folgeaufrufe verwenden unveränderte Filter. Zwischen Seiten sind Änderungen und damit Überschneidungen oder Auslassungen möglich. Ein unvollständiger Abruf ergibt 503.
+  description: "Liefert Kommunikationsereignisse einschließlich archivierter Kontakte im Zeitraum. Alle Filter gelten gemeinsam; Kontakte ohne bekannten Zeitpunkt sind ausgeschlossen. Unvollständige Abrufe ergeben 503."
   parameters:
     - name: von
       in: query
@@ -106,14 +103,7 @@ post:
     - personen
   operationId: kontakt_anlegen
   summary: Ein Kommunikationsereignis zur Person dokumentieren
-  description: |
-    Dokumentiert ein Kommunikationsereignis für die angegebene Person. Unbekannte Angaben werden nicht ergänzt; Texte werden nicht gekürzt. Ungültige Eingaben ergeben 400, nicht abbildbare Kanäle oder Inhalte 422 kontakt_nicht_abbildbar.
-
-    201 bestätigt die dauerhafte Anlage und Personenzuordnung. Bei unklarem Ausgang gilt 503; der Auftrag bleibt bis zur Klärung gesperrt. Fehler 500 und 503 beweisen keine Wirkungslosigkeit.
-
-    Idempotency-Key sichert technische Wiederholungen ab. Die zusätzliche externe_id bezeichnet das fachliche Ereignis und ist für maschinell erzeugte Inhalte verpflichtend. Sie wird unverändert im vereinbarten Wertebereich der Anwendung verwendet und bezeichnet innerhalb des Mandanten dasselbe Ereignis unabhängig von person_id und Idempotency-Key.
-
-    Eine bereits dokumentierte externe_id mit gleicher Person und gleichen Eingaben ergibt 200 mit der vorhandenen Kontakt-ID. Abweichende oder mehrdeutige Zuordnungen ergeben 409 externe_referenz_konflikt. Ohne externe_id verhindert nur derselbe Idempotency-Key doppelte Aufträge.
+  description: "Dokumentiert ein Kommunikationsereignis mit bestätigter Personenzuordnung. Idempotency-Key sichert Wiederholungen, externe_id erkennt dasselbe Ereignis auch bei neuem Schlüssel. Bei unklarem Ausgang gilt 503 und der Auftrag bleibt bis zur Klärung gesperrt; 500 und 503 belegen keine Wirkungslosigkeit."
   parameters:
     - $ref: ../../parameter/idempotenzschluessel.yaml
   requestBody:

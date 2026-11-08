@@ -10,10 +10,7 @@ get:
     - personen
   operationId: kontaktdaten_lesen
   summary: Aktuelle Telefonnummern und E-Mail-Adressen lesen
-  description: |
-    Liefert eigene Telefon-, Mobil- und E-Mail-Kontaktdaten, die am Abrufdatum in Europe/Berlin gültig sind. Gültigkeitsgrenzen zählen einschließlich. Historische Einträge und Kommunikationsereignisse sind nicht enthalten.
-
-    Die Liste ist vollständig und nach id aufsteigend sortiert. Ein unvollständiger Abruf ergibt 503. Fehlende Telefonvorwahlen werden nicht ergänzt.
+  description: "Liefert aktuelle eigene Telefon-, Mobil- und E-Mail-Kontaktdaten. Unvollständige Abrufe ergeben 503."
   responses:
     '200':
       description: Zugängliche Daten im beschriebenen Umfang.

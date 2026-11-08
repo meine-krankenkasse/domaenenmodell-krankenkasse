@@ -10,12 +10,7 @@ get:
     - personen
   operationId: zahlungskonten_lesen
   summary: Zahlungskonten einer Person mit aktuellem Saldo lesen
-  description: |
-    Liefert die am Abrufdatum in Europe/Berlin eigenen Zahlungskonten der Person, einschließlich geschlossener Konten. Die Kontoinhaberschaft ist maßgeblich, nicht ein bloßer Bezug der Person zu einzelnen Buchungen.
-
-    Jedes Konto erscheint einmal mit eigenem tagesbezogenem Saldo. Verschiedene Konten bleiben getrennt; es gibt keinen Gesamtsaldo. Die Bedeutung des Saldos steht im Schema kontosaldo. Historische Stichtagsabfragen sind nicht vorgesehen.
-
-    Die Liste ist vollständig und nach id aufsteigend sortiert. Kann ein zugängliches Konto oder sein Saldo nicht verlässlich ermittelt werden, gilt 503 statt einer Teilantwort oder eines Ersatzbetrags.
+  description: "Liefert eigene Zahlungskonten einschließlich geschlossener Konten mit jeweils tagesbezogenem Saldo. Konten bleiben getrennt. Nicht verlässlich ermittelbare Konten oder Salden ergeben 503 statt Teilantwort oder Ersatzbetrag."
   responses:
     '200':
       description: Vollständige Liste zugänglicher eigener Zahlungskonten mit Salden.

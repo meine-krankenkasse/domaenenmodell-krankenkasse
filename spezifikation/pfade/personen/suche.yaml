@@ -3,14 +3,7 @@ post:
     - personen
   operationId: personen_nach_stammdaten_suchen
   summary: Personen anhand von Namen, Geburtsdatum und Adresse suchen
-  description: |
-    Sucht Personen anhand bekannter Stammdaten und verändert keine Daten. Erforderlich sind Nachname und Geburtsdatum oder Vorname, Nachname und eine Adresse mit Land sowie Postleitzahl oder Ort. Alle Angaben gelten gemeinsam; unbekannte Felder oder unzureichende Kriterien ergeben 400.
-
-    Textvergleich: Unicode-Normalisierung NFC, Kleinschreibung, äußeren Leerraum entfernen und zusammenhängenden Leerraum vereinheitlichen. Danach gilt vollständige Gleichheit; Umlaute, ß, Satzzeichen und Bindestriche bleiben erhalten. Mehrere Vornamen werden zusammen verglichen. Geburtsdaten werden als vollständige Kalenderdaten verglichen. Die Postleitzahl wird als Text behandelt; Ländercodes bleiben Großbuchstaben.
-
-    Adresskriterien müssen gemeinsam eine eigene, aktuell gültige Melde- oder Zustelladresse erfüllen. Fehlt ein benötigtes Merkmal, erfüllt die Person das Kriterium nicht.
-
-    Treffer werden nach id zusammengeführt und aufsteigend sortiert. Bis zu 20 Personen werden vollständig geliefert; mehr Treffer ergeben 422 treffermenge_zu_gross, eine unvollständige Suche 503. Ohne Treffer gilt 200 mit leerem data. Mehrdeutigkeit erfordert weitere Angaben oder eine bestätigte Auswahl. Ein Treffer ist kein Identitätsnachweis oder Schreibauftrag.
+  description: "Sucht Personen anhand von Namen, Geburtsdatum und Adresse, ohne Daten zu verändern. Mindestangaben und Vergleichsregeln stehen im Suchschema. Ungültige Kriterien ergeben 400, mehr als 20 Treffer 422 und unvollständige Suchen 503."
   requestBody:
     required: true
     description: Bekannte Suchkriterien; unbekannte Angaben weglassen. Mindestkombinationen sind im Schema festgelegt.

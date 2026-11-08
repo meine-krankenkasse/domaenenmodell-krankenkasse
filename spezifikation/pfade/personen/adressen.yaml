@@ -10,10 +10,7 @@ get:
     - personen
   operationId: adressen_lesen
   summary: Aktuelle Melde- und Zustelladressen einer Person lesen
-  description: |
-    Liefert eigene Melde- und Zustelladressen, die am Abrufdatum in Europe/Berlin gültig sind. Gültigkeitsgrenzen zählen einschließlich. Adressen anderer Personen und historische Einträge sind nicht enthalten.
-
-    Die Liste ist vollständig und nach id aufsteigend sortiert; getrennte Zuordnungen bleiben auch bei gleicher Anschrift erhalten. Ein unvollständiger Abruf ergibt 503. Die Angaben bestimmen keine verbindliche Versandadresse.
+  description: "Liefert aktuelle eigene Melde- und Zustelladressen. Die Angaben bestimmen keine verbindliche Versandadresse; unvollständige Abrufe ergeben 503."
   responses:
     '200':
       description: Zugängliche Daten im beschriebenen Umfang.

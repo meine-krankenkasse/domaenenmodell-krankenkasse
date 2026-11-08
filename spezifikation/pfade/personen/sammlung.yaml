@@ -3,14 +3,7 @@ get:
     - personen
   operationId: personen_suchen
   summary: Personen anhand eines Identifikators suchen
-  description: |
-    Sucht Personen anhand einer aktuell gültigen Kennung. Ohne identifikator_art werden alle unterstützten Arten geprüft. Der Wert wird exakt und einschließlich führender Nullen verglichen; Freitext wird nicht interpretiert.
-
-    Die Regeln der jeweiligen Nummernart gelten auch für die Suche. Bei angegebener Art ergibt ein ungültiger Zeichenaufbau 400. Ohne Art werden unpassende Formate für diese Art ausgeschlossen, die übrigen Arten aber weiter geprüft.
-
-    Treffer derselben Person werden zusammengeführt; passende_identifikator_arten nennt alle passenden Arten. Mehrdeutige Treffer erfordern weitere Angaben oder eine bestätigte Auswahl. Eine Suche ist kein Identitätsnachweis und kein Auftrag zum Schreiben.
-
-    Bis zu 20 Personen werden vollständig geliefert. Mehr Treffer ergeben 422 treffermenge_zu_gross, eine unvollständige Suche 503. Ohne Treffer gilt 200 mit leerem data.
+  description: "Sucht Personen anhand einer aktuell gültigen Kennung, bei unbekannter Art über alle unterstützten Nummernarten. Verglichen wird exakt einschließlich führender Nullen, ohne Freitextinterpretation. Ungültiges Format bei angegebener Art ergibt 400; ohne Art werden nur unpassende Arten ausgeschlossen. Mehr als 20 Treffer ergeben 422, unvollständige Suchen 503."
   parameters:
     - name: identifikator_wert
       in: query
@@ -72,7 +65,7 @@ get:
                   - id: person-beispiel-001
                     passende_identifikator_arten:
                       - partnernummer
-                      - rentenversicherungsnummer
+                      - rvnr
     "400":
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
     "422":

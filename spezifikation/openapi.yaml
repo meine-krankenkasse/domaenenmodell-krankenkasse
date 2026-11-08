@@ -134,10 +134,10 @@ components:
       $ref: schemas/personen/stammdatensuche_ergebnis.yaml
     parameter_hinweis:
       $ref: schemas/gemeinsam/parameter_hinweis.yaml
-    krankenversicherungsnummer:
-      $ref: schemas/personen/krankenversicherungsnummer.yaml
-    rentenversicherungsnummer:
-      $ref: schemas/personen/rentenversicherungsnummer.yaml
+    kvnr:
+      $ref: schemas/personen/kvnr.yaml
+    rvnr:
+      $ref: schemas/personen/rvnr.yaml
     partnernummer:
       $ref: schemas/personen/partnernummer.yaml
   responses:

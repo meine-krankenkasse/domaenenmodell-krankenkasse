@@ -1,5 +1,5 @@
 type: object
-description: Vollständige zugängliche eigene Zahlungskonten mit jeweils eigenem Saldo, ohne Gesamtsaldo.
+description: "Vollständige zugängliche eigene Zahlungskonten am Abrufdatum in Europe/Berlin, je Konto einmal und nach id aufsteigend sortiert. Maßgeblich ist die Kontoinhaberschaft, nicht ein Bezug zu einzelnen Buchungen. Jedes Konto hat einen eigenen Saldo; kein Gesamtsaldo und keine historische Stichtagsabfrage."
 required:
   - data
 properties:

@@ -6,3 +6,4 @@ properties:
       $ref: 'kontaktdatum.yaml'
 required:
   - data
+description: "Vollständige Liste eigener, am Abrufdatum in Europe/Berlin gültiger Kontaktdaten; Gültigkeitsgrenzen einschließlich. Nach id aufsteigend sortiert. Keine historischen Einträge oder Kommunikationsereignisse. Fehlende Telefonvorwahlen werden nicht ergänzt."

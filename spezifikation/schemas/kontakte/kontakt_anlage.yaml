@@ -38,3 +38,4 @@ allOf:
     then:
       required:
         - externe_id
+description: "Unbekannte Angaben werden nicht ergänzt und Texte nicht gekürzt. Für maschinell erzeugte Inhalte ist externe_id verpflichtend. Ohne externe_id verhindert nur derselbe Idempotency-Key doppelte Aufträge."

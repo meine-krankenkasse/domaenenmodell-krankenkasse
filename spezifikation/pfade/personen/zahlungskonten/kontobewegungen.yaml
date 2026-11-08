@@ -16,14 +16,7 @@ get:
     - personen
   operationId: kontobewegungen_lesen
   summary: Kontobewegungen eines Zahlungskontos im Zeitraum lesen
-  description: |
-    Liefert Bewegungen des angegebenen eigenen Zahlungskontos mit ihren Positionen. Person und Konto müssen zusammengehören, andernfalls gilt 404.
-
-    von begrenzt das Belegdatum einschließlich, bis ausschließlich; bis muss nach von liegen. Enthalten sind auch ausgeglichene, statistische und stornierte Bewegungen sowie Korrektur- und Umbuchungen. Die Antwort zeigt den aktuellen Stand, keinen historischen Zustand am Belegdatum.
-
-    Bewegungs- und Positionsbeträge dürfen nicht zusammengezählt werden. Die Antwort enthält keinen laufenden Saldo und keinen fertigen Kontoauszug; aus den Bewegungen allein lässt sich kein verbindlicher Kontosaldo ableiten.
-
-    Sortierung: belegdatum aufsteigend, danach id aufsteigend. Eine Bewegung wird mit allen zugänglichen Positionen geliefert; Positionen werden nicht über Seiten aufgeteilt. naechster_versatz erscheint nur bei weiteren Treffern; Folgeaufrufe verwenden unveränderte Filter. Zwischen Seiten sind Änderungen möglich. Ein unvollständiger Zeitraum oder Abruf ergibt 503 statt einer scheinbar vollständigen Seite.
+  description: "Liefert Kontobewegungen mit Positionen im Belegzeitraum, auch ausgeglichene, statistische, stornierte, Korrektur- und Umbuchungen. Person und Konto müssen zusammengehören, sonst 404. Unvollständige Zeiträume oder Abrufe ergeben 503."
   parameters:
     - name: von
       in: query

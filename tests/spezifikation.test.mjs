@@ -153,18 +153,18 @@ test('idempotenzschluessel_format', () => {
 test('personenkennungen_nach_nummernart', () => {
   const pruefen = validator('identifikator');
   for (const [art, wert] of [
-    ['krankenversicherungsnummer', 'A123456789'],
-    ['rentenversicherungsnummer', '65170839J003'],
+    ['kvnr', 'A123456789'],
+    ['rvnr', '65170839J003'],
     ['partnernummer', '000123456789'],
   ]) gueltig(pruefen, { art, wert });
   for (const [art, wert] of [
-    ['krankenversicherungsnummer', 'a123456789'],
-    ['krankenversicherungsnummer', 'A12345678'],
-    ['rentenversicherungsnummer', '65170839j003'],
-    ['rentenversicherungsnummer', '651708390003'],
-    ['rentenversicherungsnummer', '65170839J00'],
+    ['kvnr', 'a123456789'],
+    ['kvnr', 'A12345678'],
+    ['rvnr', '65170839j003'],
+    ['rvnr', '651708390003'],
+    ['rvnr', '65170839J00'],
     ['partnernummer', ''], ['partnernummer', '000 123'],
-    ['kvnr', 'A123456789'], ['rvnr', '65170839J003'],
+    ['krankenversicherungsnummer', 'A123456789'], ['rentenversicherungsnummer', '65170839J003'],
   ]) ungueltig(pruefen, { art, wert });
 });
 

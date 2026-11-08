@@ -1,7 +1,7 @@
 type: string
 enum:
-  - krankenversicherungsnummer
+  - kvnr
   - partnernummer
-  - rentenversicherungsnummer
+  - rvnr
 description: |-
   Art der Personenkennung; die jeweilige Nummer ist im gleichnamigen Schema beschrieben.

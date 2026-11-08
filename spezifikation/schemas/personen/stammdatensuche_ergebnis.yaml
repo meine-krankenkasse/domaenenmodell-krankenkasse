@@ -34,4 +34,4 @@ oneOf:
         const: mehrdeutig
       data:
         minItems: 2
-description: Nach Ressourcen-ID zusammengeführte Suchkandidaten.
+description: "Vollständiges Ergebnis mit höchstens 20 Personen, nach id zusammengeführt und aufsteigend sortiert; ohne Treffer ist data leer. Mehrdeutigkeit erfordert weitere Angaben oder eine bestätigte Auswahl. Kein Identitätsnachweis oder Schreibauftrag."

@@ -10,7 +10,7 @@ Eine einheitliche Schreibweise reduziert Sonderregeln und erleichtert die Verwen
 
 Fachliche Namen und Beschreibungen bleiben deutsch. Alle selbst definierten technischen Bezeichner verwenden snake_case: Attribute, Pfad- und Query-Parameter, Pfadsegmente, Komponenten einschließlich Schemas, operationId-Werte, Tags, Beispielbezeichner und eigene Fehlercodes. Beispiele sind person_id, stammdaten_suchkriterien, personen_suchen und treffermenge_zu_gross. Übliche technische Begriffe wie id und data sind zulässig.
 
-Fachliche Begriffe werden möglichst ausgeschrieben. Insbesondere heißen die Nummernarten krankenversicherungsnummer, rentenversicherungsnummer und partnernummer. Fachliche Abkürzungen werden in selbst definierten Bezeichnern und Beschreibungen vermieden; auch Postleitzahl wird ausgeschrieben. Allgemein etablierte technische Begriffe wie API, HTTP, REST, JSON und id sowie standardisierte Codes und Header bleiben zulässig.
+Die drei Nummernarten heißen in allen Kontexten einheitlich kvnr, rvnr und partnernummer: in Bezeichnern, Dateinamen, Beschreibungen und Beispielen. Andere fachliche Begriffe werden möglichst ausgeschrieben; insbesondere Postleitzahl. Allgemein etablierte technische Begriffe wie API, HTTP, REST, JSON und id sowie standardisierte Codes und Header bleiben zulässig.
 
 Begriffe werden am zugehörigen Schema kurz definiert. Die Einleitung bietet einen Überblick und wiederholt weder die Begriffsdefinitionen noch die Feldregeln. Gleiche fachliche Begriffe haben im gesamten Vertrag dieselbe Bedeutung; unterschiedliche Begriffe werden nicht allein wegen gleicher Datenform zusammengelegt.
 

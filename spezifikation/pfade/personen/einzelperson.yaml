@@ -3,8 +3,7 @@ get:
     - personen
   operationId: person_lesen
   summary: Stammdaten einer natürlichen Person lesen
-  description: |
-    Liefert Stammdaten zur Ressourcen-ID der Person. Andere Nummern werden an diesem Pfad nicht als Ressourcen-ID interpretiert. Eine unbekannte Person ergibt 404. Fachliche Rollen belegen allein kein aktuelles Versicherungsverhältnis.
+  description: "Liefert zugängliche Stammdaten zur person_id. Fachliche Nummern werden nicht als Ressourcen-ID interpretiert."
   parameters:
     - name: person_id
       in: path
@@ -21,7 +20,7 @@ get:
             $ref: '../../schemas/personen/person.yaml'
           examples:
             stammdaten:
-              summary: Synthetische Personenstammdaten mit Partnernummer
+              summary: Synthetische Personenstammdaten mit partnernummer
               value:
                 id: person-beispiel-001
                 geburtsdatum: "1980-05-12"
@@ -53,8 +52,8 @@ get:
                     bezeichnung: Versicherte Person
                   - code: pflegeperson
                     bezeichnung: Pflegeperson
-            interessent_ohne_krankenversicherungsnummer:
-              summary: Interessent ohne Krankenversicherungsnummer und ohne bekanntes Geburtsdatum
+            interessent_ohne_kvnr:
+              summary: Interessent ohne kvnr und ohne bekanntes Geburtsdatum
               value:
                 id: person-beispiel-003
                 name:

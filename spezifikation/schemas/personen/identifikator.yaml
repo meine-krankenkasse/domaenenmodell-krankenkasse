@@ -24,23 +24,23 @@ allOf:
   - if:
       properties:
         art:
-          const: krankenversicherungsnummer
+          const: kvnr
       required:
         - art
     then:
       properties:
         wert:
-          $ref: krankenversicherungsnummer.yaml
+          $ref: kvnr.yaml
   - if:
       properties:
         art:
-          const: rentenversicherungsnummer
+          const: rvnr
       required:
         - art
     then:
       properties:
         wert:
-          $ref: rentenversicherungsnummer.yaml
+          $ref: rvnr.yaml
   - if:
       properties:
         art:

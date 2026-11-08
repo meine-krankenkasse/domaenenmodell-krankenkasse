@@ -6,3 +6,4 @@ properties:
       $ref: 'adresse.yaml'
 required:
   - data
+description: "Vollständige Liste eigener, am Abrufdatum in Europe/Berlin gültiger Melde- und Zustelladressen; Gültigkeitsgrenzen einschließlich. Nach id aufsteigend sortiert. Getrennte Zuordnungen bleiben auch bei gleicher Anschrift erhalten. Keine historischen Einträge oder Adressen anderer Personen."

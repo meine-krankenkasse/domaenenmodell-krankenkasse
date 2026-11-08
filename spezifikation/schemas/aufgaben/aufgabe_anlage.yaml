@@ -29,3 +29,4 @@ examples:
     info: Rückfrage prüfen
     bemerkung: Die vorliegenden Angaben prüfen.
     wiedervorlagedatum: '2026-11-10'
+description: "Die freigegebene, aktive Aufgabendefinition bestimmt Zuweisung und Standardwerte, einschließlich des wiedervorlagedatums bei fehlender Angabe. Anfangsstatus ist unbearbeitet."
