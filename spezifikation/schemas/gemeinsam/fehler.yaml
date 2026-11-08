@@ -1,7 +1,7 @@
 type: object
 required:
-- code
-- meldung
+  - code
+  - meldung
 description: Einheitliche Fehlerantwort ohne personenbezogene Suchwerte oder interne Implementierungsdetails.
 properties:
   code:
@@ -9,13 +9,11 @@ properties:
     pattern: ^[a-z][a-z0-9_]*$
     description: Stabiler deutscher Fehlercode. Erweiterungen sind möglich.
     examples:
-    - ungueltige_anfrage
-    - nicht_authentifiziert
-    - zugriff_abgelehnt
-    - person_nicht_gefunden
-    - treffermenge_zu_gross
-    - dienst_nicht_verfuegbar
-    - interner_fehler
+      - ungueltige_anfrage
+      - person_nicht_gefunden
+      - treffermenge_zu_gross
+      - dienst_nicht_verfuegbar
+      - interner_fehler
   meldung:
     type: string
     description: Deutsche Erläuterung, nicht zur maschinellen Fallunterscheidung.

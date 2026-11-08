@@ -1,6 +1,6 @@
 type: object
 required:
-- data
+  - data
 properties:
   data:
     type: array
@@ -11,4 +11,3 @@ properties:
     type: integer
     minimum: 1
     description: Versatz der nächsten Seite bei unveränderten Filtern; fehlt ohne weitere zugängliche Treffer.
-additionalProperties: true

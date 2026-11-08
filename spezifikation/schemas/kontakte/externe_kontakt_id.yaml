@@ -2,7 +2,5 @@ type: string
 minLength: 1
 maxLength: 64
 pattern: ^\S+$
-description: |
-  Externe Ereigniskennung in einem für die Anwendung vereinbarten Wertebereich.
-  Ein optionales Herkunftspräfix zählt zur Maximallänge. Exakter Vergleich einschließlich
-  Groß-/Kleinschreibung. Keine automatische Kürzung oder Normalisierung.
+description: |-
+  Unveränderte Ereigniskennung im vereinbarten Wertebereich der Anwendung; unabhängig vom technischen Wiederholungsschlüssel.

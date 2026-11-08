@@ -4,8 +4,7 @@ properties:
     type: string
     minLength: 1
     maxLength: 120
-    description: Name einer freigegebenen, aktiven Aufgabendefinition; steuert Standardwerte und automatische
-      Zuweisung.
+    description: Name einer freigegebenen, aktiven Aufgabendefinition; steuert Standardwerte und automatische Zuweisung.
   info:
     type: string
     minLength: 1
@@ -23,10 +22,10 @@ properties:
     format: date
     description: Fachliches Datum ohne Uhrzeit.
 required:
-- aufgabendefinitionsname
+  - aufgabendefinitionsname
 additionalProperties: false
 examples:
-- aufgabendefinitionsname: Allgemeine Bearbeitung
-  info: Rückfrage prüfen
-  bemerkung: Die vorliegenden Angaben prüfen.
-  wiedervorlagedatum: '2026-11-10'
+  - aufgabendefinitionsname: Allgemeine Bearbeitung
+    info: Rückfrage prüfen
+    bemerkung: Die vorliegenden Angaben prüfen.
+    wiedervorlagedatum: '2026-11-10'

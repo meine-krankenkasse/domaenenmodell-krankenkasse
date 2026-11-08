@@ -1,124 +1,66 @@
 parameters:
-- name: person_id
-  in: path
-  required: true
-  description: Ressourcen-ID der Person.
-  schema:
-    $ref: '../../../schemas/personen/person_id.yaml'
-- name: zahlungskonto_id
-  in: path
-  required: true
-  description: Ressourcen-ID eines eigenen Zahlungskontos der Person, keine Kontonummer.
-  schema:
-    $ref: '../../../schemas/gemeinsam/ressourcen_id.yaml'
+  - name: person_id
+    in: path
+    required: true
+    description: Ressourcen-ID der Person.
+    schema:
+      $ref: '../../../schemas/personen/person_id.yaml'
+  - name: zahlungskonto_id
+    in: path
+    required: true
+    description: Ressourcen-ID eines eigenen Zahlungskontos der Person, keine Kontonummer.
+    schema:
+      $ref: '../../../schemas/gemeinsam/ressourcen_id.yaml'
 get:
   tags:
-  - personen
+    - personen
   operationId: kontobewegungen_lesen
   summary: Kontobewegungen eines Zahlungskontos im Zeitraum lesen
   description: |
-    Liefert die zugänglichen Kontobewegungen des angegebenen eigenen Zahlungskontos
-    mit ihren fachlichen Positionen. Die Person und das Konto müssen im Mandantenkontext
-    zusammengehören; für die Kontoinhaberschaft gilt derselbe Umfang wie beim Kontenabruf.
-    Die Kenntnis einer Konto-ID erteilt keine Zugriffsberechtigung.
+    Liefert Bewegungen des angegebenen eigenen Zahlungskontos mit ihren Positionen. Person und Konto müssen zusammengehören, andernfalls gilt 404.
 
-    von und bis begrenzen das Belegdatum: von einschließlich, bis ausschließlich.
-    bis muss nach von liegen, sonst gilt 400. Es wird nach Kalendertagen verglichen,
-    nicht nach Erstellungszeitpunkt, Fälligkeit, Wertstellung oder Bezugszeitraum.
-    Enthalten sind alle zugänglichen Bewegungen im Zeitraum, einschließlich bereits
-    ausgeglichener, statistischer und stornierter Bewegungen sowie vorhandener
-    Korrektur- und Umbuchungsbewegungen. Es gibt keine Beschränkung auf offene Posten
-    oder bereits fällige Beträge. Die Antwort zeigt den jeweils verfügbaren aktuellen
-    Bearbeitungsstand dieser Bewegungen, nicht deren früheren Zustand am Belegdatum.
+    von begrenzt das Belegdatum einschließlich, bis ausschließlich; bis muss nach von liegen. Enthalten sind auch ausgeglichene, statistische und stornierte Bewegungen sowie Korrektur- und Umbuchungen. Die Antwort zeigt den aktuellen Stand, keinen historischen Zustand am Belegdatum.
 
-    betrag und buchungsseite gehören zusammen: Ein positiver Sollbetrag belastet die
-    Person, ein positiver Habenbetrag entlastet sie. Ein negativer Betrag korrigiert
-    die jeweilige Buchungsseite in Gegenrichtung. Die Buchungsseite darf nicht allein
-    aus dem Vorzeichen abgeleitet werden. offener_betrag ist der nicht ausgeglichene
-    absolute Restbetrag nach dem aktuellen Stand, keine historische Restschuld und
-    keine Zahlungsaufforderung. Ausgleichsstatus, Stornierung und gegebenenfalls eine
-    noch schwebende Zahlung sind getrennte Angaben. Ein fehlendes schwebend ist kein false.
+    Bewegungs- und Positionsbeträge dürfen nicht zusammengezählt werden. Die Antwort enthält keinen laufenden Saldo und keinen fertigen Kontoauszug; aus den Bewegungen allein lässt sich kein verbindlicher Kontosaldo ableiten.
 
-    Jede Bewegung erscheint einmal. positionen gliedern ihren Inhalt, etwa nach
-    Beitrags- oder Leistungszeiträumen; sie sind keine zusätzlichen Buchungen.
-    Bewegungs- und Positionsbeträge dürfen nicht zusammengezählt werden. Unterschiedliche
-    Bezugszeiträume und Fälligkeiten bleiben auf Positionsebene erhalten. Fehlende Daten
-    werden nicht aus anderen Datumsfeldern ersetzt. kontoauszugsdatum bezeichnet ein
-    vorhandenes zugehöriges Bankauszugsdatum, nicht das Erstellungsdatum eines Auszugs
-    für die Person. Ein solches Datum ist nicht für jede Bewegung vorhanden.
-
-    Der Abruf liefert Buchungsinformationen, keinen fertigen Kontoauszug und keinen
-    laufenden Saldo nach jeder Bewegung. Aus den gelieferten Beträgen allein darf kein
-    verbindlicher Kontosaldo berechnet werden: Zeitraumgrenzen, statistische Einträge,
-    Stornos und zeitlicher Saldoeinfluss sind zusätzlich zu berücksichtigen.
-    Ausgleichsbeziehungen zwischen Bewegungen werden hier nicht aufgeschlüsselt.
-
-    Die Sortierung erfolgt nach belegdatum aufsteigend und bei gleichem Datum nach id
-    aufsteigend. seitengroesse begrenzt Bewegungen, nicht Positionen, auf höchstens 100;
-    Standard ist 50. versatz überspringt zugängliche Bewegungen, Standard ist 0.
-    Jede gelieferte Bewegung enthält ihre vollständige zugängliche Positionsliste,
-    nach Positions-ID aufsteigend sortiert. Positionen werden nicht über Seiten aufgeteilt.
-    naechster_versatz wird nur geliefert, wenn weitere zugängliche Bewegungen folgen,
-    und ist mit unveränderten Filtern zu verwenden. Ohne weitere Treffer fehlt er.
-    Eine unvollständige Datenabfrage darf nicht als letzte Seite erscheinen.
-
-    Jede Seite liest den verfügbaren aktuellen Stand und prüft die Berechtigungen neu.
-    Zwischenzeitliche Änderungen können beim Weiterblättern zu ausgelassenen oder mehrfach
-    gelieferten Bewegungen führen; für einen neuen Überblick bei versatz=0 beginnen.
-    Ein unveränderlicher Auszugsstand oder eine lückenlose Änderungshistorie wird nicht zugesagt.
-    Zugriff auf Stammdaten oder Kontosaldo allein berechtigt nicht zu sämtlichen Bewegungen
-    oder Positionsdetails. Unbekannte oder nicht freigegebene optionale Felder fehlen;
-    zurückgehaltene Inhalte werden nicht durch Ersatztexte oder null Euro dargestellt.
-    Eine zugängliche Bewegung mit ausschließlich zurückgehaltenen Positionen kann eine
-    leere Positionsliste haben; daraus folgt nicht, dass sie fachlich keine Positionen hat.
-
-    Eine unbekannte oder nicht zugängliche Person, ein solches Konto oder eine nicht passende
-    Person-Konto-Zuordnung ergibt 404 ohne weitere Unterscheidung. Fehlt die grundsätzliche
-    Berechtigung für diesen Abruf, gilt 403. Keine zugänglichen Treffer ergibt 200 mit
-    leerem data. Können erforderliche Daten oder Berechtigungen nicht zuverlässig ermittelt
-    werden, gilt 503 statt einer unvollständigen Seite. Für angefragte Zeiträume muss die
-    Vollständigkeit im beschriebenen Umfang sichergestellt sein; ein begrenzter Datenbestand
-    darf nicht unbemerkt als vollständige Bewegungsliste ausgegeben werden.
+    Sortierung: belegdatum aufsteigend, danach id aufsteigend. Eine Bewegung wird mit allen Positionen geliefert; Positionen werden nicht über Seiten aufgeteilt. naechster_versatz erscheint nur bei weiteren Treffern; Folgeaufrufe verwenden unveränderte Filter. Zwischen Seiten sind Änderungen möglich. Ein unvollständiger Zeitraum oder Abruf ergibt 503 statt einer scheinbar vollständigen Seite.
   parameters:
-  - name: von
-    in: query
-    required: true
-    description: Einschließlich dieses Belegdatums.
-    schema:
-      type: string
-      format: date
-    example: '2026-10-01'
-  - name: bis
-    in: query
-    required: true
-    description: Ausschließlich dieses Belegdatums; muss nach von liegen, sonst 400.
-    schema:
-      type: string
-      format: date
-    example: '2026-11-01'
-  - name: seitengroesse
-    in: query
-    required: false
-    description: Maximale Anzahl zugänglicher Bewegungen pro Seite, jeweils mit ihren zugänglichen Positionen.
-    schema:
-      type: integer
-      minimum: 1
-      maximum: 100
-      default: 50
-  - name: versatz
-    in: query
-    required: false
-    description: Anzahl der zu überspringenden zugänglichen Bewegungen nach Anwendung des Zeitfilters.
-    schema:
-      type: integer
-      minimum: 0
-      default: 0
+    - name: von
+      in: query
+      required: true
+      description: Einschließlich dieses Belegdatums.
+      schema:
+        type: string
+        format: date
+      example: '2026-10-01'
+    - name: bis
+      in: query
+      required: true
+      description: Ausschließlich dieses Belegdatums; muss nach von liegen, sonst 400.
+      schema:
+        type: string
+        format: date
+      example: '2026-11-01'
+    - name: seitengroesse
+      in: query
+      required: false
+      description: Maximale Anzahl zugänglicher Bewegungen pro Seite, jeweils mit ihren zugänglichen Positionen.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 50
+    - name: versatz
+      in: query
+      required: false
+      description: Anzahl der zu überspringenden zugänglichen Bewegungen nach Anwendung des Zeitfilters.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
   responses:
     '200':
       description: Seite zugänglicher Bewegungen mit vollständigen zugänglichen Positionslisten.
-      headers:
-        Cache-Control:
-          $ref: '../../../header/keine_speicherung.yaml'
       content:
         application/json:
           schema:
@@ -128,71 +70,63 @@ get:
               summary: Eine Beitragsbuchung für zwei Monate, teilweise ausgeglichen
               value:
                 data:
-                - id: kontobewegung-beispiel-001
-                  belegnummer: '000001234567'
-                  belegdatum: '2026-10-01'
-                  bezeichnung: Beiträge
-                  betrag: '250.00'
-                  buchungsseite: soll
-                  waehrung: EUR
-                  offener_betrag: '125.00'
-                  ausgleichsstatus: teilweise_ausgeglichen
-                  storniert: false
-                  faellig_am: '2026-10-15'
-                  positionen:
-                  - id: position-beispiel-001
-                    betrag: '125.00'
+                  - id: kontobewegung-beispiel-001
+                    belegnummer: '000001234567'
+                    belegdatum: '2026-10-01'
+                    bezeichnung: Beiträge
+                    betrag: '250.00'
                     buchungsseite: soll
-                    bezeichnung: Krankenversicherungsbeitrag
-                    bezugszeitraum_von: '2026-09-01'
-                    bezugszeitraum_bis: '2026-09-30'
+                    waehrung: EUR
+                    offener_betrag: '125.00'
+                    ausgleichsstatus: teilweise_ausgeglichen
+                    storniert: false
                     faellig_am: '2026-10-15'
-                  - id: position-beispiel-002
-                    betrag: '125.00'
-                    buchungsseite: soll
-                    bezeichnung: Krankenversicherungsbeitrag
-                    bezugszeitraum_von: '2026-10-01'
-                    bezugszeitraum_bis: '2026-10-31'
-                    faellig_am: '2026-10-15'
+                    positionen:
+                      - id: position-beispiel-001
+                        betrag: '125.00'
+                        buchungsseite: soll
+                        bezeichnung: Krankenversicherungsbeitrag
+                        bezugszeitraum_von: '2026-09-01'
+                        bezugszeitraum_bis: '2026-09-30'
+                        faellig_am: '2026-10-15'
+                      - id: position-beispiel-002
+                        betrag: '125.00'
+                        buchungsseite: soll
+                        bezeichnung: Krankenversicherungsbeitrag
+                        bezugszeitraum_von: '2026-10-01'
+                        bezugszeitraum_bis: '2026-10-31'
+                        faellig_am: '2026-10-15'
                 naechster_versatz: 1
             zahlung:
               summary: Ein ausgeglichener Zahlungseingang
               value:
                 data:
-                - id: kontobewegung-beispiel-002
-                  belegnummer: '000001234568'
-                  belegdatum: '2026-10-10'
-                  bezeichnung: Überweisungsgutschrift
-                  betrag: '125.00'
-                  buchungsseite: haben
-                  waehrung: EUR
-                  offener_betrag: '0.00'
-                  ausgleichsstatus: ausgeglichen
-                  storniert: false
-                  schwebend: false
-                  wertstellung_am: '2026-10-10'
-                  kontoauszugsdatum: '2026-10-12'
-                  positionen:
-                  - id: position-beispiel-003
+                  - id: kontobewegung-beispiel-002
+                    belegnummer: '000001234568'
+                    belegdatum: '2026-10-10'
+                    bezeichnung: Überweisungsgutschrift
                     betrag: '125.00'
                     buchungsseite: haben
+                    waehrung: EUR
+                    offener_betrag: '0.00'
+                    ausgleichsstatus: ausgeglichen
+                    storniert: false
+                    schwebend: false
+                    wertstellung_am: '2026-10-10'
+                    kontoauszugsdatum: '2026-10-12'
+                    positionen:
+                      - id: position-beispiel-003
+                        betrag: '125.00'
+                        buchungsseite: haben
             keine_bewegungen:
               summary: Keine zugänglichen Bewegungen im angefragten Zeitraum
               value:
                 data: []
     '400':
       $ref: '../../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
-    '401':
-      $ref: '../../../antworten/fehlerantworten.yaml#/nicht_authentifiziert'
-    '403':
-      $ref: '../../../antworten/fehlerantworten.yaml#/zugriff_abgelehnt'
     '404':
       $ref: '../../../antworten/fehlerantworten.yaml#/zahlungskonto_nicht_gefunden'
     '500':
       $ref: '../../../antworten/fehlerantworten.yaml#/interner_fehler'
     '503':
       $ref: '../../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
-  x-mcp_annotations:
-    readOnlyHint: true
-    destructiveHint: false
-    idempotentHint: true

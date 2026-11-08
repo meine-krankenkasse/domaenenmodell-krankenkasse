@@ -1,7 +1,6 @@
 type: object
 minProperties: 1
-description: Fachliche Zuordnung mit aufgelösten Bezeichnungen; nur bekannte und zugängliche Bestandteile
-  liefern.
+description: Fachliche Zuordnung mit aufgelösten Bezeichnungen; nur bekannte und zugängliche Bestandteile liefern.
 properties:
   bereich:
     type: string

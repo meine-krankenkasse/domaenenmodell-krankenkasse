@@ -1,48 +1,31 @@
 parameters:
-- name: person_id
-  in: path
-  required: true
-  description: Ressourcen-ID der Person.
-  schema:
-    $ref: '../../schemas/personen/person_id.yaml'
+  - name: person_id
+    in: path
+    required: true
+    description: Ressourcen-ID der Person.
+    schema:
+      $ref: '../../schemas/personen/person_id.yaml'
 get:
   tags:
-  - personen
+    - personen
   operationId: adressen_lesen
   summary: Aktuelle Melde- und Zustelladressen einer Person lesen
-  description: Liefert die zum Abrufdatum in Europe/Berlin gültigen, zugänglichen eigenen Einträge der Person.
-    Gültigkeitsbeginn und -ende werden einschließlich geprüft; offene Grenzen werden nicht als Ersatzdatum
-    ausgegeben. Keine Historie und keine Daten anderer Personen. Die Liste ist nach id aufsteigend sortiert
-    und wird vollständig im freigegebenen Umfang geliefert, ohne stilles Abschneiden. Bei unvollständigem
-    Abruf gilt 503. Eine leere Liste bedeutet ausschließlich keine Einträge in diesem Umfang, nicht das Fehlen
-    zurückgehaltener Daten. Enthalten sind Melde- und Zustelladressen; weitere Adressarten sind nicht Teil
-    dieses Abrufs. Getrennte Adresszuordnungen bleiben auch bei gleicher Anschrift erhalten. Adressen von
-    Betreuern werden nicht einbezogen. Die Antwort bestimmt keine verbindliche Versandadresse.
-    adresse_in_pruefung kennzeichnet eine fragliche Zustellbarkeit; ein fehlendes Kennzeichen ist keine
-    Bestätigung der Zustellbarkeit.
+  description: |
+    Liefert eigene Melde- und Zustelladressen, die am Abrufdatum in Europe/Berlin gültig sind. Gültigkeitsgrenzen zählen einschließlich. Adressen anderer Personen und historische Einträge sind nicht enthalten.
+
+    Die Liste ist vollständig und nach id aufsteigend sortiert; getrennte Zuordnungen bleiben auch bei gleicher Anschrift erhalten. Ein unvollständiger Abruf ergibt 503. Die Angaben bestimmen keine verbindliche Versandadresse.
   responses:
     '200':
       description: Zugängliche Daten im beschriebenen Umfang.
-      headers:
-        Cache-Control:
-          $ref: '../../header/keine_speicherung.yaml'
       content:
         application/json:
           schema:
             $ref: '../../schemas/personen/adressliste.yaml'
     '400':
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
-    '401':
-      $ref: '../../antworten/fehlerantworten.yaml#/nicht_authentifiziert'
-    '403':
-      $ref: '../../antworten/fehlerantworten.yaml#/zugriff_abgelehnt'
     '404':
       $ref: '../../antworten/fehlerantworten.yaml#/person_nicht_gefunden'
     '500':
       $ref: '../../antworten/fehlerantworten.yaml#/interner_fehler'
     '503':
       $ref: '../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
-  x-mcp_annotations:
-    readOnlyHint: true
-    destructiveHint: false
-    idempotentHint: true

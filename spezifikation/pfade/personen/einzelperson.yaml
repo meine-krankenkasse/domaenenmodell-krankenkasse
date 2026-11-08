@@ -1,34 +1,20 @@
 get:
   tags:
-  - personen
+    - personen
   operationId: person_lesen
   summary: Stammdaten einer natürlichen Person lesen
   description: |
-    Liefert die Person zur kanonischen Ressourcen-ID. An dieser Stelle werden keine
-    KVNR, RVNR oder anderen alternativen Kennungen automatisch interpretiert.
-    Die ID kann aus einer vorherigen Suche oder einer bestehenden Referenz stammen.
-
-    Nur im jeweiligen Kontext zugängliche Felder werden geliefert. Nicht vorhandene
-    oder nicht freigegebene optionale Felder werden weggelassen. Eine nicht zugängliche
-    Person ist wie eine unbekannte ID mit 404 zu behandeln. 403 bezeichnet eine fehlende
-    grundsätzliche Aufruffreigabe oder einen fehlenden erforderlichen Benutzerkontext.
-
-    Identifikatoren und Rollen sind keine vollständige Akte. Ein fehlendes Rollenfeld
-    oder Versicherungskennzeichen erlaubt keine Aussage zum Versicherungsstatus.
-    Über den beschriebenen Feldumfang hinausgehende Angaben sind nicht Bestandteil dieser Operation.
+    Liefert Stammdaten zur Ressourcen-ID der Person. Andere Nummern werden an diesem Pfad nicht als Ressourcen-ID interpretiert. Eine unbekannte Person ergibt 404. Fachliche Rollen belegen allein kein aktuelles Versicherungsverhältnis.
   parameters:
-  - name: person_id
-    in: path
-    required: true
-    description: Kanonische Ressourcen-ID einer natürlichen Person im API-Mandantenkontext.
-    schema:
-      $ref: '../../schemas/personen/person_id.yaml'
+    - name: person_id
+      in: path
+      required: true
+      description: Kanonische Ressourcen-ID einer natürlichen Person im API-Mandantenkontext.
+      schema:
+        $ref: '../../schemas/personen/person_id.yaml'
   responses:
     "200":
       description: Zugängliche Personenstammdaten.
-      headers:
-        Cache-Control:
-          $ref: '../../header/keine_speicherung.yaml'
       content:
         application/json:
           schema:
@@ -41,11 +27,11 @@ get:
                 geburtsdatum: "1980-05-12"
                 geschlecht: weiblich
                 identifikatoren:
-                - art: partnernummer
-                  wert: "000123456789"
+                  - art: partnernummer
+                    wert: "000123456789"
                 rollen:
-                - code: versicherter
-                  bezeichnung: Versicherte Person
+                  - code: versicherter
+                    bezeichnung: Versicherte Person
                 name:
                   vorname: Erika
                   nachname: Musterfrau
@@ -53,16 +39,6 @@ get:
               summary: Nur die zugängliche Ressourcen-ID ist verfügbar
               value:
                 id: person-beispiel-002
-            interessent_ohne_kvnr:
-              summary: Interessent ohne KVNR und ohne bekanntes Geburtsdatum
-              value:
-                id: person-beispiel-003
-                name:
-                  vorname: Alex
-                  nachname: Beispiel
-                rollen:
-                - code: interessent
-                  bezeichnung: Interessent
             mehrere_rollen:
               summary: Person mit Namensbestandteilen und mehreren fachlichen Rollen
               value:
@@ -73,23 +49,25 @@ get:
                   vorsatzwort: von
                   titel: Dr.
                 rollen:
-                - code: versicherter
-                  bezeichnung: Versicherte Person
-                - code: pflegeperson
-                  bezeichnung: Pflegeperson
+                  - code: versicherter
+                    bezeichnung: Versicherte Person
+                  - code: pflegeperson
+                    bezeichnung: Pflegeperson
+            interessent_ohne_krankenversicherungsnummer:
+              summary: Interessent ohne Krankenversicherungsnummer und ohne bekanntes Geburtsdatum
+              value:
+                id: person-beispiel-003
+                name:
+                  vorname: Alex
+                  nachname: Beispiel
+                rollen:
+                  - code: interessent
+                    bezeichnung: Interessent
     "400":
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
-    "401":
-      $ref: '../../antworten/fehlerantworten.yaml#/nicht_authentifiziert'
-    "403":
-      $ref: '../../antworten/fehlerantworten.yaml#/zugriff_abgelehnt'
     "404":
       $ref: '../../antworten/fehlerantworten.yaml#/person_nicht_gefunden'
     "500":
       $ref: '../../antworten/fehlerantworten.yaml#/interner_fehler'
     "503":
       $ref: '../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
-  x-mcp_annotations:
-    readOnlyHint: true
-    destructiveHint: false
-    idempotentHint: true

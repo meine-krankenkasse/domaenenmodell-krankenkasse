@@ -2,7 +2,7 @@ type: string
 description: Aktueller Ausgleichsstand; statistisch kennzeichnet einen statistischen Eintrag. Stornierung ist
   separat angegeben.
 enum:
-- offen
-- teilweise_ausgeglichen
-- ausgeglichen
-- statistisch
+  - offen
+  - teilweise_ausgeglichen
+  - ausgeglichen
+  - statistisch

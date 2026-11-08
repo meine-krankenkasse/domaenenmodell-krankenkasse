@@ -1,9 +1,7 @@
 type: object
 required:
-- id
-description: Person, die sämtliche Suchkriterien erfüllt. Angaben zur Unterscheidung werden nur im zulässigen
-  Feldumfang geliefert; eine fehlende Angabe hebt die geprüfte Übereinstimmung nicht auf. Eine Ressourcen-ID
-  ist kein Nachweis der Anruferidentität.
+  - id
+description: Person, die sämtliche Suchkriterien erfüllt. Kein Identitätsnachweis.
 properties:
   id:
     $ref: 'person_id.yaml'

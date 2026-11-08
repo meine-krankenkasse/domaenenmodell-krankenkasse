@@ -1,0 +1,7 @@
+type: string
+minLength: 12
+maxLength: 12
+pattern: ^[0-9]{8}[A-Z][0-9]{3}$
+description: "Von der gesetzlichen Rentenversicherung vergebene zwölfstellige Personenkennung: acht Ziffern,
+  ein Großbuchstabe und drei Ziffern. Geprüft wird der Zeichenaufbau, nicht die Prüfziffer. Interimsnummern
+  sind nicht enthalten."

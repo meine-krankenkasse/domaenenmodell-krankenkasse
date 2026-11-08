@@ -1,10 +1,9 @@
 type: object
 description: Vollständige zugängliche eigene Zahlungskonten mit jeweils eigenem Saldo, ohne Gesamtsaldo.
 required:
-- data
+  - data
 properties:
   data:
     type: array
     items:
       $ref: 'zahlungskonto.yaml'
-additionalProperties: true

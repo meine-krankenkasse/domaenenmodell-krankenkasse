@@ -1,53 +1,24 @@
 parameters:
-- name: person_id
-  in: path
-  required: true
-  description: Ressourcen-ID der Person.
-  schema:
-    $ref: '../../../schemas/personen/person_id.yaml'
+  - name: person_id
+    in: path
+    required: true
+    description: Ressourcen-ID der Person.
+    schema:
+      $ref: '../../../schemas/personen/person_id.yaml'
 get:
   tags:
-  - personen
+    - personen
   operationId: zahlungskonten_lesen
   summary: Zahlungskonten einer Person mit aktuellem Saldo lesen
   description: |
-    Liefert die bei der Krankenkasse geführten eigenen Zahlungskonten der Person,
-    für die im Zugriffskontext eine Leseberechtigung besteht. Zahlungskonten erfassen
-    Forderungen, Verbindlichkeiten und Zahlungen; sie sind keine Bankverbindungen.
-    Maßgeblich ist die Kontoinhaberschaft am Abrufdatum in Europe/Berlin. Ein bloßer
-    Versichertenbezug einer Buchung auf einem fremden Konto genügt nicht.
-    Beendete oder geschlossene eigene Konten werden nicht allein wegen ihres Status ausgeschlossen.
+    Liefert die am Abrufdatum in Europe/Berlin eigenen Zahlungskonten der Person, einschließlich geschlossener Konten. Die Kontoinhaberschaft ist maßgeblich, nicht ein bloßer Bezug der Person zu einzelnen Buchungen.
 
-    Jedes Konto wird einmal mit eigener id, kontonummer und Saldo geliefert. Verschiedene
-    Konten bleiben getrennt; es gibt keinen kontenübergreifenden Gesamtsaldo.
-    Der Saldo gilt für den ausgewiesenen stichtag, das Abrufdatum in Europe/Berlin,
-    und berücksichtigt die bis dahin saldowirksamen Buchungen nach dem verfügbaren Datenstand.
-    Ein positiver Betrag bezeichnet einen Guthabenüberhang der Person gegenüber der
-    Krankenkasse, ein negativer Betrag einen Forderungsüberhang der Krankenkasse gegenüber
-    der Person. 0.00 bezeichnet ein ausgeglichenes Konto in diesem Umfang.
-    Der Saldo ist weder auf bereits fällige offene Posten beschränkt noch eine Aussage
-    über einen sofort zahlbaren oder auszahlbaren Betrag. Künftige Saldoeinflüsse werden
-    nicht vorweggenommen. Buchungsdetails werden gesondert über kontobewegungen_lesen abgerufen.
-    Historische Stichtagsabfragen und fertige Kontoauszüge sind nicht Teil dieses Abrufs.
+    Jedes Konto erscheint einmal mit eigenem tagesbezogenem Saldo. Verschiedene Konten bleiben getrennt; es gibt keinen Gesamtsaldo. Die Bedeutung des Saldos steht im Schema kontosaldo. Historische Stichtagsabfragen sind nicht vorgesehen.
 
-    stichtag bezeichnet den fachlichen Berechnungstag, keinen Nachweis sekundengenauer
-    Aktualität. Eine verbindliche Aktualitätsgrenze ist noch abzustimmen.
-    Fehlt für ein zugängliches Konto ein verlässlich bestimmbarer Saldo, gilt 503;
-    weder ein Ersatzbetrag von 0.00 noch das Weglassen dieses Kontos ist zulässig.
-    Ein fehlender gespeicherter Saldo allein belegt kein ausgeglichenes Konto.
-
-    Die Liste ist nach id aufsteigend sortiert und enthält alle im beschriebenen Umfang
-    zugänglichen Konten, ohne stilles Abschneiden. Bei unvollständigem Abruf gilt 503.
-    Eine leere Liste bedeutet keine zugänglichen eigenen Zahlungskonten in diesem Umfang,
-    nicht Saldo null oder das Fehlen zurückgehaltener Konten. Fehlt die Berechtigung für
-    diesen Abruf insgesamt, gilt 403. Die allgemeinen Zugriffskontexte gelten auch hier;
-    aus dem Zugriff auf Stammdaten folgt keine Berechtigung für Finanzdaten.
+    Die Liste ist vollständig und nach id aufsteigend sortiert. Fehlt ein Konto oder ein verlässlich bestimmbarer Saldo, gilt 503 statt einer Teilantwort oder eines Ersatzbetrags.
   responses:
     '200':
       description: Vollständige Liste zugänglicher eigener Zahlungskonten mit Salden.
-      headers:
-        Cache-Control:
-          $ref: '../../../header/keine_speicherung.yaml'
       content:
         application/json:
           schema:
@@ -57,49 +28,41 @@ get:
               summary: Die Krankenkasse hat insgesamt eine Forderung auf diesem Konto
               value:
                 data:
-                - id: zahlungskonto-beispiel-001
-                  kontonummer: '000123456789'
-                  saldo:
-                    betrag: '-125.50'
-                    waehrung: EUR
-                    stichtag: '2026-11-07'
+                  - id: zahlungskonto-beispiel-001
+                    kontonummer: '000123456789'
+                    saldo:
+                      betrag: '-125.50'
+                      waehrung: EUR
+                      stichtag: '2026-11-07'
             guthaben:
               summary: Die Person hat ein Guthaben auf diesem Konto
               value:
                 data:
-                - id: zahlungskonto-beispiel-002
-                  kontonummer: '000123456790'
-                  saldo:
-                    betrag: '42.00'
-                    waehrung: EUR
-                    stichtag: '2026-11-07'
+                  - id: zahlungskonto-beispiel-002
+                    kontonummer: '000123456790'
+                    saldo:
+                      betrag: '42.00'
+                      waehrung: EUR
+                      stichtag: '2026-11-07'
             ausgeglichen:
               summary: Ein vorhandenes Konto mit Saldo null
               value:
                 data:
-                - id: zahlungskonto-beispiel-001
-                  kontonummer: '000123456789'
-                  saldo:
-                    betrag: '0.00'
-                    waehrung: EUR
-                    stichtag: '2026-11-07'
+                  - id: zahlungskonto-beispiel-001
+                    kontonummer: '000123456789'
+                    saldo:
+                      betrag: '0.00'
+                      waehrung: EUR
+                      stichtag: '2026-11-07'
             keine_konten:
               summary: Keine zugänglichen eigenen Zahlungskonten
               value:
                 data: []
     '400':
       $ref: '../../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
-    '401':
-      $ref: '../../../antworten/fehlerantworten.yaml#/nicht_authentifiziert'
-    '403':
-      $ref: '../../../antworten/fehlerantworten.yaml#/zugriff_abgelehnt'
     '404':
       $ref: '../../../antworten/fehlerantworten.yaml#/person_nicht_gefunden'
     '500':
       $ref: '../../../antworten/fehlerantworten.yaml#/interner_fehler'
     '503':
       $ref: '../../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
-  x-mcp_annotations:
-    readOnlyHint: true
-    destructiveHint: false
-    idempotentHint: true

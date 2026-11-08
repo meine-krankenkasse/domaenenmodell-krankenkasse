@@ -9,6 +9,6 @@ properties:
     type: integer
     minimum: 1
 required:
-- data
+  - data
 examples:
-- data: []
+  - data: []

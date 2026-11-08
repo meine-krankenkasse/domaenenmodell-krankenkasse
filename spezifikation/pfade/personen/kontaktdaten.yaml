@@ -1,47 +1,31 @@
 parameters:
-- name: person_id
-  in: path
-  required: true
-  description: Ressourcen-ID der Person.
-  schema:
-    $ref: '../../schemas/personen/person_id.yaml'
+  - name: person_id
+    in: path
+    required: true
+    description: Ressourcen-ID der Person.
+    schema:
+      $ref: '../../schemas/personen/person_id.yaml'
 get:
   tags:
-  - personen
+    - personen
   operationId: kontaktdaten_lesen
   summary: Aktuelle Telefonnummern und E-Mail-Adressen lesen
-  description: Liefert die zum Abrufdatum in Europe/Berlin gültigen, zugänglichen eigenen Einträge der Person.
-    Gültigkeitsbeginn und -ende werden einschließlich geprüft; offene Grenzen werden nicht als Ersatzdatum
-    ausgegeben. Keine Historie und keine Daten anderer Personen. Die Liste ist nach id aufsteigend sortiert
-    und wird vollständig im freigegebenen Umfang geliefert, ohne stilles Abschneiden. Bei unvollständigem
-    Abruf gilt 503. Eine leere Liste bedeutet ausschließlich keine Einträge in diesem Umfang, nicht das Fehlen
-    zurückgehaltener Daten. Enthalten sind Telefonnummern und E-Mail-Adressen, keine Kommunikationsereignisse.
-    bevorzugt bezeichnet die gespeicherte Präferenz für den jeweiligen Eintrag, keine globale Rangfolge der
-    Kanäle und keine Einwilligung zur Nutzung. Telefonnummern werden ohne erfundene Landes- oder Ortsvorwahl
-    geliefert.
+  description: |
+    Liefert eigene Telefon-, Mobil- und E-Mail-Kontaktdaten, die am Abrufdatum in Europe/Berlin gültig sind. Gültigkeitsgrenzen zählen einschließlich. Historische Einträge und Kommunikationsereignisse sind nicht enthalten.
+
+    Die Liste ist vollständig und nach id aufsteigend sortiert. Ein unvollständiger Abruf ergibt 503. Fehlende Telefonvorwahlen werden nicht ergänzt.
   responses:
     '200':
       description: Zugängliche Daten im beschriebenen Umfang.
-      headers:
-        Cache-Control:
-          $ref: '../../header/keine_speicherung.yaml'
       content:
         application/json:
           schema:
             $ref: '../../schemas/personen/kontaktdatenliste.yaml'
     '400':
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
-    '401':
-      $ref: '../../antworten/fehlerantworten.yaml#/nicht_authentifiziert'
-    '403':
-      $ref: '../../antworten/fehlerantworten.yaml#/zugriff_abgelehnt'
     '404':
       $ref: '../../antworten/fehlerantworten.yaml#/person_nicht_gefunden'
     '500':
       $ref: '../../antworten/fehlerantworten.yaml#/interner_fehler'
     '503':
       $ref: '../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
-  x-mcp_annotations:
-    readOnlyHint: true
-    destructiveHint: false
-    idempotentHint: true

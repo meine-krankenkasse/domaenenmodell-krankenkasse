@@ -4,5 +4,5 @@ description: |
   Ein negativer Betrag korrigiert die genannte Seite in Gegenrichtung.
   Dies beschreibt die Buchung, keine unmittelbare Zahlungs- oder Auszahlungszusage.
 enum:
-- soll
-- haben
+  - soll
+  - haben

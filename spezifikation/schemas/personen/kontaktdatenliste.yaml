@@ -5,4 +5,4 @@ properties:
     items:
       $ref: 'kontaktdatum.yaml'
 required:
-- data
+  - data

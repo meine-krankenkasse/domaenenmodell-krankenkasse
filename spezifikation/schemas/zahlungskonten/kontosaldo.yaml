@@ -1,13 +1,10 @@
 type: object
-description: |
-  Tagesbezogener Saldo eines Zahlungskontos in Euro. Positiv bedeutet Guthabenüberhang
-  der Person, negativ Forderungsüberhang der Krankenkasse gegenüber der Person.
-  Der Betrag bestimmt weder Fälligkeit noch Auszahlbarkeit. Alle Pflichtangaben müssen
-  verlässlich ermittelt sein; unbekannte Salden werden nicht durch null oder 0.00 ersetzt.
+description: |-
+  Tagesbezogener Euro-Saldo: positiv bedeutet Guthaben der Person, negativ eine Forderung der Krankenkasse. Der Saldo bestimmt weder Fälligkeit noch Auszahlbarkeit. Unbekannte Werte werden nicht als 0.00 geliefert.
 required:
-- betrag
-- waehrung
-- stichtag
+  - betrag
+  - waehrung
+  - stichtag
 properties:
   betrag:
     $ref: 'dezimalbetrag.yaml'
@@ -19,4 +16,3 @@ properties:
     type: string
     format: date
     description: Fachlicher Berechnungstag; das Abrufdatum in Europe/Berlin, kein Aktualisierungszeitstempel.
-additionalProperties: true

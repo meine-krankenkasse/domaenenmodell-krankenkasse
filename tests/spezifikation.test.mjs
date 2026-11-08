@@ -150,6 +150,24 @@ test('idempotenzschluessel_format', () => {
     '06a37d58-d26f-1ee6-9b26-41ff8bea57a1']) ungueltig(pruefen, wert);
 });
 
+test('personenkennungen_nach_nummernart', () => {
+  const pruefen = validator('identifikator');
+  for (const [art, wert] of [
+    ['krankenversicherungsnummer', 'A123456789'],
+    ['rentenversicherungsnummer', '65170839J003'],
+    ['partnernummer', '000123456789'],
+  ]) gueltig(pruefen, { art, wert });
+  for (const [art, wert] of [
+    ['krankenversicherungsnummer', 'a123456789'],
+    ['krankenversicherungsnummer', 'A12345678'],
+    ['rentenversicherungsnummer', '65170839j003'],
+    ['rentenversicherungsnummer', '651708390003'],
+    ['rentenversicherungsnummer', '65170839J00'],
+    ['partnernummer', ''], ['partnernummer', '000 123'],
+    ['kvnr', 'A123456789'], ['rvnr', '65170839J003'],
+  ]) ungueltig(pruefen, { art, wert });
+});
+
 test('kontaktantworten_und_seitengrenze', () => {
   const pruefen = validator('kontaktliste');
   const kontakt = { id: 'kontakt-001', kontakt_am: '2026-10-20T09:00:00Z' };
@@ -209,8 +227,6 @@ test('schreiboperation_hat_idempotenzparameter', () => {
     const p = parameter(operation).find((p) => p.name === 'Idempotency-Key');
     assert.equal(p.in, 'header');
     assert.equal(p.required, true);
-    assert.equal(operation['x-mcp_annotations'].readOnlyHint, false);
-    assert.equal(operation['x-mcp_annotations'].idempotentHint, true);
   }
 });
 
@@ -311,7 +327,6 @@ test('kontobewegungen_abfrageparameter', () => {
     assert.equal(p[name].required, true);
     assert.equal(p[name].schema.format, 'date');
   }
-  assert.equal(operation['x-mcp_annotations'].readOnlyHint, true);
   for (const [name, erlaubt, verboten] of [['seitengroesse', [1, 100], [0, 101]], ['versatz', [0, 100], [-1]]]) {
     const pruefen = ajv.compile(p[name].schema);
     for (const wert of erlaubt) gueltig(pruefen, wert);

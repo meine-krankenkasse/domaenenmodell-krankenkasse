@@ -1,18 +1,17 @@
 type: object
 additionalProperties: false
 required:
-- kontakt_am
-- kanal
-- status
-- betreff
-- bemerkung
-- maschinell_erzeugt
+  - kontakt_am
+  - kanal
+  - status
+  - betreff
+  - bemerkung
+  - maschinell_erzeugt
 properties:
   kontakt_am:
     type: string
     format: date-time
-    description: Tatsächlicher Zeitpunkt des Kommunikationsereignisses mit Zeitzone, nicht Zeitpunkt der
-      Speicherung.
+    description: Tatsächlicher Zeitpunkt des Kommunikationsereignisses mit Zeitzone, nicht Zeitpunkt der Speicherung.
   kanal:
     $ref: 'kontaktkanal.yaml'
   status:
@@ -30,12 +29,12 @@ properties:
   externe_id:
     $ref: 'externe_kontakt_id.yaml'
 allOf:
-- if:
-    properties:
-      maschinell_erzeugt:
-        const: true
-    required:
-    - maschinell_erzeugt
-  then:
-    required:
-    - externe_id
+  - if:
+      properties:
+        maschinell_erzeugt:
+          const: true
+      required:
+        - maschinell_erzeugt
+    then:
+      required:
+        - externe_id

@@ -1,6 +1,6 @@
 type: object
 required:
-- id
+  - id
 description: |
   Kommunikationsereignis mit im Aufrufkontext zugänglichen Angaben. Optionale Felder werden
   bei fehlender Kenntnis oder Freigabe weggelassen; das ist kein fachlicher Negativbefund.
@@ -21,15 +21,14 @@ properties:
   status:
     type: string
     pattern: ^[a-z][a-z0-9_]*$
-    description: Bearbeitungsstatus, beispielsweise erledigt, storniert oder in_bearbeitung. Weitere
-      Antwortcodes müssen toleriert werden; unbekannte Angaben fehlen.
+    description: Bearbeitungsstatus, beispielsweise erledigt, storniert oder in_bearbeitung. Weitere Antwortcodes
+      müssen toleriert werden; unbekannte Angaben fehlen.
   betreff:
     type: string
     description: Zugängliche Kurzbeschreibung als Klartext; vorhandene Inhalte werden nicht abgeschnitten.
   bemerkung:
     type: string
-    description: Zugängliche Gesprächsdokumentation als Klartext; keine Garantie eines vollständigen
-      Transkripts.
+    description: Zugängliche Gesprächsdokumentation als Klartext; keine Garantie eines vollständigen Transkripts.
   maschinell_erzeugt:
     type: boolean
     description: Kennzeichnung automatisch erzeugter Dokumentation, soweit bekannt.
@@ -45,8 +44,7 @@ properties:
   erstellt_am:
     type: string
     format: date-time
-    description: Erstellungszeitpunkt der Dokumentation mit verlässlich bestimmter Zeitzone; kein Ersatz für
-      kontakt_am.
+    description: Erstellungszeitpunkt der Dokumentation mit verlässlich bestimmter Zeitzone; kein Ersatz für kontakt_am.
   fachlicher_inhalt:
     type: string
     description: Fachliche Einordnung des Kontakts als aufgelöste Bezeichnung, soweit bekannt und zugänglich.
@@ -59,5 +57,4 @@ properties:
     type: string
     minLength: 1
     maxLength: 254
-    description: Undurchsichtige Referenz auf ein zugeordnetes Dokument. Kein Zugriffsrecht und keine Zusage
-      einer Dokumentabruf-Fähigkeit.
+    description: Referenz auf ein zugeordnetes Dokument; dessen Abruf ist nicht Teil dieses Vertrags.

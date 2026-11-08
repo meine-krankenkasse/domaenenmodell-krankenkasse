@@ -1,99 +1,61 @@
 parameters:
-- name: person_id
-  in: path
-  required: true
-  description: Ressourcen-ID der Person.
-  schema:
-    $ref: '../../schemas/personen/person_id.yaml'
+  - name: person_id
+    in: path
+    required: true
+    description: Ressourcen-ID der Person.
+    schema:
+      $ref: '../../schemas/personen/person_id.yaml'
 get:
   tags:
-  - personen
+    - personen
   operationId: aufgaben_lesen
   summary: Aufgaben einer Person unabhängig vom Bearbeiter lesen
   description: |
-    Liefert die Aufgaben der angegebenen Person unabhängig davon, welchem Bearbeiter sie
-    zugewiesen sind. Auch Aufgaben ohne Bearbeiterzuweisung und alle Statuswerte sind enthalten.
-    Der Aufrufer muss keinen Bearbeiter angeben. Eine Bearbeiterzuweisung ist kein Leserecht
-    und darf den Abruf nicht auf eigene Aufgaben oder die eines ausgewählten Mitarbeiters begrenzen.
-    Der Abruf dient dem fachlichen Überblick zur Person, auch für Anwendungen und KI-Agenten.
-    Er liefert den aktuellen Aufgabenbestand, keine Historie früherer Zuweisungen oder Änderungen.
+    Liefert den aktuellen Aufgabenbestand der Person über alle Bearbeiter und Statuswerte, einschließlich unzugewiesener Aufgaben. Eine Bearbeiterauswahl ist nicht vorgesehen.
 
-    Die allgemeinen Regeln für Authentisierung, Personenzugriff und Zugriffskontext gelten weiter.
-    Zusätzliche aufgabenspezifische Lesebeschränkungen sind nicht als bestätigt vorausgesetzt;
-    tatsächlich erforderliche Regeln sind vor Freigabe zu klären. Die API darf eine technisch
-    auf einzelne Bearbeiter begrenzte Quellantwort nicht als personenweiten Abruf ausgeben.
-    Kann der zugesagte Umfang nicht vollständig ermittelt werden, gilt 503 statt einer Teilantwort.
-
-    Die Liste ist nach id aufsteigend sortiert. Erforderliche Berechtigungsprüfungen erfolgen vor
-    versatz und seitengroesse. naechster_versatz wird nur bei weiteren zugänglichen Treffern
-    geliefert; Folgeaufrufe verwenden unveränderte Person und Seitengröße. Zwischen Aufrufen
-    sind Änderungen und damit Überschneidungen oder Auslassungen möglich; kein konsistenter
-    Schnappschuss. Eine unvollständige Quellantwort darf nicht als letzte Seite ausgegeben werden.
+    Die Liste ist nach id aufsteigend sortiert. naechster_versatz wird nur bei weiteren Treffern geliefert; Folgeaufrufe behalten Person und Seitengröße bei. Zwischen Aufrufen sind Änderungen möglich. Ein unvollständiger Abruf ergibt 503 statt einer scheinbar vollständigen Seite.
   responses:
     '200':
       description: Zugängliche Daten im beschriebenen Umfang.
-      headers:
-        Cache-Control:
-          $ref: '../../header/keine_speicherung.yaml'
       content:
         application/json:
           schema:
             $ref: '../../schemas/aufgaben/aufgabenliste.yaml'
     '400':
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
-    '401':
-      $ref: '../../antworten/fehlerantworten.yaml#/nicht_authentifiziert'
-    '403':
-      $ref: '../../antworten/fehlerantworten.yaml#/zugriff_abgelehnt'
     '404':
       $ref: '../../antworten/fehlerantworten.yaml#/person_nicht_gefunden'
     '500':
       $ref: '../../antworten/fehlerantworten.yaml#/interner_fehler'
     '503':
       $ref: '../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
-  x-mcp_annotations:
-    readOnlyHint: true
-    destructiveHint: false
-    idempotentHint: true
   parameters:
-  - name: seitengroesse
-    in: query
-    schema:
-      type: integer
-      minimum: 1
-      maximum: 100
-      default: 50
-  - name: versatz
-    in: query
-    schema:
-      type: integer
-      minimum: 0
-      default: 0
+    - name: seitengroesse
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 50
+    - name: versatz
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
 post:
   tags:
-  - personen
+    - personen
   operationId: aufgabe_anlegen
   summary: Eine Aufgabe zur Person anlegen
-  description: 'Legt nach ausdrücklichem fachlichem Auftrag eine Aufgabe anhand einer freigegebenen Aufgabendefinition
-    an. Status bei Anlage ist unbearbeitet; Zuweisung und weitere Standardwerte werden automatisch aus der Definition
-    bestimmt. Ein fehlendes wiedervorlagedatum verwendet den konfigurierten Standard; es bedeutet nicht ausdrücklich
-    keine Wiedervorlage. Die Bearbeiterzuweisung begrenzt den personenweiten Aufgabenabruf nicht. Die Anlage ändert
-    keine bestehende Aufgabe und dokumentiert keinen Kontakt. Unbekannte Felder, leere Pflichtwerte, ungültige Datumswerte
-    und überschrittene Textgrenzen ergeben 400; Inhalte werden nicht gekürzt. Eine unbekannte, inaktive oder nicht
-    freigegebene Definition oder nicht verlustfrei abbildbare Eingabe ergibt 422 aufgabe_nicht_abbildbar ohne Schreibbeginn.
+  description: |
+    Legt eine Aufgabe anhand einer freigegebenen Aufgabendefinition an. Status ist zunächst unbearbeitet; Zuweisung und weitere Standardwerte bestimmt die Definition. Ohne wiedervorlagedatum gilt deren Standard.
 
+    Ungültige Eingaben ergeben 400. Eine unbekannte, inaktive oder nicht abbildbare Definition ergibt 422 aufgabe_nicht_abbildbar. 201 bestätigt die dauerhafte Anlage und die Zuordnung zur angegebenen Person. Bei unklarem Ausgang gilt 503; der Auftrag bleibt bis zur Klärung gesperrt. Fehler 500 und 503 beweisen keine Wirkungslosigkeit.
 
-    Die API prüft Schreibberechtigung und eindeutige Personenzuordnung vor dem Schreiben. Fehlende Schreibberechtigung
-    ergibt 403, eine unbekannte oder nicht zugängliche Person 404. 201 bestätigt ausschließlich die dauerhafte Anlage
-    mit bestätigter Zuordnung zur angefragten Person. Ein unklarer Ausgang oder eine unbestätigte Zuordnung ergibt
-    503 mit gesperrtem Auftrag. Kein blindes erneutes Anlegen; 500 und 503 beweisen keine Wirkungslosigkeit. Die
-    Bestätigung enthält keine Aufgabeninhalte und gewährt kein Leserecht.
-
-
-    Idempotency-Key ist Pflicht. Ein neuer Schlüssel ist ein neuer Auftrag und kann eine weitere Aufgabe erzeugen;
-    eine inhaltsbasierte Dublettenprüfung ist nicht zugesagt.'
+    Idempotency-Key ist Pflicht. Ein neuer Schlüssel kann eine weitere Aufgabe erzeugen; eine inhaltsbasierte Dublettenprüfung ist nicht vorgesehen.
   parameters:
-  - $ref: ../../parameter/idempotenzschluessel.yaml
+    - $ref: ../../parameter/idempotenzschluessel.yaml
   requestBody:
     required: true
     content:
@@ -102,21 +64,13 @@ post:
           $ref: '../../schemas/aufgaben/aufgabe_anlage.yaml'
   responses:
     '201':
-      description: Aufgabe dauerhaft angelegt und der Person zugeordnet; derselbe Schlüssel wiederholt diesen
-        Status.
-      headers:
-        Cache-Control:
-          $ref: '../../header/keine_speicherung.yaml'
+      description: Aufgabe dauerhaft angelegt und der Person zugeordnet; derselbe Schlüssel wiederholt diesen Status.
       content:
         application/json:
           schema:
             $ref: '../../schemas/aufgaben/aufgabe_annahme.yaml'
     '400':
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
-    '401':
-      $ref: '../../antworten/fehlerantworten.yaml#/nicht_authentifiziert'
-    '403':
-      $ref: '../../antworten/fehlerantworten.yaml#/zugriff_abgelehnt'
     '404':
       $ref: '../../antworten/fehlerantworten.yaml#/person_nicht_gefunden'
     '500':
@@ -126,11 +80,9 @@ post:
     '409':
       description: Auftrag läuft oder Eingaben stehen im Konflikt.
       headers:
-        Cache-Control:
-          $ref: '../../header/keine_speicherung.yaml'
         Retry-After:
-          description: Bei auftrag_in_bearbeitung vorhanden; frühester erneuter Versuch in Sekunden mit
-            demselben Schlüssel.
+          description: Bei auftrag_in_bearbeitung vorhanden; frühester erneuter Versuch in Sekunden mit demselben
+            Schlüssel.
           schema:
             type: integer
             minimum: 1
@@ -150,14 +102,7 @@ post:
                 meldung: Bitte denselben Auftrag nach der angegebenen Wartezeit wiederholen.
     '422':
       description: 'aufgabe_nicht_abbildbar: Definition oder Eingabe fachlich nicht umsetzbar; keine Anlage.'
-      headers:
-        Cache-Control:
-          $ref: '../../header/keine_speicherung.yaml'
       content:
         application/json:
           schema:
             $ref: '../../schemas/gemeinsam/fehler.yaml'
-  x-mcp_annotations:
-    readOnlyHint: false
-    destructiveHint: false
-    idempotentHint: true

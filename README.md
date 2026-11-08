@@ -16,7 +16,7 @@ Die [API-Dokumentation](https://meine-krankenkasse.github.io/domaenenmodell-kran
 
 ## Spezifikation bearbeiten und prüfen
 
-Die Quellen gliedern sich in `pfade/`, fachlich gruppierte `schemas/`, `parameter/`, `antworten/`, `header/` und `sicherheit/`. Der Einstieg ist `spezifikation/openapi.yaml`; fachliche Regeln und Beispiele stehen bei den jeweiligen Definitionen. Die verbindlichen Strukturvorgaben beschreibt ADR-005.
+Die Quellen gliedern sich in `pfade/`, fachlich gruppierte `schemas/`, `parameter/` und `antworten/`. Der Einstieg ist `spezifikation/openapi.yaml`; fachliche Regeln und Beispiele stehen bei den jeweiligen Definitionen. Die verbindlichen Strukturvorgaben beschreibt ADR-005.
 
 Mit Node.js (ab 22.12) und npm (ab 10) im Verzeichnis dieser README ausführen:
 

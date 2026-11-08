@@ -5,4 +5,4 @@ properties:
     items:
       $ref: 'adresse.yaml'
 required:
-- data
+  - data

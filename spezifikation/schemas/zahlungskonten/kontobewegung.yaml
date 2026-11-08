@@ -1,20 +1,17 @@
 type: object
-description: |
-  Eine Buchung auf dem angefragten Zahlungskonto mit ihrem aktuellen Bearbeitungsstand.
-  Beträge beziehen sich auf die angegebene Buchungsseite; sie sind keine vorzeichenkodierten
-  Kontosalden. Der offene Restbetrag ist absolut. Stornierung setzt weder diesen Betrag
-  noch den Ausgleichsstatus im Vertrag automatisch auf einen Ersatzwert.
+description: |-
+  Buchung auf dem Zahlungskonto mit aktuellem Ausgleichsstatus. Betrag und Buchungsseite gehören zusammen; Stornierung ist eine gesonderte Angabe.
 required:
-- id
-- belegnummer
-- belegdatum
-- bezeichnung
-- betrag
-- buchungsseite
-- waehrung
-- ausgleichsstatus
-- storniert
-- positionen
+  - id
+  - belegnummer
+  - belegdatum
+  - bezeichnung
+  - betrag
+  - buchungsseite
+  - waehrung
+  - ausgleichsstatus
+  - storniert
+  - positionen
 properties:
   id:
     $ref: '../gemeinsam/ressourcen_id.yaml'
@@ -25,8 +22,7 @@ properties:
   belegdatum:
     type: string
     format: date
-    description: Fachliches Datum des Belegs und Grundlage des Zeitfilters; kein technischer
-      Erstellungszeitpunkt.
+    description: Fachliches Datum des Belegs und Grundlage des Zeitfilters; kein technischer Erstellungszeitpunkt.
   bezeichnung:
     type: string
     minLength: 1
@@ -44,8 +40,8 @@ properties:
     description: Nicht ausgeglichener absoluter Restbetrag nach aktuellem Stand, ohne Soll-/Haben-Vorzeichen.
       Fehlt bei unbekanntem oder nicht freigegebenem Wert.
     allOf:
-    - $ref: 'dezimalbetrag.yaml'
-    - pattern: '^[0-9]'
+      - $ref: 'dezimalbetrag.yaml'
+      - pattern: '^[0-9]'
   ausgleichsstatus:
     $ref: 'ausgleichsstatus.yaml'
   storniert:
@@ -80,20 +76,19 @@ properties:
       Versichertenkontoauszugs.
   schwebend:
     type: boolean
-    description: Ob eine Zahlung noch in Transfer ist; nur bei Zahlungen und bekanntem Zustand. Fehlend
-      bedeutet nicht geliefert.
+    description: Ob eine Zahlung noch in Transfer ist; nur bei Zahlungen und bekanntem Zustand. Fehlend bedeutet
+      nicht geliefert.
   positionen:
     type: array
-    description: Alle zugänglichen fachlichen Positionen dieser Bewegung, nach id aufsteigend. Leere Liste
-      erlaubt keinen Rückschluss auf zurückgehaltene Positionen.
+    description: Alle zugänglichen fachlichen Positionen dieser Bewegung, nach id aufsteigend. Leere Liste erlaubt
+      keinen Rückschluss auf zurückgehaltene Positionen.
     items:
       $ref: 'kontobewegungsposition.yaml'
 allOf:
-- if:
-    required:
-    - storniert_am
-  then:
-    properties:
-      storniert:
-        const: true
-additionalProperties: true
+  - if:
+      required:
+        - storniert_am
+    then:
+      properties:
+        storniert:
+          const: true

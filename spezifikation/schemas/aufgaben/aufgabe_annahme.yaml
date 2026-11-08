@@ -5,8 +5,8 @@ properties:
   person_id:
     $ref: '../personen/person_id.yaml'
 required:
-- id
-- person_id
+  - id
+  - person_id
 examples:
-- id: aufgabe-001
-  person_id: person-001
+  - id: aufgabe-001
+    person_id: person-001

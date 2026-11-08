@@ -1,15 +1,15 @@
 type: object
 additionalProperties: false
 required:
-- land
+  - land
 anyOf:
-- required:
-  - postleitzahl
-- required:
-  - ort
+  - required:
+      - postleitzahl
+  - required:
+      - ort
 dependentRequired:
   hausnummer:
-  - strasse
+    - strasse
 description: Kriterien für eine eigene, aktuell gültige Melde- oder Zustelladresse der Person. Land und
   mindestens Postleitzahl oder Ort sind erforderlich. Sämtliche Adresskriterien müssen dieselbe Adresse
   erfüllen. Anschriften von Vertretern oder abweichenden Empfängern zählen nicht als eigene Adresse.
@@ -19,8 +19,8 @@ properties:
     minLength: 1
     maxLength: 20
     pattern: \S
-    description: Vollständige Postleitzahl als String, einschließlich führender Nullen. Für DE genau fünf
-      Ziffern; international sind auch Buchstaben und Zwischenräume möglich.
+    description: Vollständige Postleitzahl als String, einschließlich führender Nullen. Für DE genau fünf Ziffern;
+      international sind auch Buchstaben und Zwischenräume möglich.
   ort:
     type: string
     minLength: 1
@@ -32,8 +32,7 @@ properties:
     minLength: 1
     maxLength: 200
     pattern: \S
-    description: Vollständiger Straßenname. Keine automatische Gleichsetzung von Straße und Str. oder anderer
-      Abkürzungen.
+    description: Vollständiger Straßenname. Keine automatische Gleichsetzung von Straße und Str. oder anderer Abkürzungen.
   hausnummer:
     type: string
     minLength: 1
@@ -46,18 +45,18 @@ properties:
     description: Land als gültiger ISO-3166-1-Alpha-2-Code, beispielsweise DE. Kein stillschweigender
       Standardwert. Der Zeichenaufbau allein bestätigt noch keinen vergebenen Ländercode.
     examples:
-    - DE
-    - AT
+      - DE
+      - AT
 allOf:
-- if:
-    properties:
-      land:
-        const: DE
-    required:
-    - land
-  then:
-    properties:
-      postleitzahl:
-        pattern: ^[0-9]{5}$
-        minLength: 5
-        maxLength: 5
+  - if:
+      properties:
+        land:
+          const: DE
+      required:
+        - land
+    then:
+      properties:
+        postleitzahl:
+          pattern: ^[0-9]{5}$
+          minLength: 5
+          maxLength: 5

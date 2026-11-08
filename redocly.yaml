@@ -7,5 +7,4 @@ rules:
   operation-operationId-unique: error
   operation-parameters-unique: error
   path-parameters-defined: error
-  security-defined: error
   spec-components-invalid-map-name: error

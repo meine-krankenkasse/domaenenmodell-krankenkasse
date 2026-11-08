@@ -29,11 +29,11 @@ properties:
   bearbeiter_id:
     $ref: '../gemeinsam/ressourcen_id.yaml'
 required:
-- id
+  - id
 description: Zugängliche Aufgabenangaben. Fehlende Felder bedeuten nicht geliefert. bemerkung und
   vorgangsnotiz geben den aktuellen Inhalt wieder, keine Änderungshistorie.
 examples:
-- id: aufgabe-001
-  status: unbearbeitet
-  info: Rückfrage prüfen
-  bearbeiter_id: mitarbeiter-001
+  - id: aufgabe-001
+    status: unbearbeitet
+    info: Rückfrage prüfen
+    bearbeiter_id: mitarbeiter-001

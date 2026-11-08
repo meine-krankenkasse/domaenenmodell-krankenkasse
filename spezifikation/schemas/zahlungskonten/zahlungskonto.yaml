@@ -1,9 +1,9 @@
 type: object
 description: Eigenes fachliches Zahlungskonto der Person bei der Krankenkasse, keine Bankverbindung.
 required:
-- id
-- kontonummer
-- saldo
+  - id
+  - kontonummer
+  - saldo
 properties:
   id:
     $ref: '../gemeinsam/ressourcen_id.yaml'
@@ -13,4 +13,3 @@ properties:
     description: Fachliche Nummer des Zahlungskontos. Führende Nullen bleiben erhalten; keine IBAN.
   saldo:
     $ref: 'kontosaldo.yaml'
-additionalProperties: true

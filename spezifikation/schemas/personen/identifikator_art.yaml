@@ -1,13 +1,7 @@
 type: string
 enum:
-- kvnr
-- partnernummer
-- rvnr
-description: |
-  Unterstützte Arten:
-  kvnr: Lebenslange, kassenübergreifende zehnstellige Krankenversichertennummer (Versicherten-ID).
-  Ein Großbuchstabe A bis Z, anschließend neun Ziffern einschließlich abschließender Prüfziffer.
-  Frühere kassenindividuelle Versichertennummern und um Kassendaten ergänzte Gesamtkennungen
-  sind unter dieser Art nicht zulässig.
-  partnernummer: Fachliche Partnernummer innerhalb des Mandantenkontexts.
-  rvnr: Rentenversicherungsnummer; Interims-Rentenversicherungsnummern sind nicht eingeschlossen.
+  - krankenversicherungsnummer
+  - partnernummer
+  - rentenversicherungsnummer
+description: |-
+  Art der Personenkennung; die jeweilige Nummer ist im gleichnamigen Schema beschrieben.

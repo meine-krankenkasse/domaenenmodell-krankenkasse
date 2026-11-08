@@ -28,19 +28,19 @@ properties:
   art:
     type: string
     enum:
-    - meldeadresse
-    - zustelladresse
+      - meldeadresse
+      - zustelladresse
 required:
-- id
-- art
+  - id
+  - art
 description: Eigene postalische Adresse. land ist die Länderbezeichnung. Unbekannte Bestandteile entfallen;
   Postfachadressen benötigen keine Straße. Getrennte Adresszuordnungen werden nicht anhand gleicher Anschrift
   zusammengeführt.
 examples:
-- id: adresse-001
-  strasse: Beispielweg
-  hausnummer: '7'
-  postleitzahl: '12345'
-  ort: Beispielstadt
-  land: Deutschland
-  art: meldeadresse
+  - id: adresse-001
+    strasse: Beispielweg
+    hausnummer: '7'
+    postleitzahl: '12345'
+    ort: Beispielstadt
+    land: Deutschland
+    art: meldeadresse

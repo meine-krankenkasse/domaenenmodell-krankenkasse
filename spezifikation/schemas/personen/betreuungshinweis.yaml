@@ -3,12 +3,12 @@ properties:
   art:
     type: string
     pattern: ^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
-    description: Fachlicher Betreuungstyp aus dem vor Freigabe abzustimmenden Katalog. Keine Ableitung aus
-      einer allgemeinen Personenrolle.
+    description: Fachlicher Betreuungstyp aus dem vor Freigabe abzustimmenden Katalog. Keine Ableitung aus einer
+      allgemeinen Personenrolle.
     examples:
-    - betreuer_gesamt
-    - betreuer_gesundheitssorge
-    - betreuer_vermoegenssorge
+      - betreuer_gesamt
+      - betreuer_gesundheitssorge
+      - betreuer_vermoegenssorge
   betreuer_person_id:
     $ref: 'person_id.yaml'
     description: Nur für einen zugänglichen Betreuer als natürliche Person; Organisationen werden nicht als
@@ -28,10 +28,9 @@ properties:
     minLength: 1
     maxLength: 3000
 required:
-- art
-description: Aktuell gültiger dokumentierter Betreuungshinweis. Offene Gültigkeitsgrenzen entfallen. Kein
-  eigenständiger Nachweis einer konkreten Vertretungsbefugnis oder eines Zugriffsrechts.
+  - art
+description: Strukturierter Hinweis zur Betreuung einer Person; kein Nachweis einer konkreten Vertretungsbefugnis.
 examples:
-- art: betreuer_gesundheitssorge
-  bezeichnung: Beispielbetreuung
-  gueltig_ab: '2026-01-01'
+  - art: betreuer_gesundheitssorge
+    bezeichnung: Beispielbetreuung
+    gueltig_ab: '2026-01-01'

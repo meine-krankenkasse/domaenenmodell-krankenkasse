@@ -17,7 +17,7 @@ Die Quellen folgen dieser Struktur:
 - `schemas/`: Ein benanntes Schema je Datei, fachlich untergliedert in `personen/`, `kontakte/`, `aufgaben/` und `zahlungskonten/`. Bereichsübergreifende Bausteine stehen unter `gemeinsam/`. Weitere Bereiche entstehen bei konkretem Bedarf.
 - `parameter/`: Mehrfach verwendete Parameter mit übereinstimmender Bedeutung und vollständiger Definition.
 - `antworten/`: Wiederverwendbare Antworten. Die kleine Gruppe gemeinsamer Fehlerantworten steht zunächst als benannte Einträge in `fehlerantworten.yaml`.
-- `header/` und `sicherheit/`: Wiederverwendbare Header und Sicherheitsdefinitionen, jeweils eine Definition je Datei.
+- Weitere Verzeichnisse, etwa für Header oder Sicherheitsdefinitionen, entstehen erst bei konkretem Bedarf. Der aktuelle fachliche Entwurf enthält sie nicht.
 
 Datei- und Verzeichnisnamen sind deutsch und verwenden snake_case. Die von OpenAPI vorgeschriebenen Schlüssel bleiben unverändert. Beispiele stehen zunächst bei ihrem Schema oder Endpunkt; zusätzliche Beispielverzeichnisse entstehen erst bei Bedarf.
 

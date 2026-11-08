@@ -1,26 +1,23 @@
 type: object
 additionalProperties: false
 required:
-- nachname
+  - nachname
 anyOf:
-- required:
-  - geburtsdatum
-- required:
-  - vorname
-  - adresse
-description: Bekannte Stammdaten zur Person. Zulässig ist Nachname plus vollständiges Geburtsdatum oder
-  Vorname plus Nachname plus Adresse mit Land und mindestens PLZ oder Ort. Zusätzliche bekannte Angaben
-  grenzen die Suche weiter ein. Fehlende Kriterien weglassen; keine Platzhalter oder erfundenen Werte. Alle
-  angegebenen Kriterien werden mit UND verknüpft.
+  - required:
+      - geburtsdatum
+  - required:
+      - vorname
+      - adresse
+description: Bekannte Stammdaten zur Eingrenzung. Alle Angaben gelten gemeinsam.
 properties:
   vorname:
     type: string
     minLength: 1
     maxLength: 200
     pattern: \S
-    description: Vollständige bekannte Vornamensangabe. Bei mehreren Vornamen wird die gesamte Angabe
-      verglichen, keine automatische Suche nur nach dem ersten Vornamen. Bei Unsicherheit weglassen und
-      Nachname plus Geburtsdatum verwenden.
+    description: Vollständige bekannte Vornamensangabe. Bei mehreren Vornamen wird die gesamte Angabe verglichen,
+      keine automatische Suche nur nach dem ersten Vornamen. Bei Unsicherheit weglassen und Nachname plus
+      Geburtsdatum verwenden.
   nachname:
     type: string
     minLength: 1

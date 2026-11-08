@@ -1,13 +1,11 @@
 type: object
 minProperties: 1
 anyOf:
-- required:
-  - vorname
-- required:
-  - nachname
-description: Aktuelle fachliche Namensangabe. Mindestens Vorname oder Nachname ist enthalten. Fehlende
-  Bestandteile werden weggelassen; keine leeren Ersatzwerte. Mehrere Vornamen bleiben als gespeicherte Angabe
-  erhalten. Namenshistorie und abweichende Korrespondenznamen folgen bei fachlichem Bedarf.
+  - required:
+      - vorname
+  - required:
+      - nachname
+description: Aktuelle Namensangabe mit mindestens Vorname oder Nachname. Mehrere Vornamen bleiben zusammen erhalten.
 properties:
   vorname:
     type: string
@@ -16,8 +14,7 @@ properties:
     pattern: \S
   nachname:
     type: string
-    description: Familienname; getrennt gespeicherte Vorsatzwörter und Namenszusätze stehen in eigenen
-      Feldern.
+    description: Familienname; getrennt gespeicherte Vorsatzwörter und Namenszusätze stehen in eigenen Feldern.
     minLength: 1
     pattern: \S
   vorsatzwort:

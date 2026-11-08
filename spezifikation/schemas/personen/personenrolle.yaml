@@ -1,19 +1,17 @@
 type: object
 required:
-- code
-description: Fachliche Einordnung der Person, beispielsweise versicherter, interessent oder pflegeperson. Eine
-  solche Rolle belegt allein weder ein aktuell bestehendes Versicherungsverhältnis noch eine
-  Zugriffsberechtigung. Konkrete Vertretungsbefugnisse werden durch gesonderte Beziehungen beschrieben.
-  Rollenkatalog und zeitliche Aussagekraft sind noch abzustimmen.
+  - code
+description: Fachliche Einordnung, etwa versicherter, interessent oder pflegeperson. Sie belegt allein kein
+  aktuelles Versicherungsverhältnis und keine Vertretungsbefugnis.
 properties:
   code:
     type: string
     pattern: ^[a-z][a-z0-9_]*$
     description: Deutscher fachlicher Code. Offener Katalog; unbekannte Codes müssen toleriert werden.
     examples:
-    - versicherter
-    - interessent
-    - pflegeperson
+      - versicherter
+      - interessent
+      - pflegeperson
   bezeichnung:
     type: string
     description: Deutsche Bezeichnung zur Anzeige, nicht zur maschinellen Fallunterscheidung.

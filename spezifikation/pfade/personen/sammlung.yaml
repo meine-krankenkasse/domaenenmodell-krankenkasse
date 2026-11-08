@@ -1,73 +1,37 @@
 get:
   tags:
-  - personen
+    - personen
   operationId: personen_suchen
   summary: Personen anhand eines Identifikators suchen
   description: |
-    Exakte Suche nach einem fachlichen Identifikator. identifikator_wert ist immer
-    erforderlich. Ohne bekannte Kennung ist personen_nach_stammdaten_suchen zu verwenden.
-    Eine unbeschränkte Personenliste ist nicht vorgesehen.
-    Ist identifikator_art angegeben, wird ausschließlich diese Art geprüft.
-    Fehlt die Art, werden alle drei in dieser Version unterstützten Arten geprüft.
-    Das Format darf Prüfungen optimieren, aber keinen passenden Identifikator einer
-    anderen unterstützten Art stillschweigend ausschließen. Freitext wird nicht
-    interpretiert; der Agent muss den möglichen Identifikator zuvor aus dem Text entnehmen.
+    Sucht Personen anhand einer aktuell gültigen Kennung. Ohne identifikator_art werden alle unterstützten Arten geprüft. Der Wert wird exakt und einschließlich führender Nullen verglichen; Freitext wird nicht interpretiert.
 
-    Der übergebene Wert wird URL-dekodiert und ansonsten exakt verglichen; keine
-    unscharfe Suche, Ergänzung führender Nullen oder stillschweigende Formatkorrektur.
-    Weitere typbezogene Normalisierungsregeln sind noch abzustimmen.
-    Berücksichtigt werden ausschließlich fachlich aktuell gültige, aktive Kennungen.
-    Für lokale Partnernummern gilt der vertrauenswürdig bestimmte Mandantenkontext.
+    Die Regeln der jeweiligen Nummernart gelten auch für die Suche. Bei angegebener Art ergibt ein ungültiger Zeichenaufbau 400. Ohne Art werden unpassende Formate für diese Art ausgeschlossen, die übrigen Arten aber weiter geprüft.
 
-    Treffer werden nach kanonischer Personen-ID zusammengeführt. Trifft derselbe Wert
-    für mehrere Arten auf dieselbe Person zu, enthält das Ergebnis einen Treffer mit
-    mehreren passenden_identifikator_arten. Verschiedene Personen bleiben getrennte Treffer.
-    Es findet keine automatische Auswahl eines vermeintlich wahrscheinlichsten Treffers statt.
+    Treffer derselben Person werden zusammengeführt; passende_identifikator_arten nennt alle passenden Arten. Mehrdeutige Treffer erfordern weitere Angaben oder eine bestätigte Auswahl. Eine Suche ist kein Identitätsnachweis und kein Auftrag zum Schreiben.
 
-    Vor Rückgabe wird der erforderliche Zugriffskontext angewendet. data enthält nur
-    zugängliche Personen. auswertung bezieht sich ausschließlich auf diese Ergebnismenge
-    und ist kein Nachweis globaler Eindeutigkeit oder einer Anruferidentität.
-    Kein zugänglicher Treffer ergibt 200 mit leerem data, unabhängig davon, ob weitere
-    nicht zugängliche Personen existieren. Fehlt die Suchberechtigung insgesamt, gilt 403.
-
-    Alle für die Anfrage zu prüfenden Arten müssen vollständig geprüft sein. Ausfälle ergeben 503,
-    kein leeres oder scheinbar eindeutiges Teilergebnis. Bis zu 20 zugängliche Personen
-    werden vollständig geliefert. Bei mehr Treffern gilt 422 treffermenge_zu_gross;
-    es wird nicht abgeschnitten. Diese Grenze ist ein Entwurfsvorschlag.
-
-    Bei identifikator_art=kvnr muss identifikator_wert dem Schema kvnr entsprechen:
-    genau ein Großbuchstabe A bis Z und neun Ziffern. Abweichender Zeichenaufbau ergibt 400.
-    Ohne angegebene Art wird ein Wert mit abweichendem Aufbau nicht als KVNR gewertet;
-    die übrigen unterstützten Arten werden weiterhin geprüft. Die Prüfziffernvalidierung
-    ist noch nicht als verbindliches Suchverhalten festgelegt.
-
-    Bei mehrdeutigem Ergebnis darf keine Person automatisch ausgewählt werden. Zusätzliche
-    Angaben sind einzuholen oder die Auswahl ist anhand eines bestätigten Kontexts zu klären.
+    Bis zu 20 Personen werden vollständig geliefert. Mehr Treffer ergeben 422 treffermenge_zu_gross, eine unvollständige Suche 503. Ohne Treffer gilt 200 mit leerem data.
   parameters:
-  - name: identifikator_wert
-    in: query
-    required: true
-    description: Exakter Wert einer möglichen Personenkennung. Führende Nullen bleiben erhalten. Bei
-      identifikator_art=kvnr gilt der Zeichenaufbau des Schemas kvnr. Die Abhängigkeit zwischen den beiden
-      Abfrageparametern ist zusätzlich zur Parameterdefinition zu prüfen.
-    schema:
-      type: string
-      minLength: 1
-      maxLength: 128
-      pattern: ^\S+$
-    example: "000123456789"
-  - name: identifikator_art
-    in: query
-    required: false
-    description: Bekannte Art der Kennung. Ohne Angabe werden alle unterstützten Arten geprüft.
-    schema:
-      $ref: '../../schemas/personen/identifikator_art.yaml'
+    - name: identifikator_wert
+      in: query
+      required: true
+      description: Exakter Wert der Personenkennung einschließlich führender Nullen. Bei bekannter Art gelten die
+        Regeln des zugehörigen Nummernschemas.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+        pattern: ^\S+$
+      example: "000123456789"
+    - name: identifikator_art
+      in: query
+      required: false
+      description: Bekannte Art der Kennung. Ohne Angabe werden alle unterstützten Arten geprüft.
+      schema:
+        $ref: ../../schemas/personen/identifikator_art.yaml
   responses:
     "200":
-      description: Vollständiges Suchergebnis im zulässigen Zugriffskontext.
-      headers:
-        Cache-Control:
-          $ref: '../../header/keine_speicherung.yaml'
+      description: Vollständiges Suchergebnis.
       content:
         application/json:
           schema:
@@ -78,12 +42,12 @@ get:
               value:
                 auswertung: eindeutig
                 data:
-                - id: person-beispiel-001
-                  passende_identifikator_arten:
-                  - partnernummer
-                  name:
-                    vorname: Erika
-                    nachname: Musterfrau
+                  - id: person-beispiel-001
+                    passende_identifikator_arten:
+                      - partnernummer
+                    name:
+                      vorname: Erika
+                      nachname: Musterfrau
             kein_treffer:
               summary: Keine zugängliche Person gefunden
               value:
@@ -94,32 +58,25 @@ get:
               value:
                 auswertung: mehrdeutig
                 data:
-                - id: person-beispiel-001
-                  passende_identifikator_arten:
-                  - partnernummer
-                - id: person-beispiel-002
-                  passende_identifikator_arten:
-                  - partnernummer
+                  - id: person-beispiel-001
+                    passende_identifikator_arten:
+                      - partnernummer
+                  - id: person-beispiel-002
+                    passende_identifikator_arten:
+                      - partnernummer
             mehrere_arten_eine_person:
               summary: Mehrere passende Arten bezeichnen dieselbe Person
               value:
                 auswertung: eindeutig
                 data:
-                - id: person-beispiel-001
-                  passende_identifikator_arten:
-                  - partnernummer
-                  - rvnr
+                  - id: person-beispiel-001
+                    passende_identifikator_arten:
+                      - partnernummer
+                      - rentenversicherungsnummer
     "400":
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
-    "401":
-      $ref: '../../antworten/fehlerantworten.yaml#/nicht_authentifiziert'
-    "403":
-      $ref: '../../antworten/fehlerantworten.yaml#/zugriff_abgelehnt'
     "422":
       description: Mehr als 20 zugängliche Personen; Identifikatorart präzisieren oder Datenbestand klären.
-      headers:
-        Cache-Control:
-          $ref: '../../header/keine_speicherung.yaml'
       content:
         application/json:
           schema:
@@ -131,7 +88,3 @@ get:
       $ref: '../../antworten/fehlerantworten.yaml#/interner_fehler'
     "503":
       $ref: '../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
-  x-mcp_annotations:
-    readOnlyHint: true
-    destructiveHint: false
-    idempotentHint: true

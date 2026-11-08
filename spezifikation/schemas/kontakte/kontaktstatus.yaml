@@ -1,7 +1,6 @@
 type: string
 enum:
-- erledigt
-- storniert
-- in_bearbeitung
-description: Bearbeitungsstatus der Kontaktdokumentation; keine Aussage zur Erledigung des zugrunde liegenden
-  Anliegens.
+  - erledigt
+  - storniert
+  - in_bearbeitung
+description: Bearbeitungsstatus der Kontaktdokumentation; keine Aussage zur Erledigung des zugrunde liegenden Anliegens.

@@ -1,0 +1,6 @@
+type: string
+minLength: 1
+maxLength: 128
+pattern: ^\S+$
+description: Fachliche Personenkennung im Datenbestand einer Krankenkasse. Führende Nullen bleiben erhalten.
+  Sie ist nicht kassenübergreifend eindeutig und nicht mit der Ressourcen-ID gleichzusetzen.

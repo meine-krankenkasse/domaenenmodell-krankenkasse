@@ -1,59 +1,19 @@
 post:
   tags:
-  - personen
+    - personen
   operationId: personen_nach_stammdaten_suchen
   summary: Personen anhand von Namen, Geburtsdatum und Adresse suchen
   description: |
-    Findet Personen anhand bekannter Stammdaten, wenn keine verlässliche fachliche Kennung vorliegt.
-    Bei bekannter Ressourcen-ID person_lesen, bei bekannter Kennung personen_suchen verwenden.
-    Die Operation nimmt ein strukturiertes Suchobjekt entgegen und verändert keine fachlichen Daten.
+    Sucht Personen anhand bekannter Stammdaten und verändert keine Daten. Erforderlich sind Nachname und Geburtsdatum oder Vorname, Nachname und eine Adresse mit Land sowie Postleitzahl oder Ort. Alle Angaben gelten gemeinsam; unbekannte Felder oder unzureichende Kriterien ergeben 400.
 
-    Mindestangaben: Nachname und vollständiges Geburtsdatum ODER Vorname und Nachname sowie
-    eine Adresse mit Land und mindestens Postleitzahl oder Ort. Ein Name allein, nur ein Geburtsdatum
-    oder eine Adresse ohne Namen reicht nicht aus. Weitere bekannte Angaben sind zur Eingrenzung
-    zu übergeben. Unbekannte Angaben weglassen, niemals ergänzen oder erfinden.
-    Alle angegebenen Kriterien gelten gemeinsam (UND). Kriterien werden bei ausbleibenden Treffern
-    nicht stillschweigend ignoriert. unbekannte Felder und unzureichende Kombinationen ergeben 400
-    mit ungueltige_anfrage und parameter_hinweise.
+    Textvergleich: Unicode-Normalisierung NFC, Kleinschreibung, äußeren Leerraum entfernen und zusammenhängenden Leerraum vereinheitlichen. Danach gilt vollständige Gleichheit; Umlaute, ß, Satzzeichen und Bindestriche bleiben erhalten. Mehrere Vornamen werden zusammen verglichen. Geburtsdaten werden als vollständige Kalenderdaten verglichen. Die Postleitzahl wird als Text behandelt; Ländercodes bleiben Großbuchstaben.
 
-    Vergleichsregeln: Namen, Orts- und Straßenangaben sowie Hausnummern werden nach Unicode-NFC-
-    Normalisierung, Umwandlung in Kleinbuchstaben und Vereinheitlichung von Leerraum verglichen:
-    Leerraum am Anfang und Ende entfernen und zusammenhängende Unicode-Leerraumzeichen durch
-    ein Leerzeichen ersetzen. Danach gilt vollständige Gleichheit, keine Teilwort-, Präfix-, phonetische
-    oder unscharfe Suche. Umlaute und ß bleiben erhalten; Mueller ist nicht gleich Müller, ss nicht
-    ß. Satzzeichen und Bindestriche bleiben erhalten. Mehrere Vornamen werden als gesamte Angabe
-    verglichen. Wildcards haben keine Sonderbedeutung. Geburtsdaten werden als vollständige
-    Kalenderdaten verglichen. Postleitzahlen werden wie Text normalisiert; interne Leerzeichen
-    bleiben als vereinheitlichte Zwischenräume erhalten. Für DE ist der übergebene Postleitzahlwert
-    bereits auf genau fünf Ziffern begrenzt. Ländercodes sind als gültige Großbuchstaben-Codes anzugeben.
+    Adresskriterien müssen gemeinsam eine eigene, aktuell gültige Melde- oder Zustelladresse erfüllen. Fehlt ein benötigtes Merkmal, erfüllt die Person das Kriterium nicht.
 
-    Adresskriterien gelten für eigene, zum Abfragezeitpunkt gültige Melde- und Zustelladressen.
-    Alle angegebenen Adressbestandteile müssen in EINER solchen Adresse zusammenpassen, nicht
-    über mehrere Adressen verteilt. Historische Adressen und Adressen von Vertretern oder abweichenden
-    Empfängern werden nicht für die eigene Anschrift verwendet. Hausnummer setzt Straße voraus.
-    Fehlt ein für den Vergleich benötigtes Merkmal, erfüllt die Person das betreffende Kriterium nicht.
-
-    Nur Kriterien, deren Nutzung im Aufrufkontext erlaubt ist, dürfen ausgewertet werden. Ist eine
-    angefragte Suchfähigkeit oder ein Suchfeld insgesamt nicht erlaubt, gilt 403; Kriterien dürfen
-    nicht ohne Hinweis entfallen. Ergebnisse enthalten ausschließlich zugängliche Personen und Felder.
-    Ein unbekannter oder nicht zugänglicher Treffer wird nicht offengelegt. Kein zugänglicher Treffer
-    ergibt 200 mit auswertung=kein_treffer und leerem data.
-
-    Treffer werden nach Ressourcen-ID dedupliziert und innerhalb der Antwort nach id aufsteigend
-    sortiert. Die Reihenfolge bewertet keine Wahrscheinlichkeit. Bis zu 20 zugängliche Personen werden
-    vollständig geliefert. Mehr als 20 ergeben 422 treffermenge_zu_gross ohne Teilmenge; es sind
-    zusätzliche bekannte Kriterien einzuholen. Eine unvollständige Suche ergibt 503 und niemals ein
-    scheinbar eindeutiges Teilergebnis. Der Vergleich erfolgt ohne angekündigte Bestandsaufnahme;
-    Änderungen des Datenbestands können das Ergebnis eines späteren Aufrufs verändern.
-
-    Bei auswertung=mehrdeutig sind weitere Angaben oder eine bestätigte Auswahl nötig. Bei
-    kein_treffer sind die bekannten Angaben zu prüfen; es wird keine Person automatisch angelegt.
-    Auch auswertung=eindeutig belegt nur einen zugänglichen Treffer, nicht die authentisierte Identität
-    oder einen Auftrag für nachfolgende Schreiboperationen. Die Suchregeln sind Entwurfsvorschläge.
+    Treffer werden nach id zusammengeführt und aufsteigend sortiert. Bis zu 20 Personen werden vollständig geliefert; mehr Treffer ergeben 422 treffermenge_zu_gross, eine unvollständige Suche 503. Ohne Treffer gilt 200 mit leerem data. Mehrdeutigkeit erfordert weitere Angaben oder eine bestätigte Auswahl. Ein Treffer ist kein Identitätsnachweis oder Schreibauftrag.
   requestBody:
     required: true
-    description: Bekannte Suchkriterien; unbekannte Angaben weglassen. Mindestkombinationen sind im Schema
-      festgelegt.
+    description: Bekannte Suchkriterien; unbekannte Angaben weglassen. Mindestkombinationen sind im Schema festgelegt.
     content:
       application/json:
         schema:
@@ -68,28 +28,18 @@ post:
   responses:
     '200':
       description: Bis zu 20 vollständig ermittelte zugängliche Treffer.
-      headers:
-        Cache-Control:
-          $ref: '../../header/keine_speicherung.yaml'
       content:
         application/json:
           schema:
             $ref: '../../schemas/personen/stammdatensuche_ergebnis.yaml'
     '400':
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
-    '401':
-      $ref: '../../antworten/fehlerantworten.yaml#/nicht_authentifiziert'
-    '403':
-      $ref: '../../antworten/fehlerantworten.yaml#/zugriff_abgelehnt'
     '500':
       $ref: '../../antworten/fehlerantworten.yaml#/interner_fehler'
     '503':
       $ref: '../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
     '422':
       description: 'treffermenge_zu_gross: Mehr als 20 zugängliche Treffer, keine Teilmenge.'
-      headers:
-        Cache-Control:
-          $ref: '../../header/keine_speicherung.yaml'
       content:
         application/json:
           schema:
@@ -97,7 +47,3 @@ post:
           example:
             code: treffermenge_zu_gross
             meldung: Bitte die Suchkriterien eingrenzen.
-  x-mcp_annotations:
-    readOnlyHint: true
-    destructiveHint: false
-    idempotentHint: true
