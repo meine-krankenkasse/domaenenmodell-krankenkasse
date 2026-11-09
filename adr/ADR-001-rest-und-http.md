@@ -10,7 +10,7 @@ Ein einheitlicher fachlicher Zugang soll mit üblichen HTTP-Clients verständlic
 
 Endpunkte werden möglichst ressourcenorientiert gestaltet. Pfade benennen Ressourcen und Beziehungen, Sammlungen im Plural. Operationen nutzen die HTTP-Methoden ihrer Semantik entsprechend: GET und HEAD zum Lesen, POST zur Verarbeitung oder zum Anlegen, PUT zum vollständigen Setzen, PATCH für Teiländerungen und DELETE zum Entfernen der Zuordnung einer Ressource zur URI. Statuscodes, Header und Medientypen passen zur Operation. Anfragen enthalten ihren erforderlichen Kontext und benötigen keine vorausgehende Serversitzung.
 
-Lesende Suchen verwenden bevorzugt GET. POST /personen/suche bleibt eine begründete Ausnahme für ein strukturiertes Suchobjekt mit kombinierten Kriterien. Sie erzeugt keine Suchressource und hat keine fachliche Schreibwirkung. Die Operation wird ausdrücklich dokumentiert; allgemeine HTTP-Clients dürfen daraus keine generelle Idempotenz von POST ableiten.
+Lesende Suchen verwenden bevorzugt GET. Die Personensuchen unter /personen/suche sind begründete Ausnahmen: POST /personen/suche/stammdaten erhält ein strukturiertes Suchobjekt mit kombinierten Kriterien, POST /personen/suche/kennung erhält kvnr oder rvnr im Anfrageinhalt, damit diese Kennungen nicht in URLs, Zugriffsprotokollen oder Verläufen erscheinen. Beide erzeugen keine Suchressource und haben keine fachliche Schreibwirkung. Die Operationen werden ausdrücklich dokumentiert; allgemeine HTTP-Clients dürfen daraus keine generelle Idempotenz von POST ableiten.
 
 ## Konsequenzen
 

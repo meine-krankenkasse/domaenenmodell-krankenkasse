@@ -10,7 +10,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: '../../schemas/personensuche.yaml#/stammdaten_suchkriterien'
+          $ref: '../../../schemas/personensuche.yaml#/stammdaten_suchkriterien'
         examples:
           name_und_geburtsdatum:
             summary: Nachname und Geburtsdatum, optional mit Vorname
@@ -24,19 +24,19 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/personensuche.yaml#/stammdatensuche_ergebnis'
+            $ref: '../../../schemas/personensuche.yaml#/stammdatensuche_ergebnis'
     '400':
-      $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
+      $ref: '../../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
     '500':
-      $ref: '../../antworten/fehlerantworten.yaml#/interner_fehler'
+      $ref: '../../../antworten/fehlerantworten.yaml#/interner_fehler'
     '503':
-      $ref: '../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
+      $ref: '../../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
     '422':
       description: 'treffermenge_zu_gross: Mehr als 20 zugängliche Treffer, keine Teilmenge.'
       content:
         application/json:
           schema:
-            $ref: '../../schemas/gemeinsam.yaml#/fehler'
+            $ref: '../../../schemas/gemeinsam.yaml#/fehler'
           example:
             code: treffermenge_zu_gross
             meldung: Bitte die Suchkriterien eingrenzen.

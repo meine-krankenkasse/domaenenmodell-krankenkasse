@@ -4,7 +4,7 @@ info:
   license:
     name: Zero-Clause BSD
     identifier: 0BSD
-  version: "0.14.0-entwurf"
+  version: "0.15.0-entwurf"
   summary: Personen identifizieren, Stammdaten und Kontoinformationen lesen sowie Kontakte und Aufgaben nutzen
   description: |
     # Domänenmodell Krankenkasse
@@ -55,8 +55,8 @@ info:
     eingegrenzt werden. Fehlende Angaben werden nicht erfunden.
 
     Eine Suche findet Datensätze, bestätigt aber keine Identität eines Aufrufers oder Anrufers
-    und erteilt keinen Auftrag für weitere Aktionen. Auch die Stammdatensuche mit POST liest nur:
-    Sie erzeugt weder Personen noch Suchressourcen. Fachliche Rollen und Betreuungshinweise
+    und erteilt keinen Auftrag für weitere Aktionen. Beide Suchen verwenden POST und lesen nur:
+    Sie erzeugen weder Personen noch Suchressourcen. Fachliche Rollen und Betreuungshinweise
     beschreiben die Person; sie sind keine Zugriffsrechte oder Nachweise konkreter Vertretungsbefugnisse.
 
     ## Gemeinsam erweitern
@@ -77,8 +77,6 @@ tags:
   - name: personen
     description: Natürliche Personen unabhängig von ihren fachlichen Rollen.
 paths:
-  /personen:
-    $ref: pfade/personen/sammlung.yaml
   /personen/{person_id}:
     $ref: pfade/personen/einzelperson.yaml
   /personen/{person_id}/adressen:
@@ -93,8 +91,10 @@ paths:
     $ref: pfade/personen/zahlungskonten/sammlung.yaml
   /personen/{person_id}/zahlungskonten/{zahlungskonto_id}/kontobewegungen:
     $ref: pfade/personen/zahlungskonten/kontobewegungen.yaml
-  /personen/suche:
-    $ref: pfade/personen/suche.yaml
+  /personen/suche/kennung:
+    $ref: pfade/personen/suche/kennung.yaml
+  /personen/suche/stammdaten:
+    $ref: pfade/personen/suche/stammdaten.yaml
 components:
   schemas:
     ressourcen_id:
@@ -175,6 +175,8 @@ components:
       $ref: 'schemas/personen.yaml#/personenrolle'
     person:
       $ref: 'schemas/personen.yaml#/person'
+    kennung_suchkriterien:
+      $ref: 'schemas/personensuche.yaml#/kennung_suchkriterien'
     personentreffer:
       $ref: 'schemas/personensuche.yaml#/personentreffer'
     personensuche_ergebnis:
