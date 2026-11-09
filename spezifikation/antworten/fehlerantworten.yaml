@@ -1,5 +1,5 @@
 ungueltige_anfrage:
-  description: Pflichtparameter fehlt, unbekannte Identifikatorart oder ungültiger Parameterwert.
+  description: Pflichtangabe fehlt oder ungültiger Wert.
   content:
     application/json:
       schema:

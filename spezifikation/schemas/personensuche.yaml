@@ -181,37 +181,14 @@ kennung_suchkriterien:
   additionalProperties: false
   required:
     - identifikator_wert
-  description: Gesuchte kvnr oder rvnr. Beide Formate sind verschieden, sodass sich die Art aus dem Wert ergibt.
-    Eine angegebene Art muss zum Wert passen.
+  description: Gesuchte kvnr oder rvnr. Die Formate beider Arten sind verschieden; die Art ergibt sich daher
+    aus dem Wert und wird nicht angegeben.
   properties:
     identifikator_wert:
       anyOf:
         - $ref: 'personenkennungen.yaml#/kvnr'
         - $ref: 'personenkennungen.yaml#/rvnr'
       description: Exakter Wert der Kennung im Format einer kvnr oder rvnr.
-    identifikator_art:
-      $ref: 'personenkennungen.yaml#/suchbare_identifikator_art'
-  allOf:
-    - if:
-        properties:
-          identifikator_art:
-            const: kvnr
-        required:
-          - identifikator_art
-      then:
-        properties:
-          identifikator_wert:
-            $ref: 'personenkennungen.yaml#/kvnr'
-    - if:
-        properties:
-          identifikator_art:
-            const: rvnr
-        required:
-          - identifikator_art
-      then:
-        properties:
-          identifikator_wert:
-            $ref: 'personenkennungen.yaml#/rvnr'
 
 personentreffer:
   type: object

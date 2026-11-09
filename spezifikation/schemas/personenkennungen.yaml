@@ -62,15 +62,6 @@ identifikator_art:
   description: |-
     Art der Personenkennung; die jeweilige Nummer ist im gleichnamigen Schema beschrieben.
 
-suchbare_identifikator_art:
-  type: string
-  enum:
-    - kvnr
-    - rvnr
-  description: |-
-    Art einer Personenkennung, nach der gesucht werden kann. Beide Arten bezeichnen eine Person eindeutig;
-    die partnernummer ist nicht suchbar.
-
 kvnr:
   type: string
   minLength: 10

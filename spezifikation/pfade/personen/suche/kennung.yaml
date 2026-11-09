@@ -6,7 +6,7 @@ post:
   description: "Sucht Personen anhand einer aktuell gültigen kvnr oder rvnr, ohne Daten zu verändern. Die Kennung steht im Anfrageinhalt, damit sie nicht in URLs und Protokollen erscheint. Verglichen wird exakt, ohne Freitextinterpretation. Werte, die keinem Format einer suchbaren Art entsprechen, ergeben 400; unvollständige Suchen 503."
   requestBody:
     required: true
-    description: Gesuchte Kennung; die Art ist optional, da sie sich aus dem Format ergibt.
+    description: Gesuchte Kennung; die Art ergibt sich aus dem Format.
     content:
       application/json:
         schema:
@@ -16,7 +16,6 @@ post:
             summary: Suche nach einer kvnr
             value:
               identifikator_wert: A123456789
-              identifikator_art: kvnr
   responses:
     "200":
       description: Vollständiges Suchergebnis mit höchstens einer zugänglichen Person.
