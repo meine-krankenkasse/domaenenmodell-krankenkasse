@@ -1,0 +1,212 @@
+externe_kontakt_id:
+  type: string
+  minLength: 1
+  maxLength: 64
+  pattern: ^\S+$
+  description: "Unveränderte Ereigniskennung im vereinbarten Wertebereich der Anwendung. Bezeichnet innerhalb des Mandanten dasselbe Ereignis unabhängig von person_id und Idempotency-Key. Gleiche Person und gleiche Eingaben ergeben 200 mit der vorhandenen Kontakt-ID; abweichende oder mehrdeutige Zuordnungen ergeben 409 externe_referenz_konflikt."
+
+kontakt:
+  type: object
+  required:
+    - id
+  description: |
+    Kommunikationsereignis mit im Aufrufkontext zugänglichen Angaben. Optionale Felder werden
+    bei fehlender Kenntnis oder Freigabe weggelassen; das ist kein fachlicher Negativbefund.
+    Fehlende maschinell_erzeugt-Angaben dürfen nicht als false interpretiert werden.
+    Die Textgrenzen der Anlage gelten nicht rückwirkend für bestehende Kontaktdokumentationen.
+  properties:
+    id:
+      $ref: '#/kontakt_id'
+    kontakt_am:
+      type: string
+      format: date-time
+      description: Zeitpunkt des Kommunikationsereignisses mit verlässlich bestimmter Zeitzone; fehlt bei
+        unbekannter Zeit. Kein Ersatz durch den Erstellungszeitpunkt.
+    kanal:
+      $ref: '#/kontaktkanal'
+    richtung:
+      $ref: '#/kontaktrichtung'
+    status:
+      type: string
+      pattern: ^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
+      description: Bearbeitungsstatus, beispielsweise erledigt, storniert oder in_bearbeitung. Weitere Antwortcodes
+        müssen toleriert werden; unbekannte Angaben fehlen.
+    betreff:
+      type: string
+      description: Zugängliche Kurzbeschreibung als Klartext; vorhandene Inhalte werden nicht abgeschnitten.
+    bemerkung:
+      type: string
+      description: Zugängliche Gesprächsdokumentation als Klartext; keine Garantie eines vollständigen Transkripts.
+    maschinell_erzeugt:
+      type: boolean
+      description: Kennzeichnung automatisch erzeugter Dokumentation, soweit bekannt.
+    externe_id:
+      type: string
+      maxLength: 64
+      description: Gespeicherte externe Ereigniskennung, soweit bekannt und zugänglich. Bestehende Werte werden
+        unverändert geliefert.
+    archiviert:
+      type: boolean
+      description: Kennzeichnet einen archivierten Kontakt, soweit verlässlich bestimmt. Archivierte Kontakte
+        bleiben im Abruf enthalten.
+    erstellt_am:
+      type: string
+      format: date-time
+      description: Erstellungszeitpunkt der Dokumentation mit verlässlich bestimmter Zeitzone; kein Ersatz für kontakt_am.
+    fachlicher_inhalt:
+      type: string
+      description: Fachliche Einordnung des Kontakts als aufgelöste Bezeichnung, soweit bekannt und zugänglich.
+    stichwort:
+      $ref: '#/kontakt_stichwort'
+    herkunft:
+      type: string
+      description: Fachliche Herkunftsangabe, soweit zugänglich; keine interne System- oder Datenbankzuordnung.
+    dokument_id:
+      type: string
+      minLength: 1
+      maxLength: 254
+      description: Referenz auf ein zugeordnetes Dokument; dessen Abruf ist nicht Teil dieses Vertrags.
+
+kontakt_anlage:
+  type: object
+  additionalProperties: false
+  required:
+    - kontakt_am
+    - kanal
+    - status
+    - betreff
+    - bemerkung
+    - maschinell_erzeugt
+  properties:
+    kontakt_am:
+      type: string
+      format: date-time
+      description: Tatsächlicher Zeitpunkt des Kommunikationsereignisses mit Zeitzone, nicht Zeitpunkt der Speicherung.
+    kanal:
+      $ref: '#/kontaktkanal'
+    status:
+      $ref: '#/kontaktstatus'
+    richtung:
+      $ref: '#/kontaktrichtung'
+    betreff:
+      $ref: '#/kontakt_betreff'
+    bemerkung:
+      $ref: '#/kontakt_bemerkung'
+    maschinell_erzeugt:
+      type: boolean
+      description: true, wenn die eingereichte Gesprächsdokumentation automatisch erzeugt wurde. Unabhängig vom
+        Kommunikationskanal.
+    externe_id:
+      $ref: '#/externe_kontakt_id'
+  allOf:
+    - if:
+        properties:
+          maschinell_erzeugt:
+            const: true
+        required:
+          - maschinell_erzeugt
+      then:
+        required:
+          - externe_id
+  description: "Unbekannte Angaben werden nicht ergänzt und Texte nicht gekürzt. Für maschinell erzeugte Inhalte ist externe_id verpflichtend. Ohne externe_id verhindert nur derselbe Idempotency-Key doppelte Aufträge."
+
+kontakt_annahme:
+  type: object
+  required:
+    - id
+    - person_id
+  properties:
+    id:
+      $ref: '#/kontakt_id'
+    person_id:
+      $ref: 'personen.yaml#/person_id'
+    externe_id:
+      type: string
+      minLength: 1
+      maxLength: 64
+      description: Unveränderte externe Ereigniskennung aus der Anfrage. Wird bei übergebener externe_id sowohl bei Neuanlage als auch bei einem bereits vorhandenen Ereignis zurückgegeben; sonst weggelassen.
+  description: Bestätigung der abgeschlossenen oder bereits vorhandenen Dokumentation mit Personenzuordnung und gegebenenfalls externer Ereigniskennung, ohne Gesprächsinhalte.
+
+kontakt_bemerkung:
+  type: string
+  minLength: 1
+  maxLength: 2400
+  pattern: \S
+  description: Gesprächsdokumentation als Klartext; höchstens 2400 Unicode-Codepoints. Kein vollständiges
+    Transkript erforderlich.
+
+kontakt_betreff:
+  type: string
+  minLength: 1
+  maxLength: 120
+  pattern: \S
+  description: Kurzbeschreibung ohne Markup; höchstens 120 Unicode-Codepoints, keine stille Kürzung.
+
+kontakt_id:
+  type: string
+  minLength: 1
+  maxLength: 128
+  pattern: ^[A-Za-z0-9_-]+$
+  description: Undurchsichtige Ressourcen-ID eines Kontakts im Mandantenkontext.
+
+kontakt_stichwort:
+  type: object
+  minProperties: 1
+  description: Fachliche Zuordnung mit aufgelösten Bezeichnungen; nur bekannte und zugängliche Bestandteile liefern.
+  properties:
+    bereich:
+      type: string
+      minLength: 1
+    sachgebiet:
+      type: string
+      minLength: 1
+    prozess:
+      type: string
+      minLength: 1
+
+kontaktkanal:
+  type: string
+  minLength: 1
+  maxLength: 100
+  pattern: ^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
+  description: |-
+    Fachlicher Kommunikationskanal als erweiterbarer Code. telefon bezeichnet ein Telefongespräch unabhängig von der Richtung. chat bezeichnet einen Chat mit menschlicher Gesprächsführung, chatbot einen automatisiert geführten Chat. Die automatische Erstellung einer Zusammenfassung ändert den Kanal nicht. Bei einem Wechsel zwischen menschlicher und automatisierter Gesprächsführung ist die Zuordnung vor Freigabe fachlich festzulegen; keinen Kanal erraten. Schreibzugriffe und Filter verwenden vereinbarte fachliche Codes, keine internen Quellcodes. Unbekannte Angaben werden nicht als sonstiger behandelt.
+  examples:
+    - telefon
+    - chat
+    - chatbot
+    - e_mail
+    - brief
+    - persoenlicher_kontakt
+
+kontaktliste:
+  type: object
+  required:
+    - data
+  properties:
+    data:
+      type: array
+      maxItems: 100
+      items:
+        $ref: '#/kontakt'
+      description: Zugängliche Kontakte dieser Seite in der beschriebenen Sortierung; höchstens seitengroesse Einträge.
+    naechster_versatz:
+      type: integer
+      minimum: 1
+      description: Anzahl bereits gelieferter und übersprungener zugänglicher Treffer; fehlt auf der letzten Seite.
+  description: "Sortierung nach kontakt_am absteigend, danach id aufsteigend. Folgeaufrufe verwenden unveränderte Filter. Änderungen zwischen Seiten können Überschneidungen oder Auslassungen verursachen."
+
+kontaktrichtung:
+  type: string
+  enum:
+    - eingehend
+    - ausgehend
+  description: Richtung aus Sicht der Krankenkasse; weglassen, wenn nicht eindeutig bekannt.
+
+kontaktstatus:
+  type: string
+  enum:
+    - erledigt
+    - storniert
+    - in_bearbeitung
+  description: Bearbeitungsstatus der Kontaktdokumentation; keine Aussage zur Erledigung des zugrunde liegenden Anliegens.

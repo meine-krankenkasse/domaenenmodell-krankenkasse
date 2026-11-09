@@ -4,7 +4,7 @@ parameters:
     required: true
     description: Ressourcen-ID der Person.
     schema:
-      $ref: '../../schemas/personen/person_id.yaml'
+      $ref: '../../schemas/personen.yaml#/person_id'
 get:
   tags:
     - personen
@@ -17,7 +17,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/aufgaben/aufgabenliste.yaml'
+            $ref: '../../schemas/aufgaben.yaml#/aufgabenliste'
     '400':
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
     '404':
@@ -55,14 +55,14 @@ post:
     content:
       application/json:
         schema:
-          $ref: '../../schemas/aufgaben/aufgabe_anlage.yaml'
+          $ref: '../../schemas/aufgaben.yaml#/aufgabe_anlage'
   responses:
     '201':
       description: Aufgabe dauerhaft angelegt und der Person zugeordnet.
       content:
         application/json:
           schema:
-            $ref: '../../schemas/aufgaben/aufgabe_annahme.yaml'
+            $ref: '../../schemas/aufgaben.yaml#/aufgabe_annahme'
     '400':
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
     '404':
@@ -84,7 +84,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/gemeinsam/fehler.yaml'
+            $ref: '../../schemas/gemeinsam.yaml#/fehler'
           examples:
             abweichender_auftrag:
               value:
@@ -99,4 +99,4 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/gemeinsam/fehler.yaml'
+            $ref: '../../schemas/gemeinsam.yaml#/fehler'

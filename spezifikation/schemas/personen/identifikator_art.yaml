@@ -1,7 +1,0 @@
-type: string
-enum:
-  - kvnr
-  - partnernummer
-  - rvnr
-description: |-
-  Art der Personenkennung; die jeweilige Nummer ist im gleichnamigen Schema beschrieben.

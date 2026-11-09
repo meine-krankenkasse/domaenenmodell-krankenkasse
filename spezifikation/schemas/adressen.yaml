@@ -1,0 +1,58 @@
+adresse:
+  type: object
+  properties:
+    id:
+      $ref: 'gemeinsam.yaml#/ressourcen_id'
+    strasse:
+      type: string
+      minLength: 1
+    hausnummer:
+      type: string
+      minLength: 1
+    postfach:
+      type: string
+      minLength: 1
+    postleitzahl:
+      type: string
+      minLength: 1
+    ort:
+      type: string
+      minLength: 1
+    zusatz:
+      type: string
+      minLength: 1
+    land:
+      type: string
+      minLength: 1
+    adresse_in_pruefung:
+      type: boolean
+    art:
+      type: string
+      enum:
+        - meldeadresse
+        - zustelladresse
+  required:
+    - id
+    - art
+  description: Eigene postalische Adresse. land ist die Länderbezeichnung, kein ISO-Code wie bei der Adresssuche. Unbekannte Bestandteile entfallen;
+    Postfachadressen benötigen keine Straße. Getrennte Adresszuordnungen werden nicht anhand gleicher Anschrift
+    zusammengeführt.
+  examples:
+    - id: adresse-001
+      strasse: Beispielweg
+      hausnummer: '7'
+      postleitzahl: '12345'
+      ort: Beispielstadt
+      land: Deutschland
+      art: meldeadresse
+
+adressliste:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: '#/adresse'
+  required:
+    - data
+  description: "Vollständige Liste eigener, am Abrufdatum in Europe/Berlin gültiger Melde- und Zustelladressen; Gültigkeitsgrenzen einschließlich. Nach id aufsteigend sortiert. Getrennte Zuordnungen bleiben auch bei gleicher Anschrift erhalten. Keine historischen Einträge oder Adressen anderer Personen."

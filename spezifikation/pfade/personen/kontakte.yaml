@@ -4,7 +4,7 @@ parameters:
     required: true
     description: Ressourcen-ID der Person, deren Kontakte gelesen oder ergänzt werden.
     schema:
-      $ref: '../../schemas/personen/person_id.yaml'
+      $ref: '../../schemas/personen.yaml#/person_id'
 get:
   tags:
     - personen
@@ -33,7 +33,7 @@ get:
       required: false
       description: Exakter Kommunikationskanal; keine Filterung bei fehlendem Parameter.
       schema:
-        $ref: '../../schemas/kontakte/kontaktkanal.yaml'
+        $ref: '../../schemas/kontakte.yaml#/kontaktkanal'
     - name: seitengroesse
       in: query
       required: false
@@ -57,14 +57,14 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/kontakte/kontaktliste.yaml'
+            $ref: '../../schemas/kontakte.yaml#/kontaktliste'
           examples:
             letzte_seite:
               value:
                 data:
                   - id: kontakt-beispiel-001
                     kontakt_am: '2026-10-20T10:15:00+02:00'
-                    kanal: chat
+                    kanal: chatbot
                     richtung: eingehend
                     status: erledigt
                     betreff: Rückfrage zum Bearbeitungsstand
@@ -86,7 +86,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/gemeinsam/fehler.yaml'
+            $ref: '../../schemas/gemeinsam.yaml#/fehler'
           examples:
             zeitraum_ungueltig:
               value:
@@ -112,12 +112,12 @@ post:
     content:
       application/json:
         schema:
-          $ref: '../../schemas/kontakte/kontakt_anlage.yaml'
+          $ref: '../../schemas/kontakte.yaml#/kontakt_anlage'
         examples:
           maschinelle_zusammenfassung:
             value:
               kontakt_am: '2026-10-20T10:15:00+02:00'
-              kanal: chat
+              kanal: chatbot
               status: erledigt
               richtung: eingehend
               betreff: Rückfrage zum Bearbeitungsstand
@@ -138,19 +138,21 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/kontakte/kontakt_annahme.yaml'
+            $ref: '../../schemas/kontakte.yaml#/kontakt_annahme'
           example:
             id: kontakt-beispiel-001
             person_id: person-beispiel-001
+            externe_id: kundenportal:gespraech-beispiel-001
     '200':
       description: Identisches Ereignis unter der externen Referenz bereits vorhanden; kein neuer Kontakt angelegt.
       content:
         application/json:
           schema:
-            $ref: '../../schemas/kontakte/kontakt_annahme.yaml'
+            $ref: '../../schemas/kontakte.yaml#/kontakt_annahme'
           example:
             id: kontakt-beispiel-001
             person_id: person-beispiel-001
+            externe_id: kundenportal:gespraech-beispiel-001
     '400':
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
     '404':
@@ -168,7 +170,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/gemeinsam/fehler.yaml'
+            $ref: '../../schemas/gemeinsam.yaml#/fehler'
           examples:
             abweichender_auftrag:
               value:
@@ -187,7 +189,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/gemeinsam/fehler.yaml'
+            $ref: '../../schemas/gemeinsam.yaml#/fehler'
           example:
             code: kontakt_nicht_abbildbar
             meldung: Die übergebenen Kontaktangaben können nicht vollständig dokumentiert werden.
@@ -199,7 +201,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/gemeinsam/fehler.yaml'
+            $ref: '../../schemas/gemeinsam.yaml#/fehler'
           example:
             code: dienst_nicht_verfuegbar
             meldung: Der Auftrag kann derzeit nicht sicher abgeschlossen werden. Bitte denselben Schlüssel beibehalten.

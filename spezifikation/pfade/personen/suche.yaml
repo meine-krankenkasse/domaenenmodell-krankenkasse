@@ -10,7 +10,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: '../../schemas/personen/stammdaten_suchkriterien.yaml'
+          $ref: '../../schemas/personensuche.yaml#/stammdaten_suchkriterien'
         examples:
           name_und_geburtsdatum:
             summary: Nachname und Geburtsdatum, optional mit Vorname
@@ -24,7 +24,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/personen/stammdatensuche_ergebnis.yaml'
+            $ref: '../../schemas/personensuche.yaml#/stammdatensuche_ergebnis'
     '400':
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
     '500':
@@ -36,7 +36,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/gemeinsam/fehler.yaml'
+            $ref: '../../schemas/gemeinsam.yaml#/fehler'
           example:
             code: treffermenge_zu_gross
             meldung: Bitte die Suchkriterien eingrenzen.

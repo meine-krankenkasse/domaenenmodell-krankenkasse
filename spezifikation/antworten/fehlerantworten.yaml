@@ -3,7 +3,7 @@ ungueltige_anfrage:
   content:
     application/json:
       schema:
-        $ref: '../schemas/gemeinsam/fehler.yaml'
+        $ref: '../schemas/gemeinsam.yaml#/fehler'
       example:
         code: ungueltige_anfrage
         meldung: Bitte die angegebenen Parameter prüfen.
@@ -12,7 +12,7 @@ person_nicht_gefunden:
   content:
     application/json:
       schema:
-        $ref: '../schemas/gemeinsam/fehler.yaml'
+        $ref: '../schemas/gemeinsam.yaml#/fehler'
       example:
         code: person_nicht_gefunden
         meldung: Die Person wurde nicht gefunden.
@@ -21,7 +21,7 @@ zahlungskonto_nicht_gefunden:
   content:
     application/json:
       schema:
-        $ref: '../schemas/gemeinsam/fehler.yaml'
+        $ref: '../schemas/gemeinsam.yaml#/fehler'
       example:
         code: zahlungskonto_nicht_gefunden
         meldung: Das Zahlungskonto wurde nicht gefunden.
@@ -30,7 +30,7 @@ interner_fehler:
   content:
     application/json:
       schema:
-        $ref: '../schemas/gemeinsam/fehler.yaml'
+        $ref: '../schemas/gemeinsam.yaml#/fehler'
       example:
         code: interner_fehler
         meldung: Die Anfrage konnte nicht sicher abgeschlossen werden.
@@ -39,7 +39,7 @@ dienst_nicht_verfuegbar:
   content:
     application/json:
       schema:
-        $ref: '../schemas/gemeinsam/fehler.yaml'
+        $ref: '../schemas/gemeinsam.yaml#/fehler'
       example:
         code: dienst_nicht_verfuegbar
         meldung: Die Anfrage kann derzeit nicht vollständig beantwortet werden.

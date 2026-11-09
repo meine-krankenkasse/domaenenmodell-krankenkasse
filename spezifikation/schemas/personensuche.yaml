@@ -1,0 +1,235 @@
+stammdaten_suchkriterien:
+  type: object
+  additionalProperties: false
+  required:
+    - nachname
+  anyOf:
+    - required:
+        - geburtsdatum
+    - required:
+        - vorname
+        - adresse
+  description: "Alle Angaben gelten gemeinsam. Erforderlich sind Nachname und Geburtsdatum oder Vorname, Nachname und Adresse mit Land sowie Postleitzahl oder Ort. Textvergleich nach Unicode-Normalisierung NFC, Kleinschreibung, Entfernen äußeren und Vereinheitlichen zusammenhängenden Leerraums: vollständige Gleichheit, einschließlich Umlauten, ß, Satzzeichen und Bindestrichen. Mehrere Vornamen werden zusammen verglichen; Geburtsdaten als vollständige Kalenderdaten, Postleitzahlen als Text. Ländercodes bleiben Großbuchstaben. Adresskriterien müssen gemeinsam eine eigene, aktuell gültige Melde- oder Zustelladresse erfüllen. Fehlende Merkmale erfüllen das Kriterium nicht."
+  properties:
+    vorname:
+      type: string
+      minLength: 1
+      maxLength: 200
+      pattern: \S
+      description: Vollständige bekannte Vornamensangabe. Bei mehreren Vornamen wird die gesamte Angabe verglichen,
+        keine automatische Suche nur nach dem ersten Vornamen. Bei Unsicherheit weglassen und Nachname plus
+        Geburtsdatum verwenden.
+    nachname:
+      type: string
+      minLength: 1
+      maxLength: 200
+      pattern: \S
+      description: Vollständiger Familienname entsprechend name.nachname; separat geführte Vorsatzwörter und
+        Namenszusätze nicht anhängen. Bei unklarer Zerlegung zusätzliche Angaben einholen.
+    geburtsdatum:
+      type: string
+      format: date
+      description: Vollständiges Geburtsdatum im Format JJJJ-MM-TT. Teilangaben oder erfundene Ersatzdaten sind
+        nicht zulässig.
+    adresse:
+      $ref: '#/adress_suchkriterien'
+
+adress_suchkriterien:
+  type: object
+  additionalProperties: false
+  required:
+    - land
+  anyOf:
+    - required:
+        - postleitzahl
+    - required:
+        - ort
+  dependentRequired:
+    hausnummer:
+      - strasse
+  description: Kriterien für eine eigene, aktuell gültige Melde- oder Zustelladresse der Person. Land und
+    mindestens Postleitzahl oder Ort sind erforderlich. Sämtliche Adresskriterien müssen dieselbe Adresse
+    erfüllen. Anschriften von Vertretern oder abweichenden Empfängern zählen nicht als eigene Adresse.
+  properties:
+    postleitzahl:
+      type: string
+      minLength: 1
+      maxLength: 20
+      pattern: \S
+      description: Vollständige Postleitzahl als String, einschließlich führender Nullen. Für DE genau fünf Ziffern;
+        international sind auch Buchstaben und Zwischenräume möglich.
+    ort:
+      type: string
+      minLength: 1
+      maxLength: 200
+      pattern: \S
+      description: Vollständige Ortsbezeichnung.
+    strasse:
+      type: string
+      minLength: 1
+      maxLength: 200
+      pattern: \S
+      description: Vollständiger Straßenname. Keine automatische Gleichsetzung von Straße und Str. oder anderer Abkürzungen.
+    hausnummer:
+      type: string
+      minLength: 1
+      maxLength: 30
+      pattern: \S
+      description: Vollständige Hausnummer einschließlich vorhandenen Zusatzes, beispielsweise 12a.
+    land:
+      type: string
+      pattern: ^[A-Z]{2}$
+      description: Land als gültiger ISO-3166-1-Alpha-2-Code, beispielsweise DE; keine Länderbezeichnung wie beim Adressabruf. Kein stillschweigender
+        Standardwert. Der Zeichenaufbau allein bestätigt noch keinen vergebenen Ländercode.
+      examples:
+        - DE
+        - AT
+  allOf:
+    - if:
+        properties:
+          land:
+            const: DE
+        required:
+          - land
+      then:
+        properties:
+          postleitzahl:
+            pattern: ^[0-9]{5}$
+            minLength: 5
+            maxLength: 5
+
+suchtreffer_adresse:
+  type: object
+  minProperties: 1
+  description: Zugänglicher Ausschnitt einer Adresse, die die angegebenen Adresskriterien erfüllt. Keine
+    vollständige Adressauskunft. Nur bei einer Suche mit Adresskriterien geliefert.
+  properties:
+    postleitzahl:
+      type: string
+      description: Postleitzahl der passenden Adresse einschließlich führender Nullen.
+    ort:
+      type: string
+      description: Ort der passenden Adresse.
+    land:
+      type: string
+      pattern: ^[A-Z]{2}$
+      description: Land als ISO-3166-1-Alpha-2-Code.
+
+stammdaten_personentreffer:
+  type: object
+  required:
+    - id
+  description: Person, die sämtliche Suchkriterien erfüllt. Kein Identitätsnachweis.
+  properties:
+    id:
+      $ref: 'personen.yaml#/person_id'
+    name:
+      $ref: 'personen.yaml#/personenname'
+    geburtsdatum:
+      type: string
+      format: date
+      description: Geburtsdatum zur Unterscheidung, soweit bekannt und zur Ausgabe freigegeben.
+    passende_adressen:
+      type: array
+      minItems: 1
+      items:
+        $ref: '#/suchtreffer_adresse'
+      description: Zugängliche Ausschnitte der zu den Adresskriterien passenden eigenen Adressen. Bei Suche ohne
+        Adresskriterien weggelassen; keine Aussage über den vollständigen Adressbestand.
+
+stammdatensuche_ergebnis:
+  type: object
+  required:
+    - auswertung
+    - data
+  properties:
+    auswertung:
+      type: string
+      enum:
+        - kein_treffer
+        - eindeutig
+        - mehrdeutig
+      description: Bewertung ausschließlich der vollständig ermittelten zugänglichen Personen, nicht der Identität
+        des Anrufers.
+    data:
+      type: array
+      maxItems: 20
+      description: Nach Ressourcen-ID deduplizierte Treffer; keine Rangfolge nach vermuteter Wahrscheinlichkeit.
+      items:
+        $ref: '#/stammdaten_personentreffer'
+  oneOf:
+    - properties:
+        auswertung:
+          const: kein_treffer
+        data:
+          maxItems: 0
+    - properties:
+        auswertung:
+          const: eindeutig
+        data:
+          minItems: 1
+          maxItems: 1
+    - properties:
+        auswertung:
+          const: mehrdeutig
+        data:
+          minItems: 2
+  description: "Vollständiges Ergebnis mit höchstens 20 Personen, nach id zusammengeführt und aufsteigend sortiert; ohne Treffer ist data leer. Mehrdeutigkeit erfordert weitere Angaben oder eine bestätigte Auswahl. Kein Identitätsnachweis oder Schreibauftrag."
+
+personentreffer:
+  type: object
+  required:
+    - id
+    - passende_identifikator_arten
+  description: Sparsamer Suchtreffer. Weitere Stammdaten sind über die Ressourcen-ID abrufbar.
+  properties:
+    id:
+      $ref: 'personen.yaml#/person_id'
+    name:
+      $ref: 'personen.yaml#/personenname'
+    passende_identifikator_arten:
+      type: array
+      minItems: 1
+      uniqueItems: true
+      description: Arten, für die der Suchwert bei dieser Person tatsächlich übereinstimmt.
+      items:
+        $ref: 'personenkennungen.yaml#/identifikator_art'
+
+personensuche_ergebnis:
+  type: object
+  required:
+    - auswertung
+    - data
+  properties:
+    auswertung:
+      type: string
+      enum:
+        - kein_treffer
+        - eindeutig
+        - mehrdeutig
+      description: Bewertung ausschließlich der vollständig ermittelten zugänglichen Personen, nicht der Identität
+        des Anrufers.
+    data:
+      type: array
+      maxItems: 20
+      description: Nach Ressourcen-ID deduplizierte Treffer; keine Rangfolge nach vermuteter Wahrscheinlichkeit.
+      items:
+        $ref: '#/personentreffer'
+  oneOf:
+    - properties:
+        auswertung:
+          const: kein_treffer
+        data:
+          maxItems: 0
+    - properties:
+        auswertung:
+          const: eindeutig
+        data:
+          minItems: 1
+          maxItems: 1
+    - properties:
+        auswertung:
+          const: mehrdeutig
+        data:
+          minItems: 2
+  description: "Vollständiges Ergebnis mit höchstens 20 Personen; ohne Treffer ist data leer. Treffer derselben Person werden zusammengeführt; passende_identifikator_arten nennt alle passenden Arten. Mehrdeutigkeit erfordert weitere Angaben oder eine bestätigte Auswahl. Kein Identitätsnachweis oder Schreibauftrag."

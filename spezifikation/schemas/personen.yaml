@@ -1,0 +1,148 @@
+person:
+  type: object
+  required:
+    - id
+  description: Natürlicher Mensch unabhängig von Versicherung und fachlichen Rollen. Fehlende Angaben sind
+    unbekannt oder nicht geliefert.
+  properties:
+    betreuungshinweise:
+      type: array
+      items:
+        $ref: '#/betreuungshinweis'
+      description: Am Abrufdatum in Europe/Berlin gültige Betreuungshinweise. Sie belegen keine konkrete
+        Vertretungsbefugnis.
+    id:
+      $ref: '#/person_id'
+    name:
+      $ref: '#/personenname'
+    geburtsdatum:
+      type: string
+      format: date
+      description: Vollständig bekanntes Geburtsdatum; unvollständige Angaben werden weggelassen.
+    geschlecht:
+      type: string
+      enum:
+        - maennlich
+        - weiblich
+        - unbestimmt
+        - divers
+      description: Fachliche Geschlechtsangabe. Eine unbekannte oder nicht verfügbare Angabe wird weggelassen und
+        nicht automatisch als unbestimmt ausgegeben.
+    identifikatoren:
+      type: array
+      description: Aktuell gültige Personenkennungen.
+      items:
+        $ref: 'personenkennungen.yaml#/identifikator'
+    bevorzugter_kontaktkanal:
+      type: string
+      pattern: ^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
+      description: Ausdrücklich bekannte kanalübergreifende Kontaktpräferenz der Person, etwa telefon, e_mail oder brief. Kein Nachweis einer Einwilligung oder einer verbindlichen Versandvorgabe. Nicht aus einzelnen bevorzugten Kontaktdaten ableiten; bei unbekannter oder nicht eindeutiger Präferenz weglassen.
+      examples:
+        - e_mail
+    rollen:
+      type: array
+      description: Fachliche Rollen; je code höchstens ein Eintrag.
+      items:
+        $ref: '#/personenrolle'
+
+person_id:
+  type: string
+  minLength: 1
+  maxLength: 128
+  pattern: ^[A-Za-z0-9_-]+$
+  description: Undurchsichtige Ressourcen-ID der Person im Mandanten, unabhängig von fachlichen Nummern.
+  examples:
+    - person-beispiel-001
+
+personenname:
+  type: object
+  minProperties: 1
+  anyOf:
+    - required:
+        - vorname
+    - required:
+        - nachname
+  description: Aktuelle Namensangabe mit mindestens Vorname oder Nachname. Mehrere Vornamen bleiben zusammen erhalten.
+  properties:
+    vorname:
+      type: string
+      description: Gespeicherter Vorname beziehungsweise gespeicherte Vornamen als zusammenhängende Angabe.
+      minLength: 1
+      pattern: \S
+    nachname:
+      type: string
+      description: Familienname; getrennt gespeicherte Vorsatzwörter und Namenszusätze stehen in eigenen Feldern.
+      minLength: 1
+      pattern: \S
+    vorsatzwort:
+      type: string
+      description: Gesondert gespeichertes Vorsatzwort zum Nachnamen, beispielsweise von.
+      minLength: 1
+      pattern: \S
+    namenszusatz:
+      type: string
+      description: Gesondert gespeicherter Namenszusatz, beispielsweise Freiherr.
+      minLength: 1
+      pattern: \S
+    titel:
+      type: string
+      description: Akademischer Titel als aufgelöste Bezeichnung.
+      minLength: 1
+      pattern: \S
+
+personenrolle:
+  type: object
+  required:
+    - code
+  description: Fachliche Einordnung, etwa versicherter, interessent oder pflegeperson. Sie belegt allein kein
+    aktuelles Versicherungsverhältnis und keine Vertretungsbefugnis.
+  properties:
+    code:
+      type: string
+      pattern: ^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
+      description: Deutscher fachlicher Code. Offener Katalog; unbekannte Codes müssen toleriert werden.
+      examples:
+        - versicherter
+        - interessent
+        - pflegeperson
+    bezeichnung:
+      type: string
+      description: Deutsche Bezeichnung zur Anzeige, nicht zur maschinellen Fallunterscheidung.
+
+betreuungshinweis:
+  type: object
+  properties:
+    art:
+      type: string
+      pattern: ^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
+      description: Fachlicher Betreuungstyp aus dem vor Freigabe abzustimmenden Katalog. Keine Ableitung aus einer
+        allgemeinen Personenrolle.
+      examples:
+        - betreuer_gesamt
+        - betreuer_gesundheitssorge
+        - betreuer_vermoegenssorge
+    betreuer_person_id:
+      $ref: '#/person_id'
+      description: Nur für einen zugänglichen Betreuer als natürliche Person; Organisationen werden nicht als
+        Personen ausgegeben.
+    bezeichnung:
+      type: string
+      minLength: 1
+      description: Zugängliche Bezeichnung der betreuenden Person oder Stelle.
+    gueltig_ab:
+      type: string
+      format: date
+    gueltig_bis:
+      type: string
+      format: date
+    hinweis:
+      type: string
+      minLength: 1
+      maxLength: 3000
+  required:
+    - art
+  description: Strukturierter Hinweis zur Betreuung einer Person; kein Nachweis einer konkreten Vertretungsbefugnis.
+  examples:
+    - art: betreuer_gesundheitssorge
+      bezeichnung: Beispielbetreuung
+      gueltig_ab: '2026-01-01'

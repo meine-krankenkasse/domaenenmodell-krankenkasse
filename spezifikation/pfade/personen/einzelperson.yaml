@@ -10,14 +10,14 @@ get:
       required: true
       description: Kanonische Ressourcen-ID einer natürlichen Person im API-Mandantenkontext.
       schema:
-        $ref: '../../schemas/personen/person_id.yaml'
+        $ref: '../../schemas/personen.yaml#/person_id'
   responses:
     "200":
       description: Zugängliche Personenstammdaten.
       content:
         application/json:
           schema:
-            $ref: '../../schemas/personen/person.yaml'
+            $ref: '../../schemas/personen.yaml#/person'
           examples:
             stammdaten:
               summary: Synthetische Personenstammdaten mit partnernummer

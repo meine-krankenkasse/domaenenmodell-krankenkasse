@@ -4,7 +4,7 @@ parameters:
     required: true
     description: Ressourcen-ID der Person.
     schema:
-      $ref: '../../schemas/personen/person_id.yaml'
+      $ref: '../../schemas/personen.yaml#/person_id'
 get:
   tags:
     - personen
@@ -17,7 +17,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/personen/adressliste.yaml'
+            $ref: '../../schemas/adressen.yaml#/adressliste'
     '400':
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
     '404':

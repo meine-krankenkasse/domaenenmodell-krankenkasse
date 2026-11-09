@@ -1,9 +1,0 @@
-type: string
-enum:
-  - unbearbeitet
-  - in_bearbeitung
-  - erledigt
-  - in_wiedervorlage
-  - nachbearbeitung_laeuft
-  - storniert
-  - weitergeleitet

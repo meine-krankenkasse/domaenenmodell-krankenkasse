@@ -1,0 +1,167 @@
+kontobewegung:
+  type: object
+  description: |-
+    Buchung auf dem Zahlungskonto mit aktuellem Ausgleichsstatus. Betrag und Buchungsseite gehören zusammen; Stornierung ist eine gesonderte Angabe.
+  required:
+    - id
+    - belegnummer
+    - belegdatum
+    - bezeichnung
+    - betrag
+    - buchungsseite
+    - waehrung
+    - ausgleichsstatus
+    - storniert
+    - positionen
+  properties:
+    id:
+      $ref: 'gemeinsam.yaml#/ressourcen_id'
+    belegnummer:
+      type: string
+      minLength: 1
+      description: Fachliche Belegnummer mit erhaltenen führenden Nullen; kein Ersatz für die Ressourcen-ID.
+    belegdatum:
+      type: string
+      format: date
+      description: Fachliches Datum des Belegs und Grundlage des Zeitfilters; kein technischer Erstellungszeitpunkt.
+    bezeichnung:
+      type: string
+      minLength: 1
+      description: Fachliche Art der Buchung als lesbare Bezeichnung, etwa Beiträge oder Überweisungsgutschrift;
+        kein stabiler Filtercode.
+    betrag:
+      $ref: 'zahlungskonten.yaml#/dezimalbetrag'
+    buchungsseite:
+      $ref: '#/buchungsseite'
+    waehrung:
+      type: string
+      const: EUR
+      description: Währung der Bewegung und sämtlicher Positionen; im aktuellen Umfang ausschließlich Euro.
+    offener_betrag:
+      description: Nicht ausgeglichener absoluter Restbetrag nach aktuellem Stand, ohne Soll-/Haben-Vorzeichen.
+        Fehlt bei unbekanntem oder nicht freigegebenem Wert.
+      allOf:
+        - $ref: 'zahlungskonten.yaml#/dezimalbetrag'
+        - pattern: '^[0-9]'
+    ausgleichsstatus:
+      $ref: '#/ausgleichsstatus'
+    storniert:
+      type: boolean
+      description: Ob diese Bewegung storniert ist; unabhängig vom Ausgleichsstatus und von einer gesonderten
+        Korrekturbuchung.
+    storniert_am:
+      type: string
+      format: date
+      description: Bekanntes Stornierungsdatum; nur bei storniert=true.
+    buchungstext:
+      type: string
+      minLength: 1
+      description: Hinterlegte Erläuterung des Buchungsgrunds; kein durch die API erfundener Erklärungstext.
+    bemerkung:
+      type: string
+      minLength: 1
+      description: Zusätzliche hinterlegte fachliche Bemerkung zur Bewegung, soweit freigegeben.
+    faellig_am:
+      type: string
+      format: date
+      description: Fälligkeit der Forderung oder Verbindlichkeit, soweit bekannt und anwendbar;
+        Positionsfälligkeiten bleiben separat erhalten.
+    wertstellung_am:
+      type: string
+      format: date
+      description: Tatsächliches bekanntes Wertstellungsdatum einer Zahlung; kein prognostiziertes Datum.
+    bankauszugsdatum:
+      type: string
+      format: date
+      description: Zugehöriges bekanntes Bankauszugsdatum einer Zahlung; kein Erstellungsdatum eines
+        Versichertenkontoauszugs.
+    schwebend:
+      type: boolean
+      description: Ob eine Zahlung noch in Transfer ist; nur bei Zahlungen und bekanntem Zustand. Fehlend bedeutet
+        nicht geliefert.
+    positionen:
+      type: array
+      description: Alle zugänglichen fachlichen Positionen dieser Bewegung, nach id aufsteigend. Leere Liste erlaubt
+        keinen Rückschluss auf zurückgehaltene Positionen.
+      items:
+        $ref: '#/kontobewegungsposition'
+  allOf:
+    - if:
+        required:
+          - storniert_am
+      then:
+        properties:
+          storniert:
+            const: true
+
+kontobewegungsliste:
+  type: object
+  required:
+    - data
+  properties:
+    data:
+      type: array
+      maxItems: 100
+      items:
+        $ref: '#/kontobewegung'
+    naechster_versatz:
+      type: integer
+      minimum: 1
+      description: Versatz der nächsten Seite bei unveränderten Filtern; fehlt ohne weitere zugängliche Treffer.
+  description: "Aktueller Stand, kein historischer Zustand am Belegdatum. Sortierung nach belegdatum, danach id, jeweils aufsteigend. Jede Bewegung enthält alle zugänglichen Positionen; diese werden nicht über Seiten aufgeteilt. Folgeaufrufe verwenden unveränderte Filter; Änderungen zwischen Seiten sind möglich. Bewegungs- und Positionsbeträge nicht zusammenzählen. Für einen nachvollziehbaren Kontoauszug sind benötigte Zeiträume, Anfangs-/Endsalden und Erläuterungen von Zahlungszuordnungen noch abzustimmen. bankauszugsdatum bezeichnet ausschließlich den Bankauszug einer Zahlung; ein Ausstellungsdatum des Versichertenkontoauszugs ist nicht enthalten. Kein laufender Saldo oder fertiger Kontoauszug; aus Bewegungen allein lässt sich kein verbindlicher Kontosaldo ableiten."
+
+kontobewegungsposition:
+  type: object
+  description: |-
+    Teil einer Kontobewegung mit eigenem Bezugszeitraum; keine zusätzliche Buchung. Die Währung entspricht der Bewegung.
+  required:
+    - id
+    - betrag
+    - buchungsseite
+  properties:
+    id:
+      $ref: 'gemeinsam.yaml#/ressourcen_id'
+    betrag:
+      $ref: 'zahlungskonten.yaml#/dezimalbetrag'
+    buchungsseite:
+      $ref: '#/buchungsseite'
+    bezeichnung:
+      type: string
+      minLength: 1
+      description: Fachliche Bezeichnung des Positionsinhalts, beispielsweise die Beitrags- oder Leistungsart; kein
+        stabiler Filtercode.
+    bezugszeitraum_von:
+      type: string
+      format: date
+      description: Erster Tag des fachlichen Beitrags- oder Leistungszeitraums, einschließlich. Fehlende Grenzen
+        werden nicht ergänzt.
+    bezugszeitraum_bis:
+      type: string
+      format: date
+      description: Letzter Tag des fachlichen Zeitraums, einschließlich; bei zwei bekannten Grenzen nicht vor
+        bezugszeitraum_von.
+    faellig_am:
+      type: string
+      format: date
+      description: Fachliche Fälligkeit dieser Position, soweit bekannt und anwendbar; keine Ableitung aus dem Belegdatum.
+
+buchungsseite:
+  type: string
+  description: |
+    Soll belastet die Person, Haben entlastet sie, jeweils bei positivem Betrag.
+    Ein negativer Betrag korrigiert die genannte Seite in Gegenrichtung.
+    Dies beschreibt die Buchung, keine unmittelbare Zahlungs- oder Auszahlungszusage.
+  enum:
+    - soll
+    - haben
+
+ausgleichsstatus:
+  type: string
+  description: |
+    Aktueller Ausgleichsstand: offen bedeutet noch nicht ausgeglichen, teilweise_ausgeglichen einen verbleibenden Rest und ausgeglichen einen vollständigen Ausgleich.
+    statistisch ist ein vorläufiger Wert für gesondert geführte Einträge ohne Einordnung in diese drei Ausgleichsstände. Seine fachliche Bedeutung und Wirkung auf den Saldo müssen vor Freigabe bestätigt werden; weder Ausgleich noch Zahlungspflicht daraus ableiten. Stornierung ist separat angegeben.
+  enum:
+    - offen
+    - teilweise_ausgeglichen
+    - ausgeglichen
+    - statistisch

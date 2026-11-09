@@ -4,7 +4,7 @@ info:
   license:
     name: Zero-Clause BSD
     identifier: 0BSD
-  version: "0.12.1-entwurf"
+  version: "0.13.0-entwurf"
   summary: Personen identifizieren, Stammdaten und Kontoinformationen lesen sowie Kontakte und Aufgaben nutzen
   description: |
     # Domänenmodell Krankenkasse
@@ -97,107 +97,107 @@ paths:
 components:
   schemas:
     ressourcen_id:
-      $ref: schemas/gemeinsam/ressourcen_id.yaml
+      $ref: 'schemas/gemeinsam.yaml#/ressourcen_id'
     dezimalbetrag:
-      $ref: schemas/zahlungskonten/dezimalbetrag.yaml
+      $ref: 'schemas/zahlungskonten.yaml#/dezimalbetrag'
     buchungsseite:
-      $ref: schemas/zahlungskonten/buchungsseite.yaml
+      $ref: 'schemas/kontobewegungen.yaml#/buchungsseite'
     ausgleichsstatus:
-      $ref: schemas/zahlungskonten/ausgleichsstatus.yaml
+      $ref: 'schemas/kontobewegungen.yaml#/ausgleichsstatus'
     kontobewegungsposition:
-      $ref: schemas/zahlungskonten/kontobewegungsposition.yaml
+      $ref: 'schemas/kontobewegungen.yaml#/kontobewegungsposition'
     kontobewegung:
-      $ref: schemas/zahlungskonten/kontobewegung.yaml
+      $ref: 'schemas/kontobewegungen.yaml#/kontobewegung'
     kontobewegungsliste:
-      $ref: schemas/zahlungskonten/kontobewegungsliste.yaml
+      $ref: 'schemas/kontobewegungen.yaml#/kontobewegungsliste'
     kontosaldo:
-      $ref: schemas/zahlungskonten/kontosaldo.yaml
+      $ref: 'schemas/zahlungskonten.yaml#/kontosaldo'
     zahlungskonto:
-      $ref: schemas/zahlungskonten/zahlungskonto.yaml
+      $ref: 'schemas/zahlungskonten.yaml#/zahlungskonto'
     zahlungskontenliste:
-      $ref: schemas/zahlungskonten/zahlungskontenliste.yaml
+      $ref: 'schemas/zahlungskonten.yaml#/zahlungskontenliste'
     adresse:
-      $ref: schemas/personen/adresse.yaml
+      $ref: 'schemas/adressen.yaml#/adresse'
     adressliste:
-      $ref: schemas/personen/adressliste.yaml
+      $ref: 'schemas/adressen.yaml#/adressliste'
     kontaktdatum:
-      $ref: schemas/personen/kontaktdatum.yaml
+      $ref: 'schemas/kontaktdaten.yaml#/kontaktdatum'
     kontaktdatenliste:
-      $ref: schemas/personen/kontaktdatenliste.yaml
+      $ref: 'schemas/kontaktdaten.yaml#/kontaktdatenliste'
     betreuungshinweis:
-      $ref: schemas/personen/betreuungshinweis.yaml
+      $ref: 'schemas/personen.yaml#/betreuungshinweis'
     aufgabenstatus:
-      $ref: schemas/aufgaben/aufgabenstatus.yaml
+      $ref: 'schemas/aufgaben.yaml#/aufgabenstatus'
     aufgabe_anlage:
-      $ref: schemas/aufgaben/aufgabe_anlage.yaml
+      $ref: 'schemas/aufgaben.yaml#/aufgabe_anlage'
     aufgabe:
-      $ref: schemas/aufgaben/aufgabe.yaml
+      $ref: 'schemas/aufgaben.yaml#/aufgabe'
     aufgabenliste:
-      $ref: schemas/aufgaben/aufgabenliste.yaml
+      $ref: 'schemas/aufgaben.yaml#/aufgabenliste'
     aufgabe_annahme:
-      $ref: schemas/aufgaben/aufgabe_annahme.yaml
+      $ref: 'schemas/aufgaben.yaml#/aufgabe_annahme'
     kontakt_id:
-      $ref: schemas/kontakte/kontakt_id.yaml
+      $ref: 'schemas/kontakte.yaml#/kontakt_id'
     kontaktkanal:
-      $ref: schemas/kontakte/kontaktkanal.yaml
+      $ref: 'schemas/kontakte.yaml#/kontaktkanal'
     kontaktstatus:
-      $ref: schemas/kontakte/kontaktstatus.yaml
+      $ref: 'schemas/kontakte.yaml#/kontaktstatus'
     kontaktrichtung:
-      $ref: schemas/kontakte/kontaktrichtung.yaml
+      $ref: 'schemas/kontakte.yaml#/kontaktrichtung'
     kontakt_betreff:
-      $ref: schemas/kontakte/kontakt_betreff.yaml
+      $ref: 'schemas/kontakte.yaml#/kontakt_betreff'
     kontakt_bemerkung:
-      $ref: schemas/kontakte/kontakt_bemerkung.yaml
+      $ref: 'schemas/kontakte.yaml#/kontakt_bemerkung'
     externe_kontakt_id:
-      $ref: schemas/kontakte/externe_kontakt_id.yaml
+      $ref: 'schemas/kontakte.yaml#/externe_kontakt_id'
     idempotenzschluessel:
-      $ref: schemas/gemeinsam/idempotenzschluessel.yaml
+      $ref: 'schemas/gemeinsam.yaml#/idempotenzschluessel'
     kontakt_anlage:
-      $ref: schemas/kontakte/kontakt_anlage.yaml
+      $ref: 'schemas/kontakte.yaml#/kontakt_anlage'
     kontakt:
-      $ref: schemas/kontakte/kontakt.yaml
+      $ref: 'schemas/kontakte.yaml#/kontakt'
     kontakt_stichwort:
-      $ref: schemas/kontakte/kontakt_stichwort.yaml
+      $ref: 'schemas/kontakte.yaml#/kontakt_stichwort'
     kontaktliste:
-      $ref: schemas/kontakte/kontaktliste.yaml
+      $ref: 'schemas/kontakte.yaml#/kontaktliste'
     kontakt_annahme:
-      $ref: schemas/kontakte/kontakt_annahme.yaml
+      $ref: 'schemas/kontakte.yaml#/kontakt_annahme'
     person_id:
-      $ref: schemas/personen/person_id.yaml
+      $ref: 'schemas/personen.yaml#/person_id'
     identifikator_art:
-      $ref: schemas/personen/identifikator_art.yaml
+      $ref: 'schemas/personenkennungen.yaml#/identifikator_art'
     identifikator:
-      $ref: schemas/personen/identifikator.yaml
+      $ref: 'schemas/personenkennungen.yaml#/identifikator'
     personenrolle:
-      $ref: schemas/personen/personenrolle.yaml
+      $ref: 'schemas/personen.yaml#/personenrolle'
     person:
-      $ref: schemas/personen/person.yaml
+      $ref: 'schemas/personen.yaml#/person'
     personentreffer:
-      $ref: schemas/personen/personentreffer.yaml
+      $ref: 'schemas/personensuche.yaml#/personentreffer'
     personensuche_ergebnis:
-      $ref: schemas/personen/personensuche_ergebnis.yaml
+      $ref: 'schemas/personensuche.yaml#/personensuche_ergebnis'
     fehler:
-      $ref: schemas/gemeinsam/fehler.yaml
+      $ref: 'schemas/gemeinsam.yaml#/fehler'
     personenname:
-      $ref: schemas/personen/personenname.yaml
+      $ref: 'schemas/personen.yaml#/personenname'
     adress_suchkriterien:
-      $ref: schemas/personen/adress_suchkriterien.yaml
+      $ref: 'schemas/personensuche.yaml#/adress_suchkriterien'
     stammdaten_suchkriterien:
-      $ref: schemas/personen/stammdaten_suchkriterien.yaml
+      $ref: 'schemas/personensuche.yaml#/stammdaten_suchkriterien'
     suchtreffer_adresse:
-      $ref: schemas/personen/suchtreffer_adresse.yaml
+      $ref: 'schemas/personensuche.yaml#/suchtreffer_adresse'
     stammdaten_personentreffer:
-      $ref: schemas/personen/stammdaten_personentreffer.yaml
+      $ref: 'schemas/personensuche.yaml#/stammdaten_personentreffer'
     stammdatensuche_ergebnis:
-      $ref: schemas/personen/stammdatensuche_ergebnis.yaml
+      $ref: 'schemas/personensuche.yaml#/stammdatensuche_ergebnis'
     parameter_hinweis:
-      $ref: schemas/gemeinsam/parameter_hinweis.yaml
+      $ref: 'schemas/gemeinsam.yaml#/parameter_hinweis'
     kvnr:
-      $ref: schemas/personen/kvnr.yaml
+      $ref: 'schemas/personenkennungen.yaml#/kvnr'
     rvnr:
-      $ref: schemas/personen/rvnr.yaml
+      $ref: 'schemas/personenkennungen.yaml#/rvnr'
     partnernummer:
-      $ref: schemas/personen/partnernummer.yaml
+      $ref: 'schemas/personenkennungen.yaml#/partnernummer'
   responses:
     ungueltige_anfrage:
       $ref: antworten/fehlerantworten.yaml#/ungueltige_anfrage

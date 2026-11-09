@@ -4,13 +4,13 @@ parameters:
     required: true
     description: Ressourcen-ID der Person.
     schema:
-      $ref: '../../../schemas/personen/person_id.yaml'
+      $ref: '../../../schemas/personen.yaml#/person_id'
   - name: zahlungskonto_id
     in: path
     required: true
     description: Ressourcen-ID eines eigenen Zahlungskontos der Person, keine Kontonummer.
     schema:
-      $ref: '../../../schemas/gemeinsam/ressourcen_id.yaml'
+      $ref: '../../../schemas/gemeinsam.yaml#/ressourcen_id'
 get:
   tags:
     - personen
@@ -57,7 +57,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../../schemas/zahlungskonten/kontobewegungsliste.yaml'
+            $ref: '../../../schemas/kontobewegungen.yaml#/kontobewegungsliste'
           examples:
             beitrag_mit_zwei_positionen:
               summary: Eine Beitragsbuchung für zwei Monate, teilweise ausgeglichen
@@ -106,7 +106,7 @@ get:
                     storniert: false
                     schwebend: false
                     wertstellung_am: '2026-10-10'
-                    kontoauszugsdatum: '2026-10-12'
+                    bankauszugsdatum: '2026-10-12'
                     positionen:
                       - id: position-beispiel-003
                         betrag: '125.00'

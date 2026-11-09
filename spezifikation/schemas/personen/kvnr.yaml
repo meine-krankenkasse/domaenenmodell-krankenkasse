@@ -1,7 +1,0 @@
-type: string
-minLength: 10
-maxLength: 10
-pattern: ^[A-Z][0-9]{9}$
-description: 'Lebenslange, kassenübergreifende zehnstellige Versicherten-ID: ein Großbuchstabe und neun
-  Ziffern einschließlich Prüfziffer. Frühere kassenindividuelle Nummern sind ausgeschlossen. Geprüft wird der
-  Zeichenaufbau, nicht die Prüfziffer.'

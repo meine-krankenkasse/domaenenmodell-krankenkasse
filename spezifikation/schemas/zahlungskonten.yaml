@@ -1,0 +1,60 @@
+zahlungskonto:
+  type: object
+  description: Eigenes fachliches Zahlungskonto der Person bei der Krankenkasse, keine Bankverbindung.
+  required:
+    - id
+    - kontonummer
+    - saldo
+  properties:
+    id:
+      $ref: 'gemeinsam.yaml#/ressourcen_id'
+    kontonummer:
+      type: string
+      minLength: 1
+      description: Fachliche Nummer des Zahlungskontos. Führende Nullen bleiben erhalten; keine IBAN.
+    saldo:
+      $ref: '#/kontosaldo'
+
+zahlungskontenliste:
+  type: object
+  description: "Vollständige zugängliche eigene Zahlungskonten am Abrufdatum in Europe/Berlin, je Konto einmal und nach id aufsteigend sortiert. Maßgeblich ist die Kontoinhaberschaft, nicht ein Bezug zu einzelnen Buchungen. Jedes Konto hat einen eigenen Saldo; kein Gesamtsaldo und keine historische Stichtagsabfrage."
+  required:
+    - data
+  properties:
+    data:
+      type: array
+      items:
+        $ref: '#/zahlungskonto'
+
+kontosaldo:
+  type: object
+  description: |-
+    Tagesbezogener Euro-Saldo: positiv bedeutet Guthaben der Person, negativ eine Forderung der Krankenkasse. Der Saldo bestimmt weder Fälligkeit noch Auszahlbarkeit. Unbekannte Werte werden nicht als 0.00 geliefert.
+    Die genaue Berechnungsregel einschließlich noch nicht fälliger Beträge, Umbuchungen, Stornos und statistischer Einträge ist vor Freigabe fachlich festzulegen. Eine auf bereits fällige offene Posten begrenzte Summe erfüllt diesen Vertrag nicht allein aufgrund gleicher Bezeichnung.
+  required:
+    - betrag
+    - waehrung
+    - stichtag
+  properties:
+    betrag:
+      $ref: '#/dezimalbetrag'
+    waehrung:
+      type: string
+      description: Währung des Saldos; dieser Abruf unterstützt ausschließlich Euro.
+      const: EUR
+    stichtag:
+      type: string
+      format: date
+      description: Fachlicher Berechnungstag; das Abrufdatum in Europe/Berlin, kein Aktualisierungszeitstempel.
+
+dezimalbetrag:
+  type: string
+  description: |-
+    Exakter Dezimalbetrag mit Punkt und zwei Nachkommastellen. Keine Tausendertrennzeichen, überflüssigen führenden Nullen oder führendes Plus; -0.00 ist unzulässig.
+  pattern: '^-?(0|[1-9][0-9]*)\.[0-9]{2}(?![\s\S])'
+  not:
+    const: '-0.00'
+  examples:
+    - '-125.50'
+    - '42.00'
+    - '0.00'

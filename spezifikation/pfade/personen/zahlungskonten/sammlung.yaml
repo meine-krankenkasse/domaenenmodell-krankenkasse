@@ -4,7 +4,7 @@ parameters:
     required: true
     description: Ressourcen-ID der Person.
     schema:
-      $ref: '../../../schemas/personen/person_id.yaml'
+      $ref: '../../../schemas/personen.yaml#/person_id'
 get:
   tags:
     - personen
@@ -17,7 +17,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../../schemas/zahlungskonten/zahlungskontenliste.yaml'
+            $ref: '../../../schemas/zahlungskonten.yaml#/zahlungskontenliste'
           examples:
             forderungsueberhang:
               summary: Die Krankenkasse hat insgesamt eine Forderung auf diesem Konto

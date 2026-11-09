@@ -1,0 +1,89 @@
+identifikator:
+  type: object
+  required:
+    - art
+    - wert
+  description: |-
+    Aktuell gültige fachliche Personenkennung. Gültigkeitsangaben beziehen sich auf die Kennung, nicht auf ein Versicherungsverhältnis.
+  properties:
+    art:
+      $ref: '#/identifikator_art'
+    wert:
+      type: string
+      minLength: 1
+      maxLength: 128
+      description: Wert als Zeichenfolge einschließlich führender Nullen.
+    gueltig_ab:
+      type: string
+      format: date
+      description: Erster Gültigkeitstag, soweit fachlich bekannt; keine technischen Ersatzdaten.
+    gueltig_bis:
+      type: string
+      format: date
+      description: Letzter Gültigkeitstag einschließlich; bei offenem Ende weggelassen.
+  allOf:
+    - if:
+        properties:
+          art:
+            const: kvnr
+        required:
+          - art
+      then:
+        properties:
+          wert:
+            $ref: '#/kvnr'
+    - if:
+        properties:
+          art:
+            const: rvnr
+        required:
+          - art
+      then:
+        properties:
+          wert:
+            $ref: '#/rvnr'
+    - if:
+        properties:
+          art:
+            const: partnernummer
+        required:
+          - art
+      then:
+        properties:
+          wert:
+            $ref: '#/partnernummer'
+
+identifikator_art:
+  type: string
+  enum:
+    - kvnr
+    - partnernummer
+    - rvnr
+  description: |-
+    Art der Personenkennung; die jeweilige Nummer ist im gleichnamigen Schema beschrieben.
+
+kvnr:
+  type: string
+  minLength: 10
+  maxLength: 10
+  pattern: ^[A-Z][0-9]{9}$
+  description: 'Lebenslange, kassenübergreifende zehnstellige Versicherten-ID: ein Großbuchstabe und neun
+    Ziffern einschließlich Prüfziffer. Frühere kassenindividuelle Nummern sind ausgeschlossen. Geprüft wird der
+    Zeichenaufbau, nicht die Prüfziffer.'
+
+rvnr:
+  type: string
+  minLength: 12
+  maxLength: 12
+  pattern: ^[0-9]{8}[A-Z][0-9]{3}$
+  description: "Von der gesetzlichen Rentenversicherung vergebene zwölfstellige Personenkennung: acht Ziffern,
+    ein Großbuchstabe und drei Ziffern. Geprüft wird der Zeichenaufbau, nicht die Prüfziffer. Interimsnummern
+    sind nicht enthalten."
+
+partnernummer:
+  type: string
+  minLength: 1
+  maxLength: 128
+  pattern: ^\S+$
+  description: Fachliche Personenkennung im Datenbestand einer Krankenkasse. Führende Nullen bleiben erhalten.
+    Sie ist nicht kassenübergreifend eindeutig und nicht mit der Ressourcen-ID gleichzusetzen.

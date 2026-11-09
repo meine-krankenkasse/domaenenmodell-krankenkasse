@@ -21,14 +21,14 @@ get:
       required: false
       description: Bekannte Art der Kennung. Ohne Angabe werden alle unterstützten Arten geprüft.
       schema:
-        $ref: ../../schemas/personen/identifikator_art.yaml
+        $ref: '../../schemas/personenkennungen.yaml#/identifikator_art'
   responses:
     "200":
       description: Vollständiges Suchergebnis.
       content:
         application/json:
           schema:
-            $ref: '../../schemas/personen/personensuche_ergebnis.yaml'
+            $ref: '../../schemas/personensuche.yaml#/personensuche_ergebnis'
           examples:
             eindeutig:
               summary: Eine zugängliche Person gefunden
@@ -73,7 +73,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/gemeinsam/fehler.yaml'
+            $ref: '../../schemas/gemeinsam.yaml#/fehler'
           example:
             code: treffermenge_zu_gross
             meldung: Die Suche liefert zu viele Treffer. Bitte die Identifikatorart präzisieren.

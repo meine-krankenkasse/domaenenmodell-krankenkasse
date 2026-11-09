@@ -1,5 +1,0 @@
-type: string
-minLength: 1
-maxLength: 64
-pattern: ^\S+$
-description: "Unveränderte Ereigniskennung im vereinbarten Wertebereich der Anwendung. Bezeichnet innerhalb des Mandanten dasselbe Ereignis unabhängig von person_id und Idempotency-Key. Gleiche Person und gleiche Eingaben ergeben 200 mit der vorhandenen Kontakt-ID; abweichende oder mehrdeutige Zuordnungen ergeben 409 externe_referenz_konflikt."

@@ -16,7 +16,7 @@ Die [API-Dokumentation](https://meine-krankenkasse.github.io/domaenenmodell-kran
 
 ## Spezifikation bearbeiten und prüfen
 
-Die Quellen gliedern sich in `pfade/`, fachlich gruppierte `schemas/`, `parameter/` und `antworten/`. Der Einstieg ist `spezifikation/openapi.yaml`; fachliche Regeln und Beispiele stehen bei den jeweiligen Definitionen. Die verbindlichen Strukturvorgaben beschreibt ADR-005.
+Die Quellen gliedern sich in `pfade/`, fachlich gruppierte Schema-Dateien unter `schemas/`, `parameter/` und `antworten/`. Der Einstieg ist `spezifikation/openapi.yaml`; fachliche Regeln und Beispiele stehen bei den jeweiligen Definitionen. Zusammengehörige Schemas, etwa für Adressen oder Aufgaben, stehen jeweils in einer gemeinsamen Datei. Die verbindlichen Strukturvorgaben beschreibt ADR-005.
 
 Mit Node.js (ab 22.12) und npm (ab 10) im Verzeichnis dieser README ausführen:
 
@@ -25,7 +25,7 @@ npm ci
 npm test
 ```
 
-`npm test` erzeugt selbst ein frisches temporäres Bündel und prüft Quellen und Gesamtvertrag mit Redocly CLI sowie Beispiele, fachliche Grenzen und Referenzen. Dafür werden der eingebaute Node.js-Test-Runner, Ajv mit JSON Schema 2020-12 und `ajv-formats` sowie `yaml` verwendet. Doppelte YAML-Schlüssel werden abgewiesen. `npm run lint` führt die OpenAPI-Prüfung der Quellen auch einzeln aus.
+`npm test` erzeugt selbst ein frisches temporäres Bündel und prüft Quellen und Gesamtvertrag mit Redocly CLI sowie Schema-Kompilierbarkeit, Beispiele gegen ihre jeweils deklarierten Schemas und Referenzen. Dafür werden der eingebaute Node.js-Test-Runner, Ajv mit JSON Schema 2020-12 und `ajv-formats` sowie `yaml` verwendet. Doppelte YAML-Schlüssel werden abgewiesen. Fachliche Regeln, konkrete Felder, Wertebereiche und Endpunktumfänge werden derzeit nicht durch zusätzliche inhaltliche Tests festgeschrieben. `npm run lint` führt die OpenAPI-Prüfung der Quellen auch einzeln aus.
 
 Für eine lokale Austauschdatei bei Bedarf `npm run bundle` ausführen. Die Ausgabe liegt unter `build/openapi.yaml`; für die Tests ist dieser Schritt nicht erforderlich. Eingecheckt werden ausschließlich die gepflegten Quellen und Projektdateien.
 
