@@ -2,8 +2,8 @@ post:
   tags:
     - personen
   operationId: personen_nach_stammdaten_suchen
-  summary: Personen anhand von Namen, Geburtsdatum und Adresse suchen
-  description: "Sucht Personen anhand von Namen, Geburtsdatum und Adresse, ohne Daten zu verändern. Mindestangaben und Vergleichsregeln stehen im Suchschema. Ungültige Kriterien ergeben 400, mehr als 20 Treffer 422 und unvollständige Suchen 503."
+  summary: Personen anhand von Namen, Geburtsdatum und Anschrift suchen
+  description: "Sucht Personen anhand von Namen, Geburtsdatum und Anschrift, ohne Daten zu verändern. Mindestangaben und Vergleichsregeln stehen im Suchschema. Ungültige Kriterien ergeben 400, mehr als 20 Treffer 422 und unvollständige Suchen 503."
   requestBody:
     required: true
     description: Bekannte Suchkriterien; unbekannte Angaben weglassen. Mindestkombinationen sind im Schema festgelegt.

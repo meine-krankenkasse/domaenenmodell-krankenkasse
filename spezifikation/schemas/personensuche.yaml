@@ -8,8 +8,8 @@ stammdaten_suchkriterien:
         - geburtsdatum
     - required:
         - vorname
-        - adresse
-  description: "Alle Angaben gelten gemeinsam. Erforderlich sind Nachname und Geburtsdatum oder Vorname, Nachname und Adresse mit Land sowie Postleitzahl oder Ort. Textvergleich nach Unicode-Normalisierung NFC, Kleinschreibung, Entfernen äußeren und Vereinheitlichen zusammenhängenden Leerraums: vollständige Gleichheit, einschließlich Umlauten, ß, Satzzeichen und Bindestrichen. Mehrere Vornamen werden zusammen verglichen; Geburtsdaten als vollständige Kalenderdaten, Postleitzahlen als Text. Ländercodes bleiben Großbuchstaben. Adresskriterien müssen gemeinsam eine eigene, aktuell gültige Melde- oder Zustelladresse erfüllen. Fehlende Merkmale erfüllen das Kriterium nicht."
+        - anschrift
+  description: "Alle Angaben gelten gemeinsam. Erforderlich sind Nachname und Geburtsdatum oder Vorname, Nachname und Anschrift mit Land sowie Postleitzahl oder Ort. Textvergleich nach Unicode-Normalisierung NFC, Kleinschreibung, Entfernen äußeren und Vereinheitlichen zusammenhängenden Leerraums: vollständige Gleichheit, einschließlich Umlauten, ß, Satzzeichen und Bindestrichen. Mehrere Vornamen werden zusammen verglichen; Geburtsdaten als vollständige Kalenderdaten, Postleitzahlen als Text. Ländercodes bleiben Großbuchstaben. Anschriftenkriterien müssen gemeinsam eine eigene, aktuell gültige Melde- oder Zustellanschrift erfüllen. Fehlende Merkmale erfüllen das Kriterium nicht."
   properties:
     vorname:
       type: string
@@ -31,10 +31,10 @@ stammdaten_suchkriterien:
       format: date
       description: Vollständiges Geburtsdatum im Format JJJJ-MM-TT. Teilangaben oder erfundene Ersatzdaten sind
         nicht zulässig.
-    adresse:
-      $ref: '#/adress_suchkriterien'
+    anschrift:
+      $ref: '#/anschrift_suchkriterien'
 
-adress_suchkriterien:
+anschrift_suchkriterien:
   type: object
   additionalProperties: false
   required:
@@ -47,9 +47,9 @@ adress_suchkriterien:
   dependentRequired:
     hausnummer:
       - strasse
-  description: Kriterien für eine eigene, aktuell gültige Melde- oder Zustelladresse der Person. Land und
-    mindestens Postleitzahl oder Ort sind erforderlich. Sämtliche Adresskriterien müssen dieselbe Adresse
-    erfüllen. Anschriften von Vertretern oder abweichenden Empfängern zählen nicht als eigene Adresse.
+  description: Kriterien für eine eigene, aktuell gültige Melde- oder Zustellanschrift der Person. Land und
+    mindestens Postleitzahl oder Ort sind erforderlich. Sämtliche Anschriftenkriterien müssen dieselbe Anschrift
+    erfüllen. Anschriften von Vertretern oder abweichenden Empfängern zählen nicht als eigene Anschrift.
   properties:
     postleitzahl:
       type: string
@@ -79,7 +79,7 @@ adress_suchkriterien:
     land:
       type: string
       pattern: ^[A-Z]{2}$
-      description: Land als gültiger ISO-3166-1-Alpha-2-Code, beispielsweise DE; keine Länderbezeichnung wie beim Adressabruf. Kein stillschweigender
+      description: Land als gültiger ISO-3166-1-Alpha-2-Code, beispielsweise DE; keine Länderbezeichnung wie beim Anschriftenabruf. Kein stillschweigender
         Standardwert. Der Zeichenaufbau allein bestätigt noch keinen vergebenen Ländercode.
       examples:
         - DE
@@ -98,18 +98,18 @@ adress_suchkriterien:
             minLength: 5
             maxLength: 5
 
-suchtreffer_adresse:
+suchtreffer_anschrift:
   type: object
   minProperties: 1
-  description: Zugänglicher Ausschnitt einer Adresse, die die angegebenen Adresskriterien erfüllt. Keine
-    vollständige Adressauskunft. Nur bei einer Suche mit Adresskriterien geliefert.
+  description: Zugänglicher Ausschnitt einer Anschrift, die die angegebenen Anschriftenkriterien erfüllt. Keine
+    vollständige Anschriftenauskunft. Nur bei einer Suche mit Anschriftenkriterien geliefert.
   properties:
     postleitzahl:
       type: string
-      description: Postleitzahl der passenden Adresse einschließlich führender Nullen.
+      description: Postleitzahl der passenden Anschrift einschließlich führender Nullen.
     ort:
       type: string
-      description: Ort der passenden Adresse.
+      description: Ort der passenden Anschrift.
     land:
       type: string
       pattern: ^[A-Z]{2}$
@@ -129,13 +129,13 @@ stammdaten_personentreffer:
       type: string
       format: date
       description: Geburtsdatum zur Unterscheidung, soweit bekannt und zur Ausgabe freigegeben.
-    passende_adressen:
+    passende_anschriften:
       type: array
       minItems: 1
       items:
-        $ref: '#/suchtreffer_adresse'
-      description: Zugängliche Ausschnitte der zu den Adresskriterien passenden eigenen Adressen. Bei Suche ohne
-        Adresskriterien weggelassen; keine Aussage über den vollständigen Adressbestand.
+        $ref: '#/suchtreffer_anschrift'
+      description: Zugängliche Ausschnitte der zu den Anschriftenkriterien passenden eigenen Anschriften. Bei Suche ohne
+        Anschriftenkriterien weggelassen; keine Aussage über den vollständigen Anschriftenbestand.
 
 stammdatensuche_ergebnis:
   type: object

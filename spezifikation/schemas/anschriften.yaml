@@ -1,4 +1,4 @@
-adresse:
+anschrift:
   type: object
   properties:
     id:
@@ -24,35 +24,35 @@ adresse:
     land:
       type: string
       minLength: 1
-    adresse_in_pruefung:
+    anschrift_in_pruefung:
       type: boolean
     art:
       type: string
       enum:
-        - meldeadresse
-        - zustelladresse
+        - meldeanschrift
+        - zustellanschrift
   required:
     - id
     - art
-  description: Eigene postalische Adresse. land ist die Länderbezeichnung, kein ISO-Code wie bei der Adresssuche. Unbekannte Bestandteile entfallen;
-    Postfachadressen benötigen keine Straße. Getrennte Adresszuordnungen werden nicht anhand gleicher Anschrift
+  description: Eigene postalische Anschrift. land ist die Länderbezeichnung, kein ISO-Code wie bei der Anschriftensuche. Unbekannte Bestandteile entfallen;
+    Postfachanschriften benötigen keine Straße. Getrennte Anschriftenzuordnungen werden nicht anhand gleicher Anschrift
     zusammengeführt.
   examples:
-    - id: adresse-001
+    - id: anschrift-001
       strasse: Beispielweg
       hausnummer: '7'
       postleitzahl: '12345'
       ort: Beispielstadt
       land: Deutschland
-      art: meldeadresse
+      art: meldeanschrift
 
-adressliste:
+anschriftenliste:
   type: object
   properties:
     data:
       type: array
       items:
-        $ref: '#/adresse'
+        $ref: '#/anschrift'
   required:
     - data
-  description: "Vollständige Liste eigener, am Abrufdatum in Europe/Berlin gültiger Melde- und Zustelladressen; Gültigkeitsgrenzen einschließlich. Nach id aufsteigend sortiert. Getrennte Zuordnungen bleiben auch bei gleicher Anschrift erhalten. Keine historischen Einträge oder Adressen anderer Personen."
+  description: "Vollständige Liste eigener, am Abrufdatum in Europe/Berlin gültiger Melde- und Zustellanschriften; Gültigkeitsgrenzen einschließlich. Nach id aufsteigend sortiert. Getrennte Zuordnungen bleiben auch bei gleicher Anschrift erhalten. Keine historischen Einträge oder Anschriften anderer Personen."

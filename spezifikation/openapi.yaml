@@ -4,7 +4,7 @@ info:
   license:
     name: Zero-Clause BSD
     identifier: 0BSD
-  version: "0.16.0-entwurf"
+  version: "0.17.0-entwurf"
   summary: Personen identifizieren, Stammdaten und Kontoinformationen lesen sowie Kontakte und Aufgaben nutzen
   description: |
     # Domänenmodell Krankenkasse
@@ -21,7 +21,7 @@ info:
     weiterentwickeln, ergänzen oder austauschen lassen, ohne den fachlichen Vertrag zu verändern.
 
     ## Was der Entwurf umfasst
-    Personen finden und Stammdaten, Betreuungshinweise, Adressen und Kontaktdaten lesen;
+    Personen finden und Stammdaten, Betreuungshinweise, Anschriften und Kommunikationsverbindungen lesen;
     Zahlungskonten mit Salden und Kontobewegungen lesen sowie Kontakte und Aufgaben lesen und anlegen.
     Nur kontakt_anlegen und aufgabe_anlegen schreiben Daten.
     Der Entwurf ist ein Vorschlag zur Abstimmung, kein verabschiedeter Standard oder Nachweis
@@ -79,12 +79,12 @@ tags:
 paths:
   /personen/{person_id}:
     $ref: pfade/personen/einzelperson.yaml
-  /personen/{person_id}/adressen:
-    $ref: pfade/personen/adressen.yaml
+  /personen/{person_id}/anschriften:
+    $ref: pfade/personen/anschriften.yaml
   /personen/{person_id}/aufgaben:
     $ref: pfade/personen/aufgaben.yaml
-  /personen/{person_id}/kontaktdaten:
-    $ref: pfade/personen/kontaktdaten.yaml
+  /personen/{person_id}/kommunikationsverbindungen:
+    $ref: pfade/personen/kommunikationsverbindungen.yaml
   /personen/{person_id}/kontakte:
     $ref: pfade/personen/kontakte.yaml
   /personen/{person_id}/zahlungskonten:
@@ -117,14 +117,14 @@ components:
       $ref: 'schemas/zahlungskonten.yaml#/zahlungskonto'
     zahlungskontenliste:
       $ref: 'schemas/zahlungskonten.yaml#/zahlungskontenliste'
-    adresse:
-      $ref: 'schemas/adressen.yaml#/adresse'
-    adressliste:
-      $ref: 'schemas/adressen.yaml#/adressliste'
-    kontaktdatum:
-      $ref: 'schemas/kontaktdaten.yaml#/kontaktdatum'
-    kontaktdatenliste:
-      $ref: 'schemas/kontaktdaten.yaml#/kontaktdatenliste'
+    anschrift:
+      $ref: 'schemas/anschriften.yaml#/anschrift'
+    anschriftenliste:
+      $ref: 'schemas/anschriften.yaml#/anschriftenliste'
+    kommunikationsverbindung:
+      $ref: 'schemas/kommunikationsverbindungen.yaml#/kommunikationsverbindung'
+    kommunikationsverbindungsliste:
+      $ref: 'schemas/kommunikationsverbindungen.yaml#/kommunikationsverbindungsliste'
     betreuungshinweis:
       $ref: 'schemas/personen.yaml#/betreuungshinweis'
     aufgabenstatus:
@@ -183,12 +183,12 @@ components:
       $ref: 'schemas/gemeinsam.yaml#/fehler'
     personenname:
       $ref: 'schemas/personen.yaml#/personenname'
-    adress_suchkriterien:
-      $ref: 'schemas/personensuche.yaml#/adress_suchkriterien'
+    anschrift_suchkriterien:
+      $ref: 'schemas/personensuche.yaml#/anschrift_suchkriterien'
     stammdaten_suchkriterien:
       $ref: 'schemas/personensuche.yaml#/stammdaten_suchkriterien'
-    suchtreffer_adresse:
-      $ref: 'schemas/personensuche.yaml#/suchtreffer_adresse'
+    suchtreffer_anschrift:
+      $ref: 'schemas/personensuche.yaml#/suchtreffer_anschrift'
     stammdaten_personentreffer:
       $ref: 'schemas/personensuche.yaml#/stammdaten_personentreffer'
     stammdatensuche_ergebnis:

@@ -8,16 +8,16 @@ parameters:
 get:
   tags:
     - personen
-  operationId: kontaktdaten_lesen
-  summary: Aktuelle Telefonnummern und E-Mail-Adressen lesen
-  description: "Liefert aktuelle eigene Telefon-, Mobil- und E-Mail-Kontaktdaten. Unvollständige Abrufe ergeben 503."
+  operationId: anschriften_lesen
+  summary: Aktuelle Melde- und Zustellanschriften einer Person lesen
+  description: "Liefert aktuelle eigene Melde- und Zustellanschriften. Die Angaben bestimmen keine verbindliche Versandanschrift; unvollständige Abrufe ergeben 503."
   responses:
     '200':
       description: Zugängliche Daten im beschriebenen Umfang.
       content:
         application/json:
           schema:
-            $ref: '../../schemas/kontaktdaten.yaml#/kontaktdatenliste'
+            $ref: '../../schemas/anschriften.yaml#/anschriftenliste'
     '400':
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
     '404':

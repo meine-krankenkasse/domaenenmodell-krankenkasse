@@ -40,7 +40,7 @@ parameter_hinweis:
   properties:
     parameter:
       type: string
-      description: Betroffener Parameter beziehungsweise Punktpfad im Suchobjekt, beispielsweise adresse.land.
+      description: Betroffener Parameter beziehungsweise Punktpfad im Suchobjekt, beispielsweise anschrift.land.
     grund:
       type: string
       pattern: ^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$

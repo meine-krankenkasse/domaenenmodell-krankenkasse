@@ -36,7 +36,7 @@ person:
     bevorzugter_kontaktkanal:
       type: string
       pattern: ^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
-      description: Ausdrücklich bekannte kanalübergreifende Kontaktpräferenz der Person, etwa telefon, e_mail oder brief. Kein Nachweis einer Einwilligung oder einer verbindlichen Versandvorgabe. Nicht aus einzelnen bevorzugten Kontaktdaten ableiten; bei unbekannter oder nicht eindeutiger Präferenz weglassen.
+      description: Ausdrücklich bekannte kanalübergreifende Kontaktpräferenz der Person, etwa telefon, e_mail oder brief. Kein Nachweis einer Einwilligung oder einer verbindlichen Versandvorgabe. Nicht aus einzelnen bevorzugten Kommunikationsverbindungen ableiten; bei unbekannter oder nicht eindeutiger Präferenz weglassen.
       examples:
         - e_mail
     rollen:
