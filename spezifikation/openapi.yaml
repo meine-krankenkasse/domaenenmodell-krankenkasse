@@ -4,7 +4,7 @@ info:
   license:
     name: Zero-Clause BSD
     identifier: 0BSD
-  version: "0.13.0-entwurf"
+  version: "0.14.0-entwurf"
   summary: Personen identifizieren, Stammdaten und Kontoinformationen lesen sowie Kontakte und Aufgaben nutzen
   description: |
     # Domänenmodell Krankenkasse
@@ -49,9 +49,10 @@ info:
 
     Die Suche funktioniert in jedem Zugriffskontext: mit bekannter ID, einer Kennung bekannter
     oder unbekannter Art oder mit ausreichenden Stammdaten. Bei Kennungen aus Dokumenten verarbeitet
-    die API den extrahierten Wert, nicht das Dokument. Unterstützte Arten sind kvnr, partnernummer
-    und rvnr. Mehrdeutige Treffer erfordern weitere Angaben oder eine bestätigte Auswahl;
-    bei zu vielen Treffern müssen die Suchkriterien eingegrenzt werden. Fehlende Angaben werden nicht erfunden.
+    die API den extrahierten Wert, nicht das Dokument. Suchbare Arten sind kvnr
+    und rvnr; sie liefern höchstens einen Treffer. Bei der Stammdatensuche erfordern mehrdeutige Treffer
+    weitere Angaben oder eine bestätigte Auswahl; bei zu vielen Treffern müssen die Suchkriterien
+    eingegrenzt werden. Fehlende Angaben werden nicht erfunden.
 
     Eine Suche findet Datensätze, bestätigt aber keine Identität eines Aufrufers oder Anrufers
     und erteilt keinen Auftrag für weitere Aktionen. Auch die Stammdatensuche mit POST liest nur:
@@ -166,6 +167,8 @@ components:
       $ref: 'schemas/personen.yaml#/person_id'
     identifikator_art:
       $ref: 'schemas/personenkennungen.yaml#/identifikator_art'
+    suchbare_identifikator_art:
+      $ref: 'schemas/personenkennungen.yaml#/suchbare_identifikator_art'
     identifikator:
       $ref: 'schemas/personenkennungen.yaml#/identifikator'
     personenrolle:

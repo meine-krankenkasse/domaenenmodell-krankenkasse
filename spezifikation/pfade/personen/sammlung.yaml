@@ -3,7 +3,7 @@ get:
     - personen
   operationId: personen_suchen
   summary: Personen anhand eines Identifikators suchen
-  description: "Sucht Personen anhand einer aktuell gültigen Kennung, bei unbekannter Art über alle unterstützten Nummernarten. Verglichen wird exakt einschließlich führender Nullen, ohne Freitextinterpretation. Ungültiges Format bei angegebener Art ergibt 400; ohne Art werden nur unpassende Arten ausgeschlossen. Mehr als 20 Treffer ergeben 422, unvollständige Suchen 503."
+  description: "Sucht Personen anhand einer aktuell gültigen Kennung, bei unbekannter Art über alle suchbaren Nummernarten. Verglichen wird exakt einschließlich führender Nullen, ohne Freitextinterpretation. Ungültiges Format bei angegebener Art ergibt 400; ohne Art werden nur unpassende Arten ausgeschlossen. Unvollständige Suchen ergeben 503."
   parameters:
     - name: identifikator_wert
       in: query
@@ -15,13 +15,13 @@ get:
         minLength: 1
         maxLength: 128
         pattern: ^\S+$
-      example: "000123456789"
+      example: A123456789
     - name: identifikator_art
       in: query
       required: false
-      description: Bekannte Art der Kennung. Ohne Angabe werden alle unterstützten Arten geprüft.
+      description: Bekannte Art der Kennung. Ohne Angabe werden alle suchbaren Arten geprüft.
       schema:
-        $ref: '../../schemas/personenkennungen.yaml#/identifikator_art'
+        $ref: '../../schemas/personenkennungen.yaml#/suchbare_identifikator_art'
   responses:
     "200":
       description: Vollständiges Suchergebnis.
@@ -37,7 +37,7 @@ get:
                 data:
                   - id: person-beispiel-001
                     passende_identifikator_arten:
-                      - partnernummer
+                      - kvnr
                     name:
                       vorname: Erika
                       nachname: Musterfrau
@@ -46,37 +46,8 @@ get:
               value:
                 auswertung: kein_treffer
                 data: []
-            mehrdeutig:
-              summary: Ein Suchwert passt zu zwei Personen
-              value:
-                auswertung: mehrdeutig
-                data:
-                  - id: person-beispiel-001
-                    passende_identifikator_arten:
-                      - partnernummer
-                  - id: person-beispiel-002
-                    passende_identifikator_arten:
-                      - partnernummer
-            mehrere_arten_eine_person:
-              summary: Mehrere passende Arten bezeichnen dieselbe Person
-              value:
-                auswertung: eindeutig
-                data:
-                  - id: person-beispiel-001
-                    passende_identifikator_arten:
-                      - partnernummer
-                      - rvnr
     "400":
       $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
-    "422":
-      description: Mehr als 20 zugängliche Personen; Identifikatorart präzisieren oder Datenbestand klären.
-      content:
-        application/json:
-          schema:
-            $ref: '../../schemas/gemeinsam.yaml#/fehler'
-          example:
-            code: treffermenge_zu_gross
-            meldung: Die Suche liefert zu viele Treffer. Bitte die Identifikatorart präzisieren.
     "500":
       $ref: '../../antworten/fehlerantworten.yaml#/interner_fehler'
     "503":
