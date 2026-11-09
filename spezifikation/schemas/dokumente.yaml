@@ -1,0 +1,43 @@
+dokumentreferenz:
+  type: object
+  required:
+    - archiv_id
+    - dokument_id
+  description: Verweis auf ein archiviertes Dokument der Person, abrufbar mit dokument_lesen. archiv_id und
+    dokument_id bezeichnen das Dokument nur gemeinsam und werden stets zusammen geliefert.
+  properties:
+    archiv_id:
+      $ref: '#/archiv_id'
+    dokument_id:
+      $ref: '#/dokument_id'
+    dateiname:
+      $ref: '#/dateiname'
+  examples:
+    - archiv_id: '17'
+      dokument_id: dokument-beispiel-001
+      dateiname: Gespraechsnotiz.pdf
+
+archiv_id:
+  type: string
+  pattern: ^[1-9][0-9]*$
+  description: Kennung des Archivs als positive ganze Zahl in Dezimalschreibweise ohne führende Nullen, übertragen
+    als Zeichenfolge.
+  examples:
+    - '17'
+
+dokument_id:
+  type: string
+  minLength: 1
+  maxLength: 50
+  pattern: ^[A-Za-z0-9._~:-]+$
+  description: Kennung des Dokuments innerhalb seines Archivs; nur zusammen mit archiv_id eindeutig. Enthält
+    ausschließlich URL-sichere Zeichen.
+  examples:
+    - dokument-beispiel-001
+
+dateiname:
+  type: string
+  minLength: 1
+  maxLength: 200
+  description: Dateiname des Dokuments zur Anzeige und zum Speichern, höchstens 200 Unicode-Codepoints; keine
+    Pfadangabe und kein verlässlicher Hinweis auf das Format.

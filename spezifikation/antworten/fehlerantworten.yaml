@@ -25,6 +25,15 @@ zahlungskonto_nicht_gefunden:
       example:
         code: zahlungskonto_nicht_gefunden
         meldung: Das Zahlungskonto wurde nicht gefunden.
+dokument_nicht_gefunden:
+  description: Person oder Dokument unbekannt, nicht zugänglich oder nicht einander zugeordnet.
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/gemeinsam.yaml#/fehler'
+      example:
+        code: dokument_nicht_gefunden
+        meldung: Das Dokument wurde nicht gefunden.
 interner_fehler:
   description: Die Anfrage konnte wegen eines internen Fehlers nicht sicher abgeschlossen werden. Bei Schreiboperationen ist damit keine Wirkungslosigkeit bestätigt.
   content:

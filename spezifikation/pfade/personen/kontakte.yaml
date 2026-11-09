@@ -77,6 +77,10 @@ get:
                   - id: kontakt-beispiel-002
                     kontakt_am: '2026-10-21T08:00:00Z'
                     kanal: telefon
+                    dokument:
+                      dokument_id: dokument-beispiel-001
+                      archiv_id: '17'
+                      dateiname: Gespraechsnotiz.pdf
                 naechster_versatz: 1
             keine_kontakte:
               value:

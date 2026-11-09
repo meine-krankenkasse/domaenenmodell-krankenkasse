@@ -4,7 +4,7 @@ Ein gemeinsames fachliches Modell mit REST-API-Vertrag für Krankenkassen.
 
 Dieses Repository dient als Grundlage für die Abstimmung zwischen Krankenkassen und Partnern, um ein gemeinsames, kassenübergreifend nutzbares Domänenmodell zu entwickeln.
 
-Das offene, erweiterbare Modell bietet Anwendungen und KI-Agenten einen gemeinsamen fachlichen Zugang über Systemgrenzen hinweg. Der erste Entwurf umfasst Personensuche, Stammdaten, Anschriften, Kommunikationsverbindungen und Zahlungskonten mit Salden und Kontobewegungen sowie das Lesen und Anlegen von Kontakten und Aufgaben.
+Das offene, erweiterbare Modell bietet Anwendungen und KI-Agenten einen gemeinsamen fachlichen Zugang über Systemgrenzen hinweg. Der erste Entwurf umfasst Personensuche, Stammdaten, Anschriften, Kommunikationsverbindungen und Zahlungskonten mit Salden und Kontobewegungen, das Laden archivierter Dokumente sowie das Lesen und Anlegen von Kontakten und Aufgaben.
 
 Der vollständige Vertrag mit fachlichen Regeln, Schemas, Beispielen und offenen Entscheidungen wird in den modularen Quellen unter [spezifikation/](spezifikation/openapi.yaml) gepflegt. Daraus entsteht automatisch eine eigenständig nutzbare Gesamtdatei; erzeugte Dateien werden nicht eingecheckt.
 

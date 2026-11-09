@@ -1,0 +1,47 @@
+parameters:
+  - name: person_id
+    in: path
+    required: true
+    description: Ressourcen-ID der Person, der das Dokument zugeordnet ist.
+    schema:
+      $ref: '../../schemas/personen.yaml#/person_id'
+  - name: archiv_id
+    in: path
+    required: true
+    description: Kennung des Archivs aus der Dokumentreferenz.
+    schema:
+      $ref: '../../schemas/dokumente.yaml#/archiv_id'
+  - name: dokument_id
+    in: path
+    required: true
+    description: Kennung des Dokuments aus der Dokumentreferenz.
+    schema:
+      $ref: '../../schemas/dokumente.yaml#/dokument_id'
+get:
+  tags:
+    - personen
+  operationId: dokument_lesen
+  summary: Archiviertes Dokument einer Person laden
+  description: "Liefert den Inhalt eines archivierten Dokuments unverändert im gespeicherten Format, unabhängig davon, ob es einem Kontakt zugeordnet ist. Person und Dokument müssen zusammengehören, sonst 404. Nicht vollständig lieferbare Inhalte ergeben 503 statt eines Teilinhalts. Fehler werden als application/json geliefert."
+  responses:
+    '200':
+      description: Vollständiger Dokumentinhalt; Content-Type entspricht dem gespeicherten Format.
+      headers:
+        Content-Disposition:
+          description: attachment mit dem Dateinamen des Dokuments, soweit bekannt; Nicht-ASCII-Zeichen über
+            filename* nach RFC 6266.
+          schema:
+            type: string
+          example: attachment; filename="Gespraechsnotiz.pdf"
+      content:
+        '*/*':
+          schema:
+            description: Unveränderter Dokumentinhalt, beispielsweise application/pdf oder image/tiff.
+    '400':
+      $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
+    '404':
+      $ref: '../../antworten/fehlerantworten.yaml#/dokument_nicht_gefunden'
+    '500':
+      $ref: '../../antworten/fehlerantworten.yaml#/interner_fehler'
+    '503':
+      $ref: '../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'

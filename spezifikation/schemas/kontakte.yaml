@@ -61,11 +61,9 @@ kontakt:
     herkunft:
       type: string
       description: Fachliche Herkunftsangabe, soweit zugänglich; keine interne System- oder Datenbankzuordnung.
-    dokument_id:
-      type: string
-      minLength: 1
-      maxLength: 254
-      description: Referenz auf ein zugeordnetes Dokument; dessen Abruf ist nicht Teil dieses Vertrags.
+    dokument:
+      $ref: 'dokumente.yaml#/dokumentreferenz'
+      description: Dem Kontakt zugeordnetes Dokument; fehlt, wenn keines zugeordnet oder zugänglich ist.
 
 kontakt_anlage:
   type: object

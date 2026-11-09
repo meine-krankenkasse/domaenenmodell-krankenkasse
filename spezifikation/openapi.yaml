@@ -4,7 +4,7 @@ info:
   license:
     name: Zero-Clause BSD
     identifier: 0BSD
-  version: "0.17.0-entwurf"
+  version: "0.18.0-entwurf"
   summary: Personen identifizieren, Stammdaten und Kontoinformationen lesen sowie Kontakte und Aufgaben nutzen
   description: |
     # Domänenmodell Krankenkasse
@@ -22,7 +22,8 @@ info:
 
     ## Was der Entwurf umfasst
     Personen finden und Stammdaten, Betreuungshinweise, Anschriften und Kommunikationsverbindungen lesen;
-    Zahlungskonten mit Salden und Kontobewegungen lesen sowie Kontakte und Aufgaben lesen und anlegen.
+    Zahlungskonten mit Salden und Kontobewegungen lesen, archivierte Dokumente laden sowie Kontakte
+    und Aufgaben lesen und anlegen.
     Nur kontakt_anlegen und aufgabe_anlegen schreiben Daten.
     Der Entwurf ist ein Vorschlag zur Abstimmung, kein verabschiedeter Standard oder Nachweis
     bereits verfügbarer Fähigkeiten. Diese Datei ist mit Beschreibungen, Schemas, Beispielen
@@ -83,6 +84,8 @@ paths:
     $ref: pfade/personen/anschriften.yaml
   /personen/{person_id}/aufgaben:
     $ref: pfade/personen/aufgaben.yaml
+  /personen/{person_id}/dokumente/{archiv_id}/{dokument_id}:
+    $ref: pfade/personen/dokumente.yaml
   /personen/{person_id}/kommunikationsverbindungen:
     $ref: pfade/personen/kommunikationsverbindungen.yaml
   /personen/{person_id}/kontakte:
@@ -139,6 +142,14 @@ components:
       $ref: 'schemas/aufgaben.yaml#/aufgabe_annahme'
     kontakt_id:
       $ref: 'schemas/kontakte.yaml#/kontakt_id'
+    dokumentreferenz:
+      $ref: 'schemas/dokumente.yaml#/dokumentreferenz'
+    archiv_id:
+      $ref: 'schemas/dokumente.yaml#/archiv_id'
+    dokument_id:
+      $ref: 'schemas/dokumente.yaml#/dokument_id'
+    dateiname:
+      $ref: 'schemas/dokumente.yaml#/dateiname'
     kontaktkanal:
       $ref: 'schemas/kontakte.yaml#/kontaktkanal'
     kontaktstatus:
@@ -208,6 +219,8 @@ components:
       $ref: antworten/fehlerantworten.yaml#/person_nicht_gefunden
     zahlungskonto_nicht_gefunden:
       $ref: antworten/fehlerantworten.yaml#/zahlungskonto_nicht_gefunden
+    dokument_nicht_gefunden:
+      $ref: antworten/fehlerantworten.yaml#/dokument_nicht_gefunden
     interner_fehler:
       $ref: antworten/fehlerantworten.yaml#/interner_fehler
     dienst_nicht_verfuegbar:
