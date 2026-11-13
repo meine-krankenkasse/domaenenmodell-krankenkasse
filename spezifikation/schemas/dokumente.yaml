@@ -19,11 +19,15 @@ dokumentreferenz:
 
 archiv_id:
   type: string
-  pattern: ^[1-9][0-9]*$
-  description: Kennung des Archivs als positive ganze Zahl in Dezimalschreibweise ohne führende Nullen, übertragen
-    als Zeichenfolge.
+  minLength: 1
+  maxLength: 50
+  pattern: ^[A-Za-z0-9]{1,50}$
+  description: Kennung des Archivs aus 1 bis 50 Buchstaben (A–Z, a–z) und Ziffern. Wird unverändert aus der
+    Dokumentreferenz übernommen und nicht als Zahl interpretiert; Groß- und Kleinschreibung sowie führende Nullen
+    sind bedeutsam.
   examples:
     - '17'
+    - Archiv01
 
 dokument_id:
   type: string
