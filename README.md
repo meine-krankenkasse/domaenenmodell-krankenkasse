@@ -8,7 +8,7 @@ Das offene, erweiterbare Modell bietet Anwendungen und KI-Agenten einen gemeinsa
 
 Der vollständige Vertrag mit fachlichen Regeln, Schemas, Beispielen und offenen Entscheidungen wird in den modularen Quellen unter [spezifikation/](spezifikation/openapi.yaml) gepflegt. Daraus entsteht automatisch eine eigenständig nutzbare Gesamtdatei; erzeugte Dateien werden nicht eingecheckt.
 
-Entwurfsregeln und Begründungen stehen in den ADRs: [Verfahren](adr/ADR-000-entscheidungen-dokumentieren.md), [REST und HTTP](adr/ADR-001-rest-und-http.md), [Idempotenz](adr/ADR-002-idempotenz.md), [YAGNI](adr/ADR-003-yagni.md), [Benennung](adr/ADR-004-benennung.md) und [Dateistruktur](adr/ADR-005-modulare-spezifikation.md).
+Entwurfsregeln und Begründungen stehen in den ADRs: [Verfahren](adr/ADR-000-entscheidungen-dokumentieren.md), [REST und HTTP](adr/ADR-001-rest-und-http.md), [Idempotenz](adr/ADR-002-idempotenz.md), [YAGNI](adr/ADR-003-yagni.md), [Benennung](adr/ADR-004-benennung.md), [Dateistruktur](adr/ADR-005-modulare-spezifikation.md) und [Partnernummer](adr/ADR-006-partnernummer-veraltet.md).
 
 ## API-Dokumentation im Browser
 

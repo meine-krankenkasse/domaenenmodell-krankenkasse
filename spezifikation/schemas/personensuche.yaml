@@ -179,16 +179,25 @@ stammdatensuche_ergebnis:
 kennung_suchkriterien:
   type: object
   additionalProperties: false
-  required:
-    - identifikator_wert
-  description: Gesuchte kvnr oder rvnr. Die Formate beider Arten sind verschieden; die Art ergibt sich daher
-    aus dem Wert und wird nicht angegeben.
+  oneOf:
+    - required:
+        - identifikator_wert
+    - required:
+        - partnernummer
+  description: Gesuchte kvnr oder rvnr in identifikator_wert oder, veraltet, eine partnernummer; genau eine der
+    beiden Angaben. Die Formate von kvnr und rvnr sind verschieden; ihre Art ergibt sich daher aus dem Wert und
+    wird nicht angegeben.
   properties:
     identifikator_wert:
       anyOf:
         - $ref: 'personenkennungen.yaml#/kvnr'
         - $ref: 'personenkennungen.yaml#/rvnr'
       description: Exakter Wert der Kennung im Format einer kvnr oder rvnr.
+    partnernummer:
+      $ref: 'personenkennungen.yaml#/partnernummer'
+      deprecated: true
+      description: Veraltet; nur für bestehende Abläufe. Exakter Wert der partnernummer einschließlich führender
+        Nullen. Neue Anwendungen suchen mit kvnr oder rvnr.
 
 personentreffer:
   type: object
@@ -217,7 +226,7 @@ personensuche_ergebnis:
     data:
       type: array
       maxItems: 1
-      description: Höchstens ein Treffer, da jede suchbare Kennung genau eine Person bezeichnet.
+      description: Höchstens ein Treffer, da jede suchbare Kennung im Mandanten genau eine Person bezeichnet.
       items:
         $ref: '#/personentreffer'
   oneOf:

@@ -60,7 +60,8 @@ identifikator_art:
     - partnernummer
     - rvnr
   description: |-
-    Art der Personenkennung; die jeweilige Nummer ist im gleichnamigen Schema beschrieben.
+    Art der Personenkennung; die jeweilige Nummer ist im gleichnamigen Schema beschrieben. partnernummer ist
+    veraltet und wird nur für bestehende Abläufe geliefert.
 
 kvnr:
   type: string
@@ -85,5 +86,7 @@ partnernummer:
   minLength: 1
   maxLength: 128
   pattern: ^\S+$
-  description: Fachliche Personenkennung im Datenbestand einer Krankenkasse. Führende Nullen bleiben erhalten.
-    Sie ist nicht kassenübergreifend eindeutig und nicht mit der Ressourcen-ID gleichzusetzen.
+  deprecated: true
+  description: Veraltet; nur für bestehende Abläufe, neue Anwendungen verwenden kvnr, rvnr oder person_id.
+    Fachliche Personenkennung im Datenbestand einer Krankenkasse, dort eindeutig. Führende Nullen bleiben
+    erhalten. Sie ist nicht kassenübergreifend eindeutig und nicht mit der Ressourcen-ID gleichzusetzen.

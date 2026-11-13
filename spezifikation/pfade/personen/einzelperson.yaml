@@ -20,7 +20,7 @@ get:
             $ref: '../../schemas/personen.yaml#/person'
           examples:
             stammdaten:
-              summary: Synthetische Personenstammdaten mit partnernummer
+              summary: Synthetische Personenstammdaten mit veralteter partnernummer
               value:
                 id: person-beispiel-001
                 geburtsdatum: "1980-05-12"

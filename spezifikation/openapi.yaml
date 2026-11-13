@@ -4,7 +4,7 @@ info:
   license:
     name: Zero-Clause BSD
     identifier: 0BSD
-  version: "0.18.0-entwurf"
+  version: "0.19.0-entwurf"
   summary: Personen identifizieren, Stammdaten und Kontoinformationen lesen sowie Kontakte und Aufgaben nutzen
   description: |
     # Domänenmodell Krankenkasse
@@ -51,7 +51,8 @@ info:
     Die Suche funktioniert in jedem Zugriffskontext: mit bekannter ID, einer Kennung
     oder mit ausreichenden Stammdaten. Bei Kennungen aus Dokumenten verarbeitet
     die API den extrahierten Wert, nicht das Dokument. Suchbare Arten sind kvnr
-    und rvnr; sie liefern höchstens einen Treffer. Bei der Stammdatensuche erfordern mehrdeutige Treffer
+    und rvnr sowie, veraltet und nur für bestehende Abläufe, die partnernummer; sie liefern höchstens
+    einen Treffer. Bei der Stammdatensuche erfordern mehrdeutige Treffer
     weitere Angaben oder eine bestätigte Auswahl; bei zu vielen Treffern müssen die Suchkriterien
     eingegrenzt werden. Fehlende Angaben werden nicht erfunden.
 
