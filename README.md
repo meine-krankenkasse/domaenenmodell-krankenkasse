@@ -4,11 +4,11 @@ Ein gemeinsames fachliches Modell mit REST-API-Vertrag für Krankenkassen.
 
 Dieses Repository dient als Grundlage für die Abstimmung zwischen Krankenkassen und Partnern, um ein gemeinsames, kassenübergreifend nutzbares Domänenmodell zu entwickeln.
 
-Das offene, erweiterbare Modell bietet Anwendungen und KI-Agenten einen gemeinsamen fachlichen Zugang über Systemgrenzen hinweg. Der erste Entwurf umfasst Personensuche, Stammdaten, Adressen, Kontaktdaten und Zahlungskonten mit Salden und Kontobewegungen sowie das Lesen und Anlegen von Kontakten und Aufgaben.
+Das offene, erweiterbare Modell bietet Anwendungen und KI-Agenten einen gemeinsamen fachlichen Zugang über Systemgrenzen hinweg. Der erste Entwurf umfasst Personensuche, Stammdaten, Anschriften, Kommunikationsverbindungen und Zahlungskonten mit Salden und Kontobewegungen, das Laden archivierter Dokumente sowie das Lesen und Anlegen von Kontakten und Aufgaben.
 
 Der vollständige Vertrag mit fachlichen Regeln, Schemas, Beispielen und offenen Entscheidungen wird in den modularen Quellen unter [spezifikation/](spezifikation/openapi.yaml) gepflegt. Daraus entsteht automatisch eine eigenständig nutzbare Gesamtdatei; erzeugte Dateien werden nicht eingecheckt.
 
-Entwurfsregeln und Begründungen stehen in den ADRs: [Verfahren](adr/ADR-000-entscheidungen-dokumentieren.md), [REST und HTTP](adr/ADR-001-rest-und-http.md), [Idempotenz](adr/ADR-002-idempotenz.md), [YAGNI](adr/ADR-003-yagni.md), [Benennung](adr/ADR-004-benennung.md) und [Dateistruktur](adr/ADR-005-modulare-spezifikation.md).
+Entwurfsregeln und Begründungen stehen in den ADRs: [Verfahren](adr/ADR-000-entscheidungen-dokumentieren.md), [REST und HTTP](adr/ADR-001-rest-und-http.md), [Idempotenz](adr/ADR-002-idempotenz.md), [YAGNI](adr/ADR-003-yagni.md), [Benennung](adr/ADR-004-benennung.md), [Dateistruktur](adr/ADR-005-modulare-spezifikation.md), [Partnernummer](adr/ADR-006-partnernummer-veraltet.md) und [Datenhaltung](adr/ADR-007-keine-dauerhafte-datenhaltung.md).
 
 ## API-Dokumentation im Browser
 
@@ -16,7 +16,7 @@ Die [API-Dokumentation](https://meine-krankenkasse.github.io/domaenenmodell-kran
 
 ## Spezifikation bearbeiten und prüfen
 
-Die Quellen gliedern sich in `pfade/`, fachlich gruppierte Schema-Dateien unter `schemas/`, `parameter/` und `antworten/`. Der Einstieg ist `spezifikation/openapi.yaml`; fachliche Regeln und Beispiele stehen bei den jeweiligen Definitionen. Zusammengehörige Schemas, etwa für Adressen oder Aufgaben, stehen jeweils in einer gemeinsamen Datei. Die verbindlichen Strukturvorgaben beschreibt ADR-005.
+Die Quellen gliedern sich in `pfade/`, fachlich gruppierte Schema-Dateien unter `schemas/`, `parameter/` und `antworten/`. Der Einstieg ist `spezifikation/openapi.yaml`; fachliche Regeln und Beispiele stehen bei den jeweiligen Definitionen. Zusammengehörige Schemas, etwa für Anschriften oder Aufgaben, stehen jeweils in einer gemeinsamen Datei. Die verbindlichen Strukturvorgaben beschreibt ADR-005.
 
 Mit Node.js (ab 22.12) und npm (ab 10) im Verzeichnis dieser README ausführen:
 

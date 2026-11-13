@@ -4,7 +4,7 @@ info:
   license:
     name: Zero-Clause BSD
     identifier: 0BSD
-  version: "0.13.0-entwurf"
+  version: "0.21.0-entwurf"
   summary: Personen identifizieren, Stammdaten und Kontoinformationen lesen sowie Kontakte und Aufgaben nutzen
   description: |
     # Domänenmodell Krankenkasse
@@ -21,8 +21,9 @@ info:
     weiterentwickeln, ergänzen oder austauschen lassen, ohne den fachlichen Vertrag zu verändern.
 
     ## Was der Entwurf umfasst
-    Personen finden und Stammdaten, Betreuungshinweise, Adressen und Kontaktdaten lesen;
-    Zahlungskonten mit Salden und Kontobewegungen lesen sowie Kontakte und Aufgaben lesen und anlegen.
+    Personen finden und Stammdaten, Betreuungshinweise, Anschriften und Kommunikationsverbindungen lesen;
+    Zahlungskonten mit Salden und Kontobewegungen lesen, archivierte Dokumente laden sowie Kontakte
+    und Aufgaben lesen und anlegen.
     Nur kontakt_anlegen und aufgabe_anlegen schreiben Daten.
     Der Entwurf ist ein Vorschlag zur Abstimmung, kein verabschiedeter Standard oder Nachweis
     bereits verfügbarer Fähigkeiten. Diese Datei ist mit Beschreibungen, Schemas, Beispielen
@@ -45,17 +46,19 @@ info:
     Eine Person ist ein natürlicher Mensch, unabhängig von Versicherung und fachlichen Rollen.
     Ihre id bezeichnet den Datensatz im jeweiligen Mandanten, also dem abgegrenzten Datenbestand.
     Sie ist eine undurchsichtige Kennung und nicht mit kvnr, rvnr oder partnernummer gleichzusetzen.
-    Ihre Beständigkeit, auch beim Zusammenführen von Datensätzen, ist noch festzulegen.
+    Sie ist befristet gültig und wird nicht dauerhaft gespeichert; nach Ablauf wird die Person erneut gesucht.
 
-    Die Suche funktioniert in jedem Zugriffskontext: mit bekannter ID, einer Kennung bekannter
-    oder unbekannter Art oder mit ausreichenden Stammdaten. Bei Kennungen aus Dokumenten verarbeitet
-    die API den extrahierten Wert, nicht das Dokument. Unterstützte Arten sind kvnr, partnernummer
-    und rvnr. Mehrdeutige Treffer erfordern weitere Angaben oder eine bestätigte Auswahl;
-    bei zu vielen Treffern müssen die Suchkriterien eingegrenzt werden. Fehlende Angaben werden nicht erfunden.
+    Die Suche funktioniert in jedem Zugriffskontext: mit bekannter ID, einer Kennung
+    oder mit ausreichenden Stammdaten. Bei Kennungen aus Dokumenten verarbeitet
+    die API den extrahierten Wert, nicht das Dokument. Suchbare Arten sind kvnr
+    und rvnr sowie, veraltet und nur für bestehende Abläufe, die partnernummer; sie liefern höchstens
+    einen Treffer. Bei der Stammdatensuche erfordern mehrdeutige Treffer
+    weitere Angaben oder eine bestätigte Auswahl; bei zu vielen Treffern müssen die Suchkriterien
+    eingegrenzt werden. Fehlende Angaben werden nicht erfunden.
 
     Eine Suche findet Datensätze, bestätigt aber keine Identität eines Aufrufers oder Anrufers
-    und erteilt keinen Auftrag für weitere Aktionen. Auch die Stammdatensuche mit POST liest nur:
-    Sie erzeugt weder Personen noch Suchressourcen. Fachliche Rollen und Betreuungshinweise
+    und erteilt keinen Auftrag für weitere Aktionen. Beide Suchen verwenden POST und lesen nur:
+    Sie erzeugen weder Personen noch Suchressourcen. Fachliche Rollen und Betreuungshinweise
     beschreiben die Person; sie sind keine Zugriffsrechte oder Nachweise konkreter Vertretungsbefugnisse.
 
     ## Gemeinsam erweitern
@@ -76,24 +79,26 @@ tags:
   - name: personen
     description: Natürliche Personen unabhängig von ihren fachlichen Rollen.
 paths:
-  /personen:
-    $ref: pfade/personen/sammlung.yaml
   /personen/{person_id}:
     $ref: pfade/personen/einzelperson.yaml
-  /personen/{person_id}/adressen:
-    $ref: pfade/personen/adressen.yaml
+  /personen/{person_id}/anschriften:
+    $ref: pfade/personen/anschriften.yaml
   /personen/{person_id}/aufgaben:
     $ref: pfade/personen/aufgaben.yaml
-  /personen/{person_id}/kontaktdaten:
-    $ref: pfade/personen/kontaktdaten.yaml
+  /personen/{person_id}/dokumente/{archiv_id}/{dokument_id}:
+    $ref: pfade/personen/dokumente.yaml
+  /personen/{person_id}/kommunikationsverbindungen:
+    $ref: pfade/personen/kommunikationsverbindungen.yaml
   /personen/{person_id}/kontakte:
     $ref: pfade/personen/kontakte.yaml
   /personen/{person_id}/zahlungskonten:
     $ref: pfade/personen/zahlungskonten/sammlung.yaml
   /personen/{person_id}/zahlungskonten/{zahlungskonto_id}/kontobewegungen:
     $ref: pfade/personen/zahlungskonten/kontobewegungen.yaml
-  /personen/suche:
-    $ref: pfade/personen/suche.yaml
+  /personen/suche/kennung:
+    $ref: pfade/personen/suche/kennung.yaml
+  /personen/suche/stammdaten:
+    $ref: pfade/personen/suche/stammdaten.yaml
 components:
   schemas:
     ressourcen_id:
@@ -116,14 +121,14 @@ components:
       $ref: 'schemas/zahlungskonten.yaml#/zahlungskonto'
     zahlungskontenliste:
       $ref: 'schemas/zahlungskonten.yaml#/zahlungskontenliste'
-    adresse:
-      $ref: 'schemas/adressen.yaml#/adresse'
-    adressliste:
-      $ref: 'schemas/adressen.yaml#/adressliste'
-    kontaktdatum:
-      $ref: 'schemas/kontaktdaten.yaml#/kontaktdatum'
-    kontaktdatenliste:
-      $ref: 'schemas/kontaktdaten.yaml#/kontaktdatenliste'
+    anschrift:
+      $ref: 'schemas/anschriften.yaml#/anschrift'
+    anschriftenliste:
+      $ref: 'schemas/anschriften.yaml#/anschriftenliste'
+    kommunikationsverbindung:
+      $ref: 'schemas/kommunikationsverbindungen.yaml#/kommunikationsverbindung'
+    kommunikationsverbindungsliste:
+      $ref: 'schemas/kommunikationsverbindungen.yaml#/kommunikationsverbindungsliste'
     betreuungshinweis:
       $ref: 'schemas/personen.yaml#/betreuungshinweis'
     aufgabenstatus:
@@ -138,6 +143,14 @@ components:
       $ref: 'schemas/aufgaben.yaml#/aufgabe_annahme'
     kontakt_id:
       $ref: 'schemas/kontakte.yaml#/kontakt_id'
+    dokumentreferenz:
+      $ref: 'schemas/dokumente.yaml#/dokumentreferenz'
+    archiv_id:
+      $ref: 'schemas/dokumente.yaml#/archiv_id'
+    dokument_id:
+      $ref: 'schemas/dokumente.yaml#/dokument_id'
+    dateiname:
+      $ref: 'schemas/dokumente.yaml#/dateiname'
     kontaktkanal:
       $ref: 'schemas/kontakte.yaml#/kontaktkanal'
     kontaktstatus:
@@ -172,6 +185,8 @@ components:
       $ref: 'schemas/personen.yaml#/personenrolle'
     person:
       $ref: 'schemas/personen.yaml#/person'
+    kennung_suchkriterien:
+      $ref: 'schemas/personensuche.yaml#/kennung_suchkriterien'
     personentreffer:
       $ref: 'schemas/personensuche.yaml#/personentreffer'
     personensuche_ergebnis:
@@ -180,12 +195,12 @@ components:
       $ref: 'schemas/gemeinsam.yaml#/fehler'
     personenname:
       $ref: 'schemas/personen.yaml#/personenname'
-    adress_suchkriterien:
-      $ref: 'schemas/personensuche.yaml#/adress_suchkriterien'
+    anschrift_suchkriterien:
+      $ref: 'schemas/personensuche.yaml#/anschrift_suchkriterien'
     stammdaten_suchkriterien:
       $ref: 'schemas/personensuche.yaml#/stammdaten_suchkriterien'
-    suchtreffer_adresse:
-      $ref: 'schemas/personensuche.yaml#/suchtreffer_adresse'
+    suchtreffer_anschrift:
+      $ref: 'schemas/personensuche.yaml#/suchtreffer_anschrift'
     stammdaten_personentreffer:
       $ref: 'schemas/personensuche.yaml#/stammdaten_personentreffer'
     stammdatensuche_ergebnis:
@@ -205,6 +220,8 @@ components:
       $ref: antworten/fehlerantworten.yaml#/person_nicht_gefunden
     zahlungskonto_nicht_gefunden:
       $ref: antworten/fehlerantworten.yaml#/zahlungskonto_nicht_gefunden
+    dokument_nicht_gefunden:
+      $ref: antworten/fehlerantworten.yaml#/dokument_nicht_gefunden
     interner_fehler:
       $ref: antworten/fehlerantworten.yaml#/interner_fehler
     dienst_nicht_verfuegbar:

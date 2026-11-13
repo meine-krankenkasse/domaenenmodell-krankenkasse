@@ -2,15 +2,15 @@ post:
   tags:
     - personen
   operationId: personen_nach_stammdaten_suchen
-  summary: Personen anhand von Namen, Geburtsdatum und Adresse suchen
-  description: "Sucht Personen anhand von Namen, Geburtsdatum und Adresse, ohne Daten zu verändern. Mindestangaben und Vergleichsregeln stehen im Suchschema. Ungültige Kriterien ergeben 400, mehr als 20 Treffer 422 und unvollständige Suchen 503."
+  summary: Personen anhand von Namen, Geburtsdatum und Anschrift suchen
+  description: "Sucht Personen anhand von Namen, Geburtsdatum und Anschrift, ohne Daten zu verändern. Mindestangaben und Vergleichsregeln stehen im Suchschema. Ungültige Kriterien ergeben 400, mehr als 20 Treffer 422 und unvollständige Suchen 503."
   requestBody:
     required: true
     description: Bekannte Suchkriterien; unbekannte Angaben weglassen. Mindestkombinationen sind im Schema festgelegt.
     content:
       application/json:
         schema:
-          $ref: '../../schemas/personensuche.yaml#/stammdaten_suchkriterien'
+          $ref: '../../../schemas/personensuche.yaml#/stammdaten_suchkriterien'
         examples:
           name_und_geburtsdatum:
             summary: Nachname und Geburtsdatum, optional mit Vorname
@@ -24,19 +24,19 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/personensuche.yaml#/stammdatensuche_ergebnis'
+            $ref: '../../../schemas/personensuche.yaml#/stammdatensuche_ergebnis'
     '400':
-      $ref: '../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
+      $ref: '../../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
     '500':
-      $ref: '../../antworten/fehlerantworten.yaml#/interner_fehler'
+      $ref: '../../../antworten/fehlerantworten.yaml#/interner_fehler'
     '503':
-      $ref: '../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
+      $ref: '../../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
     '422':
       description: 'treffermenge_zu_gross: Mehr als 20 zugängliche Treffer, keine Teilmenge.'
       content:
         application/json:
           schema:
-            $ref: '../../schemas/gemeinsam.yaml#/fehler'
+            $ref: '../../../schemas/gemeinsam.yaml#/fehler'
           example:
             code: treffermenge_zu_gross
             meldung: Bitte die Suchkriterien eingrenzen.

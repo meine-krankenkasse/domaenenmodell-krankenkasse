@@ -8,7 +8,7 @@ Verbindungsabbrüche und Wiederholungen durch Anwendungen oder Agenten dürfen k
 
 ## Entscheidung
 
-Jede fachlich schreibende Operation verlangt Idempotency-Key als HTTP-Header, einschließlich PUT, PATCH und DELETE. Dies ist eine zusätzliche Vertragsregel von Domänenmodell Krankenkasse. Fachlich lesende Operationen benötigen keinen Schlüssel, auch die POST-Stammdatensuche nicht.
+Jede fachlich schreibende Operation verlangt Idempotency-Key als HTTP-Header, einschließlich PUT, PATCH und DELETE. Dies ist eine zusätzliche Vertragsregel von Domänenmodell Krankenkasse. Fachlich lesende Operationen benötigen keinen Schlüssel, auch die beiden Personensuchen mit POST nicht.
 
 Der Client verwendet denselben Schlüssel für Wiederholungen desselben Auftrags und einen neuen für einen neuen Auftrag. Die serverseitige Implementierung bindet den Schlüssel an einen definierten Geltungsbereich und die relevanten Eingaben. Abweichende Aufträge unter demselben Schlüssel werden abgelehnt.
 

@@ -1,5 +1,5 @@
 ungueltige_anfrage:
-  description: Pflichtparameter fehlt, unbekannte Identifikatorart oder ungültiger Parameterwert.
+  description: Pflichtangabe fehlt oder ungültiger Wert.
   content:
     application/json:
       schema:
@@ -8,23 +8,53 @@ ungueltige_anfrage:
         code: ungueltige_anfrage
         meldung: Bitte die angegebenen Parameter prüfen.
 person_nicht_gefunden:
-  description: Die Person wurde nicht gefunden.
+  description: Die Person ist unbekannt oder nicht zugänglich, oder ihre befristet gültige person_id ist
+    abgelaufen. Diese Fälle werden nicht unterschieden; die Person kann erneut gesucht werden.
   content:
     application/json:
       schema:
         $ref: '../schemas/gemeinsam.yaml#/fehler'
       example:
         code: person_nicht_gefunden
-        meldung: Die Person wurde nicht gefunden.
+        meldung: Die Person wurde nicht gefunden. Bitte die Person erneut suchen.
 zahlungskonto_nicht_gefunden:
-  description: Person oder Zahlungskonto unbekannt oder nicht einander zugeordnet.
+  description: Person oder Zahlungskonto nicht gefunden. Ist die Person unbekannt, nicht zugänglich oder ihre
+    person_id abgelaufen, lautet der Code person_nicht_gefunden. Ist das Zahlungskonto unbekannt oder der Person
+    nicht zugeordnet, lautet er zahlungskonto_nicht_gefunden.
   content:
     application/json:
       schema:
         $ref: '../schemas/gemeinsam.yaml#/fehler'
-      example:
-        code: zahlungskonto_nicht_gefunden
-        meldung: Das Zahlungskonto wurde nicht gefunden.
+      examples:
+          person_nicht_gefunden:
+            summary: Person unbekannt, nicht zugänglich oder person_id abgelaufen
+            value:
+              code: person_nicht_gefunden
+              meldung: Die Person wurde nicht gefunden. Bitte die Person erneut suchen.
+          zahlungskonto_nicht_gefunden:
+            summary: Zahlungskonto unbekannt oder der Person nicht zugeordnet
+            value:
+              code: zahlungskonto_nicht_gefunden
+              meldung: Das Zahlungskonto wurde nicht gefunden.
+dokument_nicht_gefunden:
+  description: Person oder Dokument nicht gefunden. Ist die Person unbekannt, nicht zugänglich oder ihre
+    person_id abgelaufen, lautet der Code person_nicht_gefunden. Ist das Dokument unbekannt, nicht zugänglich
+    oder der Person nicht zugeordnet, lautet er dokument_nicht_gefunden.
+  content:
+    application/json:
+      schema:
+        $ref: '../schemas/gemeinsam.yaml#/fehler'
+      examples:
+          person_nicht_gefunden:
+            summary: Person unbekannt, nicht zugänglich oder person_id abgelaufen
+            value:
+              code: person_nicht_gefunden
+              meldung: Die Person wurde nicht gefunden. Bitte die Person erneut suchen.
+          dokument_nicht_gefunden:
+            summary: Dokument unbekannt, nicht zugänglich oder der Person nicht zugeordnet
+            value:
+              code: dokument_nicht_gefunden
+              meldung: Das Dokument wurde nicht gefunden.
 interner_fehler:
   description: Die Anfrage konnte wegen eines internen Fehlers nicht sicher abgeschlossen werden. Bei Schreiboperationen ist damit keine Wirkungslosigkeit bestätigt.
   content:
