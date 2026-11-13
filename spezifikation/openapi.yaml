@@ -4,7 +4,7 @@ info:
   license:
     name: Zero-Clause BSD
     identifier: 0BSD
-  version: "0.20.0-entwurf"
+  version: "0.21.0-entwurf"
   summary: Personen identifizieren, Stammdaten und Kontoinformationen lesen sowie Kontakte und Aufgaben nutzen
   description: |
     # Domänenmodell Krankenkasse
@@ -46,7 +46,7 @@ info:
     Eine Person ist ein natürlicher Mensch, unabhängig von Versicherung und fachlichen Rollen.
     Ihre id bezeichnet den Datensatz im jeweiligen Mandanten, also dem abgegrenzten Datenbestand.
     Sie ist eine undurchsichtige Kennung und nicht mit kvnr, rvnr oder partnernummer gleichzusetzen.
-    Ihre Beständigkeit, auch beim Zusammenführen von Datensätzen, ist noch festzulegen.
+    Sie ist befristet gültig und wird nicht dauerhaft gespeichert; nach Ablauf wird die Person erneut gesucht.
 
     Die Suche funktioniert in jedem Zugriffskontext: mit bekannter ID, einer Kennung
     oder mit ausreichenden Stammdaten. Bei Kennungen aus Dokumenten verarbeitet

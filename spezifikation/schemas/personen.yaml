@@ -50,7 +50,11 @@ person_id:
   minLength: 1
   maxLength: 128
   pattern: ^[A-Za-z0-9_-]+$
-  description: Undurchsichtige Ressourcen-ID der Person im Mandanten, unabhängig von fachlichen Nummern.
+  description: Undurchsichtige, befristet gültige Ressourcen-ID der Person im Mandanten, unabhängig von
+    fachlichen Nummern. Ab ihrer Ausgabe mindestens für eine noch festzulegende Mindestdauer gültig; jede Suche
+    gibt eine wieder gültige id aus. Eine abgelaufene id ergibt person_nicht_gefunden, die Person ist dann
+    erneut zu suchen. Gleiche ids bezeichnen denselben Datensatz, unterschiedliche schließen ihn nicht aus.
+    Nicht als dauerhaften Personenbezug speichern; dafür kvnr, rvnr oder die Suchkriterien verwenden.
   examples:
     - person-beispiel-001
 

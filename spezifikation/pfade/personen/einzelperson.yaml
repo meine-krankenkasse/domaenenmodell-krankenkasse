@@ -8,7 +8,7 @@ get:
     - name: person_id
       in: path
       required: true
-      description: Kanonische Ressourcen-ID einer natürlichen Person im API-Mandantenkontext.
+      description: Befristet gültige Ressourcen-ID einer natürlichen Person im Mandantenkontext.
       schema:
         $ref: '../../schemas/personen.yaml#/person_id'
   responses:
