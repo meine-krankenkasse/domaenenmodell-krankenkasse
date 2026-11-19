@@ -4,7 +4,7 @@ info:
   license:
     name: Zero-Clause BSD
     identifier: 0BSD
-  version: "0.21.0-entwurf"
+  version: "0.22.0-entwurf"
   summary: Personen identifizieren, Stammdaten und Kontoinformationen lesen sowie Kontakte und Aufgaben nutzen
   description: |
     # Domänenmodell Krankenkasse
@@ -95,6 +95,8 @@ paths:
     $ref: pfade/personen/zahlungskonten/sammlung.yaml
   /personen/{person_id}/zahlungskonten/{zahlungskonto_id}/kontobewegungen:
     $ref: pfade/personen/zahlungskonten/kontobewegungen.yaml
+  /personen/{person_id}/zahlungskonten/{zahlungskonto_id}/saldo:
+    $ref: pfade/personen/zahlungskonten/saldo.yaml
   /personen/suche/kennung:
     $ref: pfade/personen/suche/kennung.yaml
   /personen/suche/stammdaten:
@@ -103,20 +105,22 @@ components:
   schemas:
     ressourcen_id:
       $ref: 'schemas/gemeinsam.yaml#/ressourcen_id'
-    dezimalbetrag:
-      $ref: 'schemas/zahlungskonten.yaml#/dezimalbetrag'
-    buchungsseite:
-      $ref: 'schemas/kontobewegungen.yaml#/buchungsseite'
-    ausgleichsstatus:
-      $ref: 'schemas/kontobewegungen.yaml#/ausgleichsstatus'
-    kontobewegungsposition:
-      $ref: 'schemas/kontobewegungen.yaml#/kontobewegungsposition'
+    eurobetrag:
+      $ref: 'schemas/zahlungskonten.yaml#/eurobetrag'
+    buchung_id:
+      $ref: 'schemas/kontobewegungen.yaml#/buchung_id'
+    buchungsart:
+      $ref: 'schemas/kontobewegungen.yaml#/buchungsart'
     kontobewegung:
       $ref: 'schemas/kontobewegungen.yaml#/kontobewegung'
     kontobewegungsliste:
       $ref: 'schemas/kontobewegungen.yaml#/kontobewegungsliste'
     kontosaldo:
       $ref: 'schemas/zahlungskonten.yaml#/kontosaldo'
+    zahlungskonto_id:
+      $ref: 'schemas/zahlungskonten.yaml#/zahlungskonto_id'
+    kontostatus:
+      $ref: 'schemas/zahlungskonten.yaml#/kontostatus'
     zahlungskonto:
       $ref: 'schemas/zahlungskonten.yaml#/zahlungskonto'
     zahlungskontenliste:

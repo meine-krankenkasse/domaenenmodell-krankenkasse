@@ -8,20 +8,20 @@ parameters:
   - name: zahlungskonto_id
     in: path
     required: true
-    description: Ressourcen-ID eines eigenen Zahlungskontos der Person, keine Kontonummer.
+    description: Kennung eines eigenen Zahlungskontos der Person, keine Kontonummer.
     schema:
-      $ref: '../../../schemas/gemeinsam.yaml#/ressourcen_id'
+      $ref: '../../../schemas/zahlungskonten.yaml#/zahlungskonto_id'
 get:
   tags:
     - personen
   operationId: kontobewegungen_lesen
   summary: Kontobewegungen eines Zahlungskontos im Zeitraum lesen
-  description: "Liefert Kontobewegungen mit Positionen im Belegzeitraum, auch ausgeglichene, statistische, stornierte, Korrektur- und Umbuchungen. Person und Konto müssen zusammengehören, sonst 404. Unvollständige Zeiträume oder Abrufe ergeben 503."
+  description: "Liefert die Kontobewegungen im Buchungszeitraum seitenweise, die neueste zuerst. Person und Konto müssen zusammengehören, sonst 404. Unvollständige Zeiträume oder Abrufe ergeben 503."
   parameters:
     - name: von
       in: query
       required: true
-      description: Einschließlich dieses Belegdatums.
+      description: Erstes Buchungsdatum des Zeitraums, einschließlich.
       schema:
         type: string
         format: date
@@ -29,15 +29,15 @@ get:
     - name: bis
       in: query
       required: true
-      description: Ausschließlich dieses Belegdatums; muss nach von liegen, sonst 400.
+      description: Letztes Buchungsdatum des Zeitraums, einschließlich; darf nicht vor von liegen, sonst 400.
       schema:
         type: string
         format: date
-      example: '2026-11-01'
+      example: '2026-10-31'
     - name: seitengroesse
       in: query
       required: false
-      description: Maximale Anzahl zugänglicher Bewegungen pro Seite, jeweils mit ihren zugänglichen Positionen.
+      description: Maximale Anzahl zugänglicher Kontobewegungen pro Seite.
       schema:
         type: integer
         minimum: 1
@@ -46,77 +46,78 @@ get:
     - name: versatz
       in: query
       required: false
-      description: Anzahl der zu überspringenden zugänglichen Bewegungen nach Anwendung des Zeitfilters.
+      description: Anzahl der zu überspringenden Kontobewegungen nach Filterung und Sortierung. Ein Versatz ab
+        gesamtanzahl ergibt eine leere Seite.
       schema:
         type: integer
         minimum: 0
         default: 0
   responses:
     '200':
-      description: Seite zugänglicher Bewegungen mit vollständigen zugänglichen Positionslisten.
+      description: Eine Seite zugänglicher Kontobewegungen im Zeitraum mit der Gesamtanzahl.
       content:
         application/json:
           schema:
             $ref: '../../../schemas/kontobewegungen.yaml#/kontobewegungsliste'
           examples:
-            beitrag_mit_zwei_positionen:
-              summary: Eine Beitragsbuchung für zwei Monate, teilweise ausgeglichen
+            zahlung_und_beitrag:
+              summary: Ein Zahlungseingang gleicht eine Beitragsforderung aus
               value:
+                gesamtanzahl: 2
                 data:
-                  - id: kontobewegung-beispiel-001
-                    belegnummer: '000001234567'
-                    belegdatum: '2026-10-01'
-                    bezeichnung: Beiträge
-                    betrag: '250.00'
-                    buchungsseite: soll
-                    waehrung: EUR
-                    offener_betrag: '125.00'
-                    ausgleichsstatus: teilweise_ausgeglichen
-                    storniert: false
-                    faellig_am: '2026-10-15'
-                    positionen:
-                      - id: position-beispiel-001
-                        betrag: '125.00'
-                        buchungsseite: soll
-                        bezeichnung: Krankenversicherungsbeitrag
-                        bezugszeitraum_von: '2026-09-01'
-                        bezugszeitraum_bis: '2026-09-30'
-                        faellig_am: '2026-10-15'
-                      - id: position-beispiel-002
-                        betrag: '125.00'
-                        buchungsseite: soll
-                        bezeichnung: Krankenversicherungsbeitrag
-                        bezugszeitraum_von: '2026-10-01'
-                        bezugszeitraum_bis: '2026-10-31'
-                        faellig_am: '2026-10-15'
-                naechster_versatz: 1
-            zahlung:
-              summary: Ein ausgeglichener Zahlungseingang
-              value:
-                data:
-                  - id: kontobewegung-beispiel-002
-                    belegnummer: '000001234568'
-                    belegdatum: '2026-10-10'
-                    bezeichnung: Überweisungsgutschrift
+                  - nummer: 0
+                    id: buchung-beispiel-002
+                    buchungsdatum: '2026-10-10'
                     betrag: '125.00'
-                    buchungsseite: haben
-                    waehrung: EUR
-                    offener_betrag: '0.00'
-                    ausgleichsstatus: ausgeglichen
-                    storniert: false
-                    schwebend: false
-                    wertstellung_am: '2026-10-10'
-                    bankauszugsdatum: '2026-10-12'
-                    positionen:
-                      - id: position-beispiel-003
-                        betrag: '125.00'
-                        buchungsseite: haben
-            keine_bewegungen:
-              summary: Keine zugänglichen Bewegungen im angefragten Zeitraum
+                    saldo_nach_buchung: '0.00'
+                    buchungsart: zahlungseingang
+                    ausgeglichene_posten:
+                      - buchung-beispiel-001
+                  - nummer: 1
+                    id: buchung-beispiel-001
+                    buchungsdatum: '2026-10-01'
+                    betrag: '-125.00'
+                    saldo_nach_buchung: '-125.00'
+                    buchungsart: beitrag
+            zweite_seite:
+              summary: Zweite Seite mit seitengroesse 2 und versatz 2
               value:
+                gesamtanzahl: 3
+                data:
+                  - nummer: 2
+                    id: buchung-beispiel-003
+                    buchungsdatum: '2026-10-01'
+                    betrag: '-5.00'
+                    saldo_nach_buchung: '-5.00'
+                    buchungsart: mahngebuehr
+            keine_bewegungen:
+              summary: Keine zugänglichen Kontobewegungen im Zeitraum
+              value:
+                gesamtanzahl: 0
                 data: []
     '400':
-      $ref: '../../../antworten/fehlerantworten.yaml#/ungueltige_anfrage'
+      description: Zeitraum oder Seitenparameter fehlen oder sind ungültig; keine ungefilterte Ersatzabfrage.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/gemeinsam.yaml#/fehler'
+          examples:
+            zeitraum_ungueltig:
+              summary: bis liegt vor von
+              value:
+                code: ungueltige_anfrage
+                meldung: Das Ende des Zeitraums darf nicht vor dem Beginn liegen.
+                parameter_hinweise:
+                  - parameter: bis
+                    grund: zeitraum_ungueltig
+            seitengroesse_ungueltig:
+              summary: seitengroesse außerhalb des zulässigen Bereichs
+              value:
+                code: ungueltige_anfrage
+                meldung: Bitte die angegebenen Parameter prüfen.
+                parameter_hinweise:
+                  - parameter: seitengroesse
+                    grund: format_ungueltig
     '404':
       $ref: '../../../antworten/fehlerantworten.yaml#/zahlungskonto_nicht_gefunden'
     '500':

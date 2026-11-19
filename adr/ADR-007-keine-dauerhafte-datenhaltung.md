@@ -21,7 +21,7 @@ Gesetzlich oder betrieblich erforderliche Protokollierung ist nicht Gegenstand d
 
 Für Kennungen im Vertrag folgt daraus:
 
-- **Vom Kernsystem vergebene Kennungen** werden unverändert durchgereicht und sind dauerhaft. Das gilt für die IDs von Aufgaben sowie für archiv_id und dokument_id. Ein Dokument wird deshalb über das Paar aus archiv_id und dokument_id bezeichnet; die Fassade muss kein Archiv zu einer Dokument-ID nachschlagen.
+- **Vom Kernsystem vergebene Kennungen** werden unverändert durchgereicht und sind dauerhaft. Das gilt für die IDs von Aufgaben, Zahlungskonten und Kontobewegungen sowie für archiv_id und dokument_id. Ein Dokument wird deshalb über das Paar aus archiv_id und dokument_id bezeichnet; die Fassade muss kein Archiv zu einer Dokument-ID nachschlagen.
 - **Kennungen, die das Kernsystem nicht in geeigneter Form bereitstellt,** vergibt die Fassade befristet, ohne dauerhafte Zuordnung. Das betrifft derzeit die id einer Person. Eine Implementierung kann sie beispielsweise als Cache-Eintrag mit Ablaufzeit oder als geschützten, selbsttragenden Wert mit eingebetteter Gültigkeit erzeugen; das Verfahren ist Implementierungsdetail.
 
 Für befristete Kennungen gilt gegenüber Clients:
