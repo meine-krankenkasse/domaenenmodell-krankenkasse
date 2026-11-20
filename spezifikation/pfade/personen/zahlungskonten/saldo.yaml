@@ -1,0 +1,81 @@
+parameters:
+  - name: person_id
+    in: path
+    required: true
+    description: Ressourcen-ID der Person.
+    schema:
+      $ref: '../../../schemas/personen.yaml#/person_id'
+  - name: zahlungskonto_id
+    in: path
+    required: true
+    description: Kennung eines eigenen Zahlungskontos der Person, keine Kontonummer.
+    schema:
+      $ref: '../../../schemas/zahlungskonten.yaml#/zahlungskonto_id'
+get:
+  tags:
+    - personen
+  operationId: kontosaldo_lesen
+  summary: Saldo eines Zahlungskontos an einem Stichtag lesen
+  description: "Liefert den Saldo eines Zahlungskontos der Person zum Ende des Stichtags. Person und Konto müssen zusammengehören, sonst 404. Ein nicht verlässlich ermittelbarer Saldo ergibt 503 statt eines Ersatzbetrags."
+  parameters:
+    - name: stichtag
+      in: query
+      required: true
+      description: Tag, zu dessen Ende der Saldo ermittelt wird. Darf nicht nach dem 15. des Monats liegen, der auf den
+        aktuellen Monat in Europe/Berlin folgt, sonst 400.
+      schema:
+        type: string
+        format: date
+      example: '2026-11-30'
+  responses:
+    '200':
+      description: Saldo des Zahlungskontos am Stichtag.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/zahlungskonten.yaml#/kontosaldo'
+          examples:
+            forderung:
+              summary: Die Krankenkasse hat eine Forderung auf diesem Konto
+              value:
+                stichtag: '2026-11-30'
+                betrag: '-125.50'
+            guthaben:
+              summary: Die Person hat ein Guthaben auf diesem Konto
+              value:
+                stichtag: '2026-11-30'
+                betrag: '42.00'
+            ausgeglichen:
+              summary: Ausgeglichenes Konto
+              value:
+                stichtag: '2026-11-30'
+                betrag: '0.00'
+    '400':
+      description: Stichtag fehlt, ist ungültig oder liegt zu weit in der Zukunft.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/gemeinsam.yaml#/fehler'
+          examples:
+            stichtag_zu_spaet:
+              summary: Stichtag nach dem 15. des Folgemonats
+              value:
+                code: ungueltige_anfrage
+                meldung: Der Stichtag darf nicht nach dem 15. des Folgemonats liegen.
+                parameter_hinweise:
+                  - parameter: stichtag
+                    grund: stichtag_zu_spaet
+            stichtag_fehlt:
+              summary: Stichtag nicht angegeben
+              value:
+                code: ungueltige_anfrage
+                meldung: Bitte einen Stichtag angeben.
+                parameter_hinweise:
+                  - parameter: stichtag
+                    grund: pflichtangabe_fehlt
+    '404':
+      $ref: '../../../antworten/fehlerantworten.yaml#/zahlungskonto_nicht_gefunden'
+    '500':
+      $ref: '../../../antworten/fehlerantworten.yaml#/interner_fehler'
+    '503':
+      $ref: '../../../antworten/fehlerantworten.yaml#/dienst_nicht_verfuegbar'
