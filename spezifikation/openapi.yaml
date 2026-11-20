@@ -113,6 +113,8 @@ components:
       $ref: 'schemas/zahlungskonten.yaml#/eurobetrag'
     buchung_id:
       $ref: 'schemas/kontobewegungen.yaml#/buchung_id'
+    ausgeglichener_posten:
+      $ref: 'schemas/kontobewegungen.yaml#/ausgeglichener_posten'
     buchungsart:
       $ref: 'schemas/kontobewegungen.yaml#/buchungsart'
     kontobewegung:

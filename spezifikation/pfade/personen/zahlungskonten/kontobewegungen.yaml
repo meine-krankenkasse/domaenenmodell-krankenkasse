@@ -72,7 +72,7 @@ get:
                     saldo_nach_buchung: '0.00'
                     buchungsart: zahlungseingang
                     ausgeglichene_posten:
-                      - buchung-beispiel-001
+                      - buchung_id: buchung-beispiel-001
                   - nummer: 1
                     id: buchung-beispiel-001
                     buchungsdatum: '2026-10-01'

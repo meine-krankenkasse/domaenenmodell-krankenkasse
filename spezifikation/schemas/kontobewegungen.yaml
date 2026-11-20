@@ -10,6 +10,15 @@ buchung_id:
   examples:
     - buchung-beispiel-001
 
+ausgeglichener_posten:
+  type: object
+  description: Verweis auf eine Kontobewegung, die ein Zahlungseingang ausgleicht.
+  required:
+    - buchung_id
+  properties:
+    buchung_id:
+      $ref: '#/buchung_id'
+
 kontobewegung:
   type: object
   description: Buchung auf dem Zahlungskonto mit dem Saldo unmittelbar danach.
@@ -47,10 +56,10 @@ kontobewegung:
     ausgeglichene_posten:
       type: array
       minItems: 1
-      description: Kennungen der Kontobewegungen auf diesem Zahlungskonto, die dieser Zahlungseingang ausgleicht; auch
-        außerhalb des angefragten Zeitraums. Nur bei buchungsart zahlungseingang; fehlend bedeutet nicht geliefert.
+      description: Kontobewegungen auf diesem Zahlungskonto, die dieser Zahlungseingang ausgleicht; auch außerhalb
+        des angefragten Zeitraums. Nur bei buchungsart zahlungseingang; fehlend bedeutet nicht geliefert.
       items:
-        $ref: '#/buchung_id'
+        $ref: '#/ausgeglichener_posten'
   allOf:
     - if:
         required:
