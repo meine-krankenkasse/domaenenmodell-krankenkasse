@@ -1,9 +1,12 @@
 buchung_id:
   type: string
   minLength: 1
-  maxLength: 128
-  pattern: ^[A-Za-z0-9_-]{1,128}$
-  description: Dauerhaft gültige, eindeutige Kennung einer Kontobewegung auf dem Zahlungskonto; keine Belegnummer.
+  maxLength: 256
+  pattern: ^(?!\.{1,2}$)[A-Za-z0-9._~-]{1,256}$
+  description: Undurchsichtige, dauerhaft gültige, eindeutige Kennung einer Kontobewegung auf dem Zahlungskonto; keine
+    Belegnummer. Besteht aus 1 bis 256 URL-sicheren Zeichen (Buchstaben A–Z und a–z, Ziffern sowie Punkt, Bindestrich,
+    Unterstrich und Tilde) und ist weder . noch ..; Clients leiten daraus keine Struktur oder Bedeutung ab. Groß- und
+    Kleinschreibung sowie führende Nullen sind bedeutsam.
   examples:
     - buchung-beispiel-001
 

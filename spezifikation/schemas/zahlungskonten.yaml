@@ -1,12 +1,15 @@
 zahlungskonto_id:
   type: string
   minLength: 1
-  maxLength: 128
-  pattern: ^[A-Za-z0-9]{1,128}$
-  description: Dauerhaft gültige Kennung eines Zahlungskontos aus 1 bis 128 Buchstaben (A–Z, a–z) und Ziffern;
-    keine Kontonummer. Groß- und Kleinschreibung sowie führende Nullen sind bedeutsam.
+  maxLength: 256
+  pattern: ^(?!\.{1,2}$)[A-Za-z0-9._~-]{1,256}$
+  description: Undurchsichtige, dauerhaft gültige Kennung eines Zahlungskontos; keine Kontonummer. Besteht aus 1 bis
+    256 URL-sicheren Zeichen (Buchstaben A–Z und a–z, Ziffern sowie Punkt, Bindestrich, Unterstrich und Tilde) und ist
+    weder . noch ..; Clients leiten daraus keine Struktur oder Bedeutung ab. Groß- und Kleinschreibung sowie führende
+    Nullen sind bedeutsam.
   examples:
     - zahlungskonto001
+    - 3f2b8c1e-5d4a-4b7f-9e6c-2a1d0b9c8e7f
 
 zahlungskonto:
   type: object
