@@ -66,13 +66,17 @@ info:
     haben. Ergänzungen beschreiben ihre Eingaben, Ergebnisse und Berechtigungsanforderungen im Vertrag
     und folgen denselben Regeln für Zugriffskontext und Datenumfang. Interne Systemnamen und Strukturen
     werden nicht zu fachlichen Ressourcen oder Auswahlparametern. Bestehende Bedeutungen bleiben erhalten.
-    Regeln für Namensräume, Versionierung, Kompatibilität und die Übernahme von Erweiterungen sind noch offen.
+    Regeln für Namensräume, Versionierung, Kompatibilität und die Übernahme von Erweiterungen sind über
+    die Konventionen für Antwortfelder und Aufzählungen hinaus noch offen.
     Zusätzliche Antwortfelder erlauben weder beliebige Anfragefelder noch ersetzen sie diese Vereinbarungen.
 
     # Daten- und Antwortkonventionen
     Listen stehen unter data; IDs und fachliche Kennungen sind Zeichenfolgen. Fehlende optionale
     Felder bedeuten „nicht geliefert“, keinen Negativbefund und keine vollständige Datenabdeckung.
     null ist nicht vorgesehen. Clients müssen zusätzliche Antwortfelder tolerieren.
+    Aufzählungen können jederzeit um Werte erweitert werden; das Entfernen, Umbenennen oder Umdeuten
+    eines Werts ist eine inkompatible Änderung. Clients müssen unbekannte Werte in Antworten tolerieren
+    und dürfen sie nicht als bekannten Wert wie sonstige deuten. Anfragen verwenden nur aufgeführte Werte.
     Beispiele sind erfunden und belegen keine real vergebenen Kennungen.
     Fehler enthalten weder Suchwerte noch Angaben über nicht zugängliche Personen.
 tags:
