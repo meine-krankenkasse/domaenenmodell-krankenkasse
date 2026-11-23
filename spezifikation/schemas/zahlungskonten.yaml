@@ -1,23 +1,47 @@
+zahlungskonto_id:
+  type: string
+  minLength: 1
+  maxLength: 256
+  pattern: ^(?!\.{1,2}$)[A-Za-z0-9._~-]{1,256}$
+  description: Undurchsichtige, dauerhaft gültige Kennung eines Zahlungskontos; keine Kontonummer. Besteht aus 1 bis
+    256 URL-sicheren Zeichen (Buchstaben A–Z und a–z, Ziffern sowie Punkt, Bindestrich, Unterstrich und Tilde) und ist
+    weder . noch ..; Clients leiten daraus keine Struktur oder Bedeutung ab. Groß- und Kleinschreibung sowie führende
+    Nullen sind bedeutsam.
+  examples:
+    - zahlungskonto001
+    - 3f2b8c1e-5d4a-4b7f-9e6c-2a1d0b9c8e7f
+
 zahlungskonto:
   type: object
   description: Eigenes fachliches Zahlungskonto der Person bei der Krankenkasse, keine Bankverbindung.
   required:
     - id
     - kontonummer
-    - saldo
+    - status
   properties:
     id:
-      $ref: 'gemeinsam.yaml#/ressourcen_id'
+      $ref: '#/zahlungskonto_id'
     kontonummer:
       type: string
       minLength: 1
-      description: Fachliche Nummer des Zahlungskontos. Führende Nullen bleiben erhalten; keine IBAN.
-    saldo:
-      $ref: '#/kontosaldo'
+      maxLength: 128
+      pattern: ^[0-9]{1,128}$
+      description: Fachliche Nummer des Zahlungskontos aus Ziffern. Führende Nullen bleiben erhalten; nicht als Zahl
+        interpretieren, keine IBAN.
+    status:
+      $ref: '#/kontostatus'
+
+kontostatus:
+  type: string
+  description: aktiv bezeichnet ein geführtes, geschlossen ein geschlossenes Zahlungskonto.
+  enum:
+    - aktiv
+    - geschlossen
 
 zahlungskontenliste:
   type: object
-  description: "Vollständige zugängliche eigene Zahlungskonten am Abrufdatum in Europe/Berlin, je Konto einmal und nach id aufsteigend sortiert. Maßgeblich ist die Kontoinhaberschaft, nicht ein Bezug zu einzelnen Buchungen. Jedes Konto hat einen eigenen Saldo; kein Gesamtsaldo und keine historische Stichtagsabfrage."
+  description: Alle zugänglichen eigenen Zahlungskonten der Person einschließlich geschlossener, je Konto einmal.
+    Die Reihenfolge ist nicht festgelegt.
   required:
     - data
   properties:
@@ -28,30 +52,24 @@ zahlungskontenliste:
 
 kontosaldo:
   type: object
-  description: |-
-    Tagesbezogener Euro-Saldo: positiv bedeutet Guthaben der Person, negativ eine Forderung der Krankenkasse. Der Saldo bestimmt weder Fälligkeit noch Auszahlbarkeit. Unbekannte Werte werden nicht als 0.00 geliefert.
-    Die genaue Berechnungsregel einschließlich noch nicht fälliger Beträge, Umbuchungen, Stornos und statistischer Einträge ist vor Freigabe fachlich festzulegen. Eine auf bereits fällige offene Posten begrenzte Summe erfüllt diesen Vertrag nicht allein aufgrund gleicher Bezeichnung.
+  description: Saldo eines Zahlungskontos zum Ende eines Stichtags in Euro. Positiv bedeutet Guthaben der Person,
+    negativ eine Forderung der Krankenkasse. Unbekannte Werte werden nicht als 0.00 geliefert.
   required:
-    - betrag
-    - waehrung
     - stichtag
+    - betrag
   properties:
-    betrag:
-      $ref: '#/dezimalbetrag'
-    waehrung:
-      type: string
-      description: Währung des Saldos; dieser Abruf unterstützt ausschließlich Euro.
-      const: EUR
     stichtag:
       type: string
       format: date
-      description: Fachlicher Berechnungstag; das Abrufdatum in Europe/Berlin, kein Aktualisierungszeitstempel.
+      description: Angefragter Stichtag, auf den sich der Saldo bezieht.
+    betrag:
+      $ref: '#/eurobetrag'
 
-dezimalbetrag:
+eurobetrag:
   type: string
   description: |-
-    Exakter Dezimalbetrag mit Punkt und zwei Nachkommastellen. Keine Tausendertrennzeichen, überflüssigen führenden Nullen oder führendes Plus; -0.00 ist unzulässig.
-  pattern: '^-?(0|[1-9][0-9]*)\.[0-9]{2}(?![\s\S])'
+    Exakter Betrag in Euro mit Punkt als Dezimaltrennzeichen, höchstens neun Stellen vor und genau zwei Stellen nach dem Punkt. Keine Tausendertrennzeichen, überflüssigen führenden Nullen oder führendes Plus; -0.00 ist unzulässig.
+  pattern: '^-?(0|[1-9][0-9]{0,8})\.[0-9]{2}(?![\s\S])'
   not:
     const: '-0.00'
   examples:

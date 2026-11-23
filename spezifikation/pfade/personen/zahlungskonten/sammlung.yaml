@@ -9,46 +9,26 @@ get:
   tags:
     - personen
   operationId: zahlungskonten_lesen
-  summary: Zahlungskonten einer Person mit aktuellem Saldo lesen
-  description: "Liefert eigene Zahlungskonten einschließlich geschlossener Konten mit jeweils tagesbezogenem Saldo. Konten bleiben getrennt. Nicht verlässlich ermittelbare Konten oder Salden ergeben 503 statt Teilantwort oder Ersatzbetrag."
+  summary: Zahlungskonten einer Person lesen
+  description: "Liefert alle zugänglichen eigenen Zahlungskonten der Person einschließlich geschlossener. Salden liefert ein gesonderter Abruf je Konto. Nicht vollständig ermittelbare Konten ergeben 503 statt einer Teilantwort."
   responses:
     '200':
-      description: Vollständige Liste zugänglicher eigener Zahlungskonten mit Salden.
+      description: Vollständige, möglicherweise leere Liste zugänglicher eigener Zahlungskonten.
       content:
         application/json:
           schema:
             $ref: '../../../schemas/zahlungskonten.yaml#/zahlungskontenliste'
           examples:
-            forderungsueberhang:
-              summary: Die Krankenkasse hat insgesamt eine Forderung auf diesem Konto
+            aktives_und_geschlossenes_konto:
+              summary: Ein aktives und ein geschlossenes Zahlungskonto
               value:
                 data:
-                  - id: zahlungskonto-beispiel-001
+                  - id: zahlungskonto001
                     kontonummer: '000123456789'
-                    saldo:
-                      betrag: '-125.50'
-                      waehrung: EUR
-                      stichtag: '2026-11-07'
-            guthaben:
-              summary: Die Person hat ein Guthaben auf diesem Konto
-              value:
-                data:
-                  - id: zahlungskonto-beispiel-002
+                    status: aktiv
+                  - id: zahlungskonto002
                     kontonummer: '000123456790'
-                    saldo:
-                      betrag: '42.00'
-                      waehrung: EUR
-                      stichtag: '2026-11-07'
-            ausgeglichen:
-              summary: Ein vorhandenes Konto mit Saldo null
-              value:
-                data:
-                  - id: zahlungskonto-beispiel-001
-                    kontonummer: '000123456789'
-                    saldo:
-                      betrag: '0.00'
-                      waehrung: EUR
-                      stichtag: '2026-11-07'
+                    status: geschlossen
             keine_konten:
               summary: Keine zugänglichen eigenen Zahlungskonten
               value:
